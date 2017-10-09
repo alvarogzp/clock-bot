@@ -12,8 +12,7 @@ class InlineClockAction(Action):
 
         current_time = TimePoint.current()
 
-        user_locale_code = event.query.from_.language_code
-        locale = Locale.parse(user_locale_code, sep="-")
+        locale = self.__get_locale(event)
 
         zones = ZoneFinder.from_locale(locale)
 
@@ -25,6 +24,11 @@ class InlineClockAction(Action):
             results.append(inline_date_time_zone_result_formatter.result())
 
         self.api.answerInlineQuery(inline_query_id=query_id, results=results, cache_time=0, is_personal=True)
+
+    @staticmethod
+    def __get_locale(event):
+        user_locale_code = event.query.from_.language_code
+        return Locale.parse(user_locale_code, sep="-")
 
 
 class InlineResultFormatter:
