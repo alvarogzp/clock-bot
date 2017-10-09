@@ -23,7 +23,8 @@ setup(
 
     install_requires=[
         'telegram-bot',
-        'pytz'
+        'pytz',
+        'babel',
     ],
 
     python_requires='>=3',
