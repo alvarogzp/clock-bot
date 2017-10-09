@@ -1,6 +1,6 @@
 from bot.action.core.action import ActionGroup
 from bot.action.core.command import CommandAction
-from bot.action.core.filter import MessageAction, TextMessageAction, NoPendingAction, PendingAction
+from bot.action.core.filter import MessageAction, TextMessageAction, NoPendingAction, PendingAction, InlineQueryAction
 from bot.action.standard.admin import RestartAction, EvalAction, AdminActionWithErrorMessage, AdminAction, HaltAction, \
     GroupAdminAction
 from bot.action.standard.answer import AnswerAction
@@ -10,6 +10,8 @@ from bot.action.standard.internationalization import InternationalizationAction
 from bot.action.standard.perchat import PerChatAction
 from bot.action.standard.silence import SilenceAction
 from bot.bot import Bot
+
+from clock.bot.action import InlineClockAction
 
 
 class BotManager:
@@ -21,6 +23,10 @@ class BotManager:
             ActionGroup(
 
                 NoPendingAction().then(
+
+                    InlineQueryAction().then(
+                        InlineClockAction()
+                    ),
 
                     MessageAction().then(
                         PerChatAction().then(
