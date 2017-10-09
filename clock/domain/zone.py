@@ -27,7 +27,7 @@ class Zone:
 utc = Zone("UTC")
 
 
-class ZoneFormat:
+class ZoneFormatter:
     @staticmethod
     def zone_name(zone: Zone):
         """
