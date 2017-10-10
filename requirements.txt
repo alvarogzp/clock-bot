@@ -1,3 +1,3 @@
 -e .
 
--e git+https://github.com/alvarogzp/telegram-bot.git@5e7ce52#egg=telegram-bot
+-e git+https://github.com/alvarogzp/telegram-bot.git@v01.01.00#egg=telegram-bot
