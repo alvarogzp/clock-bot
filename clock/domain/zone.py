@@ -120,5 +120,7 @@ class ZoneFormatter:
     def name_zone(zone: Zone, locale: Locale):
         """
         Returns the zone name from ``babel``. Should match self.zone_name and self.zone.
+
+        Example: 'Europe/Madrid'
         """
         return babel.dates.get_timezone_name(zone.timezone, locale=locale, return_zone=True)
