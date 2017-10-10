@@ -27,4 +27,9 @@ class DateTimeZoneFormatter:
         return babel.dates.format_datetime(self.date_time_zone.date_time, locale=self.locale)
 
     def timezone(self):
-        return ZoneFormatter.location(self.date_time_zone.zone, self.locale)
+        return self.__title(ZoneFormatter.location(self.date_time_zone.zone, self.locale))
+
+    @staticmethod
+    def __title(text):
+        first_character = text[0]
+        return first_character.upper() + text[1:]
