@@ -14,7 +14,7 @@ class InlineClockAction(Action):
 
         locale = self.__get_locale(event)
 
-        zones = ZoneFinder.from_locale(locale)
+        zones = ZoneFinder.find(event.query.query, locale)
 
         results = []
         for zone in zones:
