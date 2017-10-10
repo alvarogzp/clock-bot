@@ -11,7 +11,7 @@ from bot.action.standard.perchat import PerChatAction
 from bot.action.standard.silence import SilenceAction
 from bot.bot import Bot
 
-from clock.bot.action import InlineClockAction
+from clock.bot.inline import InlineClockAction
 
 
 class BotManager:
