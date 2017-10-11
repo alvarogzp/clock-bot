@@ -3,8 +3,7 @@ from bot.action.core.action import Action
 
 from clock.domain.datetimezone import DateTimeZone, DateTimeZoneFormatter
 from clock.domain.time import TimePoint
-from clock.domain.finder import ZoneFinder
-
+from clock.domain.finder.api import ZoneFinderApi
 
 MAX_RESULTS_PER_QUERY = 50
 
@@ -17,7 +16,7 @@ class InlineClockAction(Action):
 
         locale = self.__get_locale(event)
 
-        zones = ZoneFinder.find(event.query.query, locale)
+        zones = ZoneFinderApi.find(event.query.query, locale, current_time)
 
         offset = self.__get_offset(event)
         offset_end = offset + MAX_RESULTS_PER_QUERY
