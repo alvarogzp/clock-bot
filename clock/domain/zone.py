@@ -4,14 +4,11 @@ import babel.dates
 import pytz
 from babel import Locale
 
-from clock.domain.country import UnknownCountry, Country
-
 
 class Zone:
-    def __init__(self, zone_name, country: Country=UnknownCountry()):
+    def __init__(self, zone_name):
         self.zone_name = zone_name
         self.timezone = pytz.timezone(zone_name)
-        self.country = country
 
     def id(self):
         """
