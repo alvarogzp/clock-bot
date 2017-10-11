@@ -2,8 +2,7 @@ from collections import OrderedDict
 
 from babel import Locale
 
-from clock.domain.finder.search_strategies.search_strategies.locale import LocaleSearchStrategy
-from clock.domain.finder.search_strategies.search_strategies.query import QuerySearchStrategy
+from clock.domain.finder.search_strategies.search_strategies.root import RootSearchStrategy
 from clock.domain.finder.zone_finder.provider import ZoneFindersProvider
 from clock.domain.time import TimePoint
 
@@ -19,10 +18,7 @@ class ZoneFinderApi:
 
     @classmethod
     def __get_search_strategy(cls, query: str, locale: Locale, time_point: TimePoint):
-        if query:
-            return QuerySearchStrategy(cls.finders, locale, query.lower(), time_point)
-        else:
-            return LocaleSearchStrategy(cls.finders, locale)
+        return RootSearchStrategy(cls.finders, locale, query, time_point)
 
     @staticmethod
     def __removed_duplicates(results):
