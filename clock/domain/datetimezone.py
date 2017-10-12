@@ -14,6 +14,10 @@ class DateTimeZone:
     def id(self):
         return self.time_point.id() + "@" + self.zone.id()
 
+    @staticmethod
+    def extract_items_from_id(date_time_zone_id):
+        return date_time_zone_id.split("@", 1)
+
 
 class DateTimeZoneFormatter:
     def __init__(self, date_time_zone: DateTimeZone, locale: Locale):
