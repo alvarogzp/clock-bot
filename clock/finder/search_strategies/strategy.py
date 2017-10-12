@@ -1,6 +1,6 @@
 class SearchStrategy:
     def search(self):
-        raise NotImplementedError
+        raise NotImplementedError()
 
     def get_results(self):
-        raise NotImplementedError
+        raise NotImplementedError()
