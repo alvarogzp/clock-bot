@@ -12,24 +12,22 @@ MAX_RESULTS_PER_QUERY = 50
 
 class InlineQueryClockAction(Action):
     def process(self, event):
-        query_id = event.query.id
-
+        query = event.query
         current_time = TimePoint.current()
+        locale = self.__get_locale(query)
 
-        locale = self.__get_locale(event)
+        zones = ZoneFinderApi.find(query.query, locale, current_time)
 
-        zones = ZoneFinderApi.find(event.query.query, locale, current_time)
-
-        offset = self.__get_offset(event)
+        offset = self.__get_offset(query)
         offset_end = offset + MAX_RESULTS_PER_QUERY
         next_offset = self.__get_next_offset(len(zones), offset_end)
 
         results = [self.__get_result(current_time, zone, locale) for zone in zones[offset:offset_end]]
 
-        StorageApi.get().save_query(event.query, current_time, locale, zones, results)
+        StorageApi.get().save_query(query, current_time, locale, zones, results)
 
         self.api.answerInlineQuery(
-            inline_query_id=query_id,
+            inline_query_id=query.id,
             results=results,
             next_offset=next_offset,
             cache_time=0,
@@ -37,13 +35,13 @@ class InlineQueryClockAction(Action):
         )
 
     @staticmethod
-    def __get_locale(event):
-        user_locale_code = event.query.from_.language_code
+    def __get_locale(query):
+        user_locale_code = query.from_.language_code
         return Locale.parse(user_locale_code, sep="-")
 
     @staticmethod
-    def __get_offset(event):
-        offset = event.query.offset
+    def __get_offset(query):
+        offset = query.offset
         if offset and offset.isdigit():
             return int(offset)
         return 0
