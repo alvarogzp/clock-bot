@@ -5,6 +5,7 @@ from clock.domain.datetimezone import DateTimeZone, DateTimeZoneFormatter
 from clock.domain.time import TimePoint
 from clock.domain.zone import Zone
 from clock.finder.api import ZoneFinderApi
+from clock.storage.api import StorageApi
 
 MAX_RESULTS_PER_QUERY = 50
 
@@ -24,6 +25,8 @@ class InlineClockAction(Action):
         next_offset = self.__get_next_offset(len(zones), offset_end)
 
         results = [self.__get_result(current_time, zone, locale) for zone in zones[offset:offset_end]]
+
+        StorageApi.get().save_query(event.query, current_time, locale, zones, results)
 
         self.api.answerInlineQuery(
             inline_query_id=query_id,
