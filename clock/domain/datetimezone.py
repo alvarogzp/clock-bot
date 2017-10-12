@@ -24,7 +24,7 @@ class DateTimeZoneFormatter:
         return self.date_time_zone.id()
 
     def date(self, format="medium"):
-        return babel.dates.format_date(self.date_time_zone.date_time, locale=self.locale, format=format)
+        return self.__title(babel.dates.format_date(self.date_time_zone.date_time, locale=self.locale, format=format))
 
     def time(self, format="medium"):
         return babel.dates.format_time(self.date_time_zone.date_time, locale=self.locale, format=format)
