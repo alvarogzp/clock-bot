@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+import itertools
 from babel import Locale
 
 from clock.domain.finder.zone_finder.find_util import FindUtil
@@ -30,4 +31,4 @@ class LocalizedZoneFinder:
         }
 
     def match_names_lower(self, query_lower):
-        return FindUtil.match_key(self._names_lower.items(), query_lower)
+        return [itertools.chain.from_iterable(i) for i in FindUtil.match_key(self._names_lower.items(), query_lower)]
