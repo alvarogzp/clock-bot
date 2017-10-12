@@ -12,7 +12,7 @@ class DateTimeZone:
         self.date_time = time_point.at(self.zone)
 
     def id(self):
-        return self.zone.id()
+        return self.time_point.id() + "@" + self.zone.id()
 
 
 class DateTimeZoneFormatter:
