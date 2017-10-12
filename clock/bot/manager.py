@@ -61,18 +61,6 @@ class BotManager:
                                         AdminActionWithErrorMessage().then(
                                             ConfigAction()
                                         )
-                                    ),
-
-                                    CommandAction("settings").then(
-                                        GroupAdminAction().then(
-                                            ChatSettingsAction()
-                                        )
-                                    ),
-
-                                    CommandAction("silence").then(
-                                        GroupAdminAction().then(
-                                            SilenceAction()
-                                        )
                                     )
 
                                 )
