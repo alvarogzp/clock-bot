@@ -69,19 +69,20 @@ class InlineResultFormatter:
         return self.date_time_zone_formatter.timezone_location()
 
     def description(self):
-        return "{datetime}".format(
-            datetime=self.date_time_zone_formatter.datetime(format="short")
+        return "{zone}\n{datetime}".format(
+            datetime=self.date_time_zone_formatter.datetime(format="short"),
+            zone=self.date_time_zone_formatter.timezone_zone()
         )
 
     def message(self):
         return \
             "<b>🌍 {timezone} 🌎</b>\n\n" \
-            "<b>📆 {date}\n🕓 {time}</b>\n\n" \
-            "{name} ({tzname})\n" \
+            "<b>🕓 {time}\n📆 {date}</b>\n\n" \
+            "{name} | {tzname}\n" \
             "<code>{zone}</code> | {offset}".format(
                 timezone=self.date_time_zone_formatter.timezone_location(),
-                date=self.date_time_zone_formatter.date(format="full"),
                 time=self.date_time_zone_formatter.time(format="full"),
+                date=self.date_time_zone_formatter.date(format="full"),
                 name=self.date_time_zone_formatter.timezone_name(),
                 tzname=self.date_time_zone_formatter.timezone_tzname(),
                 zone=self.date_time_zone_formatter.timezone_zone(),
