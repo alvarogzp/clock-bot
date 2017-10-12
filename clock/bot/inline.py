@@ -3,6 +3,7 @@ from bot.action.core.action import Action
 
 from clock.domain.datetimezone import DateTimeZone, DateTimeZoneFormatter
 from clock.domain.time import TimePoint
+from clock.domain.zone import Zone
 from clock.finder.api import ZoneFinderApi
 
 MAX_RESULTS_PER_QUERY = 50
@@ -22,14 +23,7 @@ class InlineClockAction(Action):
         offset_end = offset + MAX_RESULTS_PER_QUERY
         next_offset = self.__get_next_offset(len(zones), offset_end)
 
-        zones = zones[offset:offset_end]
-
-        results = []
-        for zone in zones:
-            date_time_zone = DateTimeZone(current_time, zone)
-            date_time_zone_formatter = DateTimeZoneFormatter(date_time_zone, locale)
-            inline_date_time_zone_result_formatter = InlineResultFormatter(date_time_zone_formatter)
-            results.append(inline_date_time_zone_result_formatter.result())
+        results = [self.__get_result(current_time, zone, locale) for zone in zones[offset:offset_end]]
 
         self.api.answerInlineQuery(
             inline_query_id=query_id,
@@ -56,6 +50,13 @@ class InlineClockAction(Action):
         if result_number > offset_end:
             return str(offset_end)
         return None
+
+    @staticmethod
+    def __get_result(time_point: TimePoint, zone: Zone, locale: Locale):
+        date_time_zone = DateTimeZone(time_point, zone)
+        date_time_zone_formatter = DateTimeZoneFormatter(date_time_zone, locale)
+        inline_date_time_zone_result_formatter = InlineResultFormatter(date_time_zone_formatter)
+        return inline_date_time_zone_result_formatter.result()
 
 
 class InlineResultFormatter:
