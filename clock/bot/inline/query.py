@@ -10,7 +10,7 @@ from clock.storage.api import StorageApi
 MAX_RESULTS_PER_QUERY = 50
 
 
-class InlineClockAction(Action):
+class InlineQueryClockAction(Action):
     def process(self, event):
         query_id = event.query.id
 
