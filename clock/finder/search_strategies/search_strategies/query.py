@@ -2,9 +2,9 @@ import itertools
 
 from babel import Locale
 
-from clock.domain.finder.search_strategies.strategy import SearchStrategy
-from clock.domain.finder.zone_finder.provider import ZoneFindersProvider
 from clock.domain.time import TimePoint
+from clock.finder.search_strategies.strategy import SearchStrategy
+from clock.finder.zone_finder.provider import ZoneFindersProvider
 
 
 class QuerySearchStrategy(SearchStrategy):

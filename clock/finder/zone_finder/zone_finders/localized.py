@@ -1,10 +1,10 @@
+import itertools
 from collections import defaultdict
 
-import itertools
 from babel import Locale
 
-from clock.domain.finder.zone_finder.find_util import FindUtil
 from clock.domain.zone import ZoneFormatter
+from clock.finder.zone_finder.find_util import FindUtil
 
 
 class LocalizedZoneFinder:

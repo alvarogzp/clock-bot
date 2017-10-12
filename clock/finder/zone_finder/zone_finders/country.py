@@ -1,4 +1,4 @@
-from clock.domain.finder.zone_finder.zone_finders.name import NameZoneFinder
+from clock.finder.zone_finder.zone_finders.name import NameZoneFinder
 
 
 class CountryZoneFinder:

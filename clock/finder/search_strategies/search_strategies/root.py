@@ -1,10 +1,10 @@
 from babel import Locale
 
-from clock.domain.finder.search_strategies.search_strategies.locale import LocaleSearchStrategy
-from clock.domain.finder.search_strategies.search_strategies.query import QuerySearchStrategy
-from clock.domain.finder.search_strategies.strategy import SearchStrategy
-from clock.domain.finder.zone_finder.provider import ZoneFindersProvider
 from clock.domain.time import TimePoint
+from clock.finder.search_strategies.search_strategies.query import QuerySearchStrategy
+from clock.finder.search_strategies.search_strategies.locale import LocaleSearchStrategy
+from clock.finder.search_strategies.strategy import SearchStrategy
+from clock.finder.zone_finder.provider import ZoneFindersProvider
 
 
 class RootSearchStrategy(SearchStrategy):

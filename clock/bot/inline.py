@@ -3,7 +3,7 @@ from bot.action.core.action import Action
 
 from clock.domain.datetimezone import DateTimeZone, DateTimeZoneFormatter
 from clock.domain.time import TimePoint
-from clock.domain.finder.api import ZoneFinderApi
+from clock.finder.api import ZoneFinderApi
 
 MAX_RESULTS_PER_QUERY = 50
 

@@ -1,12 +1,12 @@
 import pytz
 from babel import Locale
 
-from clock.domain.finder.zone_finder.zone_finders.country import CountryZoneFinder
-from clock.domain.finder.zone_finder.zone_finders.localized import LocalizedZoneFinder
-from clock.domain.finder.zone_finder.zone_finders.localized_date_time import LocalizedDateTimeZoneFinder
-from clock.domain.finder.zone_finder.zone_finders.name import NameZoneFinder
 from clock.domain.time import TimePoint
 from clock.domain.zone import Zone
+from clock.finder.zone_finder.zone_finders.country import CountryZoneFinder
+from clock.finder.zone_finder.zone_finders.localized import LocalizedZoneFinder
+from clock.finder.zone_finder.zone_finders.localized_date_time import LocalizedDateTimeZoneFinder
+from clock.finder.zone_finder.zone_finders.name import NameZoneFinder
 from clock.util import Cache
 
 

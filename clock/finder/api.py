@@ -2,9 +2,9 @@ from collections import OrderedDict
 
 from babel import Locale
 
-from clock.domain.finder.search_strategies.search_strategies.root import RootSearchStrategy
-from clock.domain.finder.zone_finder.provider import ZoneFindersProvider
 from clock.domain.time import TimePoint
+from clock.finder.search_strategies.search_strategies.root import RootSearchStrategy
+from clock.finder.zone_finder.provider import ZoneFindersProvider
 
 
 class ZoneFinderApi:
