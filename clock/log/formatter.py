@@ -48,3 +48,8 @@ class LogFormatter:
     def chosen_zone(chosen_zone_name: str):
         return FormattedText().normal("Chosen zone: {zone_name}")\
             .start_format().bold(zone_name=chosen_zone_name).end_format()
+
+    @staticmethod
+    def message(*message_parts: FormattedText):
+        joined_parts = FormattedText().newline().join(message_parts)
+        return FormattedText().newline().concat(joined_parts)

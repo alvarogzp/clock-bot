@@ -35,8 +35,7 @@ class LogApi:
         formatted_processing_time = self.formatter.processing_time(processing_seconds)
         formatted_results_number = self.formatter.results(results_sent, results_found)
 
-        self.logger.log(
-            LOG_TAG_QUERY,
+        formatted_message = self.formatter.message(
             formatted_time_point,
             formatted_user,
             formatted_query,
@@ -45,6 +44,8 @@ class LogApi:
             formatted_results_number
         )
 
+        self.logger.log(LOG_TAG_QUERY, formatted_message)
+
     def log_chosen_result(self, user: ApiObject, time_point: str, chosen_zone_name: str, query: str):
 
         formatted_time_point = self.formatter.time_point(time_point)
@@ -52,10 +53,11 @@ class LogApi:
         formatted_query = self.formatter.query(query, "")
         formatted_chosen_zone = self.formatter.chosen_zone(chosen_zone_name)
 
-        self.logger.log(
-            LOG_TAG_CHOSEN_RESULT,
+        formatted_message = self.formatter.message(
             formatted_time_point,
             formatted_user,
             formatted_query,
             formatted_chosen_zone
         )
+
+        self.logger.log(LOG_TAG_CHOSEN_RESULT, formatted_message)
