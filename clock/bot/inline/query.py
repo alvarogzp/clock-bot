@@ -1,5 +1,6 @@
 from babel import Locale
 from bot.action.core.action import Action
+from bot.multithreading.work import Work
 
 from clock.domain.datetimezone import DateTimeZone, DateTimeZoneFormatter
 from clock.domain.time import TimePoint
@@ -36,7 +37,10 @@ class InlineQueryClockAction(Action):
             is_personal=True
         )
 
-        StorageApi.get().save_query(query, current_time, locale, zones, results)
+        self.scheduler.io(Work(
+            lambda: StorageApi.get().save_query(query, current_time, locale, zones, results),
+            "storage:save_query"
+        ))
 
         # event.logger is async
         LogApi.get(event.logger).log_query(query, current_time, locale, zones, results, processing_time)

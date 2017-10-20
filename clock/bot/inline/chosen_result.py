@@ -1,4 +1,5 @@
 from bot.action.core.action import Action
+from bot.multithreading.work import Work
 
 from clock.domain.datetimezone import DateTimeZone
 from clock.domain.time import TimePoint
@@ -14,7 +15,10 @@ class ChosenInlineResultClockAction(Action):
         query = chosen_result.query
         choosing_seconds = self.__get_choosing_seconds(timestamp)
 
-        StorageApi.get().save_chosen_result(user, timestamp, chosen_zone_name, query)
+        self.scheduler.io(Work(
+            lambda: StorageApi.get().save_chosen_result(user, timestamp, chosen_zone_name, query),
+            "storage:save_chosen_result"
+        ))
 
         # event.logger is async
         LogApi.get(event.logger).log_chosen_result(user, timestamp, chosen_zone_name, query, choosing_seconds)
