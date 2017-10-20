@@ -22,7 +22,7 @@ class InlineQueryClockAction(Action):
         offset_end = offset + MAX_RESULTS_PER_QUERY
         next_offset = self.__get_next_offset(len(zones), offset_end)
 
-        results = [self.__get_result(current_time, zone, locale) for zone in zones[offset:offset_end]]
+        results = self.__get_results(current_time, locale, zones[offset:offset_end])
 
         StorageApi.get().save_query(query, current_time, locale, zones, results)
 
@@ -51,6 +51,9 @@ class InlineQueryClockAction(Action):
         if result_number > offset_end:
             return str(offset_end)
         return None
+
+    def __get_results(self, time_point: TimePoint, locale: Locale, zones: list):
+        return [self.__get_result(time_point, zone, locale) for zone in zones]
 
     @staticmethod
     def __get_result(time_point: TimePoint, zone: Zone, locale: Locale):
