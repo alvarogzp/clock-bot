@@ -26,7 +26,7 @@ class InlineQueryClockAction(Action):
 
         StorageApi.get().save_query(query, current_time, locale, zones, results)
 
-        self.api.answerInlineQuery(
+        self.api.async.answerInlineQuery(
             inline_query_id=query.id,
             results=results,
             next_offset=next_offset,
