@@ -38,7 +38,7 @@ class InlineQueryClockAction(Action):
         )
 
         self.scheduler.io(Work(
-            lambda: StorageApi.get().save_query(query, current_time, locale, zones, results),
+            lambda: StorageApi.get().save_query(query, current_time, locale, zones, results, processing_time),
             "storage:save_query"
         ))
 

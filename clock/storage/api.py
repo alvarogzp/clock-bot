@@ -20,15 +20,16 @@ class StorageApi:
         self.data_source = data_source
 
     def save_query(self, query: ApiObject, time_point: TimePoint, locale: Locale, results_found: list,
-                   results_sent: list):
+                   results_sent: list, processing_seconds: float):
         self._save_user(query.from_)
         self.data_source.save_query(query.from_.id, time_point.id(), query.query, query.offset, str(locale),
-                                    len(results_found), len(results_sent))
+                                    len(results_found), len(results_sent), processing_seconds)
         self.data_source.commit()
 
     def _save_user(self, user: ApiObject):
         self.data_source.save_user(user.id, user.first_name, user.last_name, user.username, user.language_code)
 
-    def save_chosen_result(self, user: ApiObject, timestamp: str, chosen_zone_name: str, query: str):
-        self.data_source.save_chosen_result(user.id, timestamp, chosen_zone_name, query)
+    def save_chosen_result(self, user: ApiObject, timestamp: str, chosen_zone_name: str, query: str,
+                           choosing_seconds: float):
+        self.data_source.save_chosen_result(user.id, timestamp, chosen_zone_name, query, choosing_seconds)
         self.data_source.commit()

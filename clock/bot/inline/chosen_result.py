@@ -16,7 +16,7 @@ class ChosenInlineResultClockAction(Action):
         choosing_seconds = self.__get_choosing_seconds(timestamp)
 
         self.scheduler.io(Work(
-            lambda: StorageApi.get().save_chosen_result(user, timestamp, chosen_zone_name, query),
+            lambda: StorageApi.get().save_chosen_result(user, timestamp, chosen_zone_name, query, choosing_seconds),
             "storage:save_chosen_result"
         ))
 
