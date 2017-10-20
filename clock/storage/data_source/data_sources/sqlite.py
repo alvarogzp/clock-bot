@@ -33,8 +33,9 @@ class SqliteStorageDataSource(StorageDataSource):
                    "timestamp_removed text"
                    ")")
         self.__sql("create table if not exists query ("
+                   "timestamp text,"
                    "user_id integer not null,"
-                   "timestamp text not null,"
+                   "time_point text not null,"
                    "query text,"
                    "offset text,"
                    "locale text,"
@@ -42,8 +43,9 @@ class SqliteStorageDataSource(StorageDataSource):
                    "results_sent_len integer"
                    ")")
         self.__sql("create table if not exists chosen_result ("
-                   "user_id integer not null,"
                    "timestamp text,"
+                   "user_id integer not null,"
+                   "time_point text,"
                    "chosen_zone_name text,"
                    "query text"
                    ")")
@@ -71,12 +73,15 @@ class SqliteStorageDataSource(StorageDataSource):
 
     def save_query(self, user_id: int, timestamp: str, query: str, offset: str, locale: str, results_found_len: int,
                    results_sent_len: int):
-        self.__sql("insert into query (user_id, timestamp, query, offset, locale, results_found_len, results_sent_len) "
-                   "values (?, ?, ?, ?, ?, ?, ?)",
+        self.__sql("insert into query "
+                   "(timestamp, user_id, time_point, query, offset, locale, results_found_len, results_sent_len) "
+                   "values (strftime('%s', 'now'), ?, ?, ?, ?, ?, ?, ?)",
                    (user_id, timestamp, query, offset, locale, results_found_len, results_sent_len))
 
     def save_chosen_result(self, user_id: int, timestamp: str, chosen_zone_name: str, query: str):
-        self.__sql("insert into chosen_result (user_id, timestamp, chosen_zone_name, query) values (?, ?, ?, ?)",
+        self.__sql("insert into chosen_result "
+                   "(timestamp, user_id, time_point, chosen_zone_name, query) "
+                   "values (strftime('%s', 'now'), ?, ?, ?, ?)",
                    (user_id, timestamp, chosen_zone_name, query))
 
     def commit(self):
