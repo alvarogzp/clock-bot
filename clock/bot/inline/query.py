@@ -5,6 +5,7 @@ from clock.domain.datetimezone import DateTimeZone, DateTimeZoneFormatter
 from clock.domain.time import TimePoint
 from clock.domain.zone import Zone
 from clock.finder.api import ZoneFinderApi
+from clock.log.api import LogApi
 from clock.storage.api import StorageApi
 
 MAX_RESULTS_PER_QUERY = 50
@@ -12,8 +13,9 @@ MAX_RESULTS_PER_QUERY = 50
 
 class InlineQueryClockAction(Action):
     def process(self, event):
-        query = event.query
         current_time = TimePoint.current()
+
+        query = event.query
         locale = self.__get_locale(query)
 
         zones = ZoneFinderApi.find(query.query, locale, current_time)
@@ -24,6 +26,8 @@ class InlineQueryClockAction(Action):
 
         results = self.__get_results(current_time, locale, zones[offset:offset_end])
 
+        processing_time = TimePoint.current_timestamp() - current_time.timestamp
+
         self.api.async.answerInlineQuery(
             inline_query_id=query.id,
             results=results,
@@ -33,6 +37,9 @@ class InlineQueryClockAction(Action):
         )
 
         StorageApi.get().save_query(query, current_time, locale, zones, results)
+
+        # event.logger is async
+        LogApi.get(event.logger).log_query(query, current_time, locale, zones, results, processing_time)
 
     @staticmethod
     def __get_locale(query):
