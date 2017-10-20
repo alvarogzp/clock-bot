@@ -13,15 +13,15 @@ class ChosenInlineResultClockAction(Action):
         user = chosen_result.from_
         timestamp, chosen_zone_name = self.__get_timestamp_and_chosen_zone_name_from_result_id(chosen_result.result_id)
         query = chosen_result.query
-        choosing_seconds = self.__get_choosing_seconds(timestamp)
+        choosing_time = self.__get_choosing_time(timestamp)
 
         self.scheduler.io(Work(
-            lambda: StorageApi.get().save_chosen_result(user, timestamp, chosen_zone_name, query, choosing_seconds),
+            lambda: StorageApi.get().save_chosen_result(user, timestamp, chosen_zone_name, query, choosing_time),
             "storage:save_chosen_result"
         ))
 
         # event.logger is async
-        LogApi.get(event.logger).log_chosen_result(user, timestamp, chosen_zone_name, query, choosing_seconds)
+        LogApi.get(event.logger).log_chosen_result(user, timestamp, chosen_zone_name, query, choosing_time)
 
     @staticmethod
     def __get_timestamp_and_chosen_zone_name_from_result_id(result_id):
@@ -31,7 +31,7 @@ class ChosenInlineResultClockAction(Action):
         return extracted_items
 
     @staticmethod
-    def __get_choosing_seconds(timestamp: str):
+    def __get_choosing_time(timestamp: str):
         try:
             return TimePoint.current_timestamp() - float(timestamp)
         except ValueError:
