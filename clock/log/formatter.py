@@ -50,6 +50,11 @@ class LogFormatter:
             .start_format().bold(zone_name=chosen_zone_name).end_format()
 
     @staticmethod
+    def choosing_time(choosing_seconds: float):
+        return FormattedText().normal("Choosing time: {choosing_time}").start_format()\
+            .bold(choosing_time=TimeFormatter.format(choosing_seconds)).end_format()
+
+    @staticmethod
     def message(*message_parts: FormattedText):
         joined_parts = FormattedText().newline().join(message_parts)
         return FormattedText().newline().concat(joined_parts)

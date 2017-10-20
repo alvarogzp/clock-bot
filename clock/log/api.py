@@ -46,18 +46,21 @@ class LogApi:
 
         self.logger.log(LOG_TAG_QUERY, formatted_message)
 
-    def log_chosen_result(self, user: ApiObject, time_point: str, chosen_zone_name: str, query: str):
+    def log_chosen_result(self, user: ApiObject, time_point: str, chosen_zone_name: str, query: str,
+                          choosing_seconds: float):
 
         formatted_time_point = self.formatter.time_point(time_point)
         formatted_user = self.formatter.user(user)
         formatted_query = self.formatter.query(query, "")
         formatted_chosen_zone = self.formatter.chosen_zone(chosen_zone_name)
+        formatted_choosing_time = self.formatter.choosing_time(choosing_seconds)
 
         formatted_message = self.formatter.message(
             formatted_time_point,
             formatted_user,
             formatted_query,
-            formatted_chosen_zone
+            formatted_chosen_zone,
+            formatted_choosing_time
         )
 
         self.logger.log(LOG_TAG_CHOSEN_RESULT, formatted_message)
