@@ -24,6 +24,10 @@ class TimePoint:
     def _at__no_cache(self, zone: Zone):
         return self.utc.astimezone(zone.timezone)
 
+    @classmethod
+    def current(cls):
+        return TimePoint(cls.current_timestamp())
+
     @staticmethod
-    def current():
-        return TimePoint(time.time())
+    def current_timestamp():
+        return time.time()
