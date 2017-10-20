@@ -50,11 +50,7 @@ class SqliteStorageDataSource(StorageDataSource):
 
     def save_user(self, user_id: int, first_name: str, last_name: str, username: str, language_code: str):
         if not self.__is_user_saved_equal(user_id, first_name, last_name, username, language_code):
-            self.__sql("insert into user_history "
-                       "(user_id, first_name, last_name, username, language_code, timestamp_added, timestamp_removed) "
-                       "select user_id, first_name, last_name, username, language_code, "
-                       "timestamp_added, strftime('%s', 'now') "
-                       "from user where user_id = ?", (user_id,))
+            self.__add_to_user_history(user_id)
             self.__sql("insert or replace into user "
                        "(user_id, first_name, last_name, username, language_code, timestamp_added) "
                        "values (?, ?, ?, ?, ?, strftime('%s', 'now'))",
@@ -64,6 +60,14 @@ class SqliteStorageDataSource(StorageDataSource):
         return self.__sql("select 1 from user where "
                           "user_id = ? and first_name = ? and last_name = ? and username = ? and language_code = ?",
                           (user_id, first_name, last_name, username, language_code)).fetchone()
+
+    def __add_to_user_history(self, user_id: int):
+        # if user does not exists in user table, nothing will be inserted into user_history, as expected for new users
+        self.__sql("insert into user_history "
+                   "(user_id, first_name, last_name, username, language_code, timestamp_added, timestamp_removed) "
+                   "select user_id, first_name, last_name, username, language_code, "
+                   "timestamp_added, strftime('%s', 'now') "
+                   "from user where user_id = ?", (user_id,))
 
     def save_query(self, user_id: int, timestamp: str, query: str, offset: str, locale: str, results_found_len: int,
                    results_sent_len: int):
