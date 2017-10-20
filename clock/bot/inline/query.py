@@ -24,8 +24,6 @@ class InlineQueryClockAction(Action):
 
         results = self.__get_results(current_time, locale, zones[offset:offset_end])
 
-        StorageApi.get().save_query(query, current_time, locale, zones, results)
-
         self.api.async.answerInlineQuery(
             inline_query_id=query.id,
             results=results,
@@ -33,6 +31,8 @@ class InlineQueryClockAction(Action):
             cache_time=0,
             is_personal=True
         )
+
+        StorageApi.get().save_query(query, current_time, locale, zones, results)
 
     @staticmethod
     def __get_locale(query):
