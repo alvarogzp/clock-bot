@@ -2,6 +2,7 @@ from babel import Locale
 from bot.api.domain import ApiObject
 
 from clock.domain.time import TimePoint
+from clock.storage.data_source.data_source import StorageDataSource
 from clock.storage.data_source.data_sources.sqlite import SqliteStorageDataSource
 
 
@@ -12,11 +13,11 @@ class StorageApi:
     def get(cls):
         """:rtype: StorageApi"""
         if cls._instance is None:
-            cls._instance = StorageApi()
+            cls._instance = StorageApi(SqliteStorageDataSource())
         return cls._instance
 
-    def __init__(self):
-        self.data_source = SqliteStorageDataSource()
+    def __init__(self, data_source: StorageDataSource):
+        self.data_source = data_source
 
     def save_query(self, query: ApiObject, time_point: TimePoint, locale: Locale, results_found: list,
                    results_sent: list):
