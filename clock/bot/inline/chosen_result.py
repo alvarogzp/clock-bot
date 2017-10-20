@@ -1,6 +1,7 @@
 from bot.action.core.action import Action
 
 from clock.domain.datetimezone import DateTimeZone
+from clock.log.api import LogApi
 from clock.storage.api import StorageApi
 
 
@@ -10,7 +11,11 @@ class ChosenInlineResultClockAction(Action):
         user = chosen_result.from_
         timestamp, chosen_zone_name = self.__get_timestamp_and_chosen_zone_name_from_result_id(chosen_result.result_id)
         query = chosen_result.query
+
         StorageApi.get().save_chosen_result(user, timestamp, chosen_zone_name, query)
+
+        # event.logger is async
+        LogApi.get(event.logger).log_chosen_result(user, timestamp, chosen_zone_name, query)
 
     @staticmethod
     def __get_timestamp_and_chosen_zone_name_from_result_id(result_id):
