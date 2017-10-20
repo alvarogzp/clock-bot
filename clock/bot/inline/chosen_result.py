@@ -1,6 +1,7 @@
 from bot.action.core.action import Action
 
 from clock.domain.datetimezone import DateTimeZone
+from clock.domain.time import TimePoint
 from clock.log.api import LogApi
 from clock.storage.api import StorageApi
 
@@ -11,11 +12,12 @@ class ChosenInlineResultClockAction(Action):
         user = chosen_result.from_
         timestamp, chosen_zone_name = self.__get_timestamp_and_chosen_zone_name_from_result_id(chosen_result.result_id)
         query = chosen_result.query
+        choosing_seconds = self.__get_choosing_seconds(timestamp)
 
         StorageApi.get().save_chosen_result(user, timestamp, chosen_zone_name, query)
 
         # event.logger is async
-        LogApi.get(event.logger).log_chosen_result(user, timestamp, chosen_zone_name, query)
+        LogApi.get(event.logger).log_chosen_result(user, timestamp, chosen_zone_name, query, choosing_seconds)
 
     @staticmethod
     def __get_timestamp_and_chosen_zone_name_from_result_id(result_id):
@@ -23,3 +25,10 @@ class ChosenInlineResultClockAction(Action):
         if len(extracted_items) < 2:
             return extracted_items[0], ""
         return extracted_items
+
+    @staticmethod
+    def __get_choosing_seconds(timestamp: str):
+        try:
+            return TimePoint.current_timestamp() - float(timestamp)
+        except ValueError:
+            return 0
