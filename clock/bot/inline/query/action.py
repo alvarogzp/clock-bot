@@ -2,12 +2,14 @@ from babel import Locale
 from bot.action.core.action import Action
 from bot.multithreading.work import Work
 
+from clock.bot.inline.query.result_formatter import InlineResultFormatter
 from clock.domain.datetimezone import DateTimeZone, DateTimeZoneFormatter
 from clock.domain.time import TimePoint
 from clock.domain.zone import Zone
 from clock.finder.api import ZoneFinderApi
 from clock.log.api import LogApi
 from clock.storage.api import StorageApi
+
 
 MAX_RESULTS_PER_QUERY = 50
 
@@ -72,49 +74,3 @@ class InlineQueryClockAction(Action):
         date_time_zone_formatter = DateTimeZoneFormatter(date_time_zone, locale)
         inline_date_time_zone_result_formatter = InlineResultFormatter(date_time_zone_formatter)
         return inline_date_time_zone_result_formatter.result()
-
-
-class InlineResultFormatter:
-    def __init__(self, date_time_zone_formatter: DateTimeZoneFormatter):
-        self.date_time_zone_formatter = date_time_zone_formatter
-
-    def id(self):
-        return self.date_time_zone_formatter.id()
-
-    def title(self):
-        return self.date_time_zone_formatter.timezone_location()
-
-    def description(self):
-        return "{zone}\n{datetime}".format(
-            datetime=self.date_time_zone_formatter.datetime(format="short"),
-            zone=self.date_time_zone_formatter.timezone_zone()
-        )
-
-    def message(self):
-        return \
-            "<b>🌍 {timezone} 🌎</b>\n\n" \
-            "<b>🕓 {time}\n📆 {date}</b>\n\n" \
-            "{name} | {tzname}\n" \
-            "<code>{zone}</code> | {offset}".format(
-                timezone=self.date_time_zone_formatter.timezone_location(),
-                time=self.date_time_zone_formatter.time(format="full"),
-                date=self.date_time_zone_formatter.date(format="full"),
-                name=self.date_time_zone_formatter.timezone_name(),
-                tzname=self.date_time_zone_formatter.timezone_tzname(),
-                zone=self.date_time_zone_formatter.timezone_zone(),
-                offset=self.date_time_zone_formatter.timezone_offset()
-            )
-
-    def result(self):
-        return {
-            "type": "article",
-            "id": self.id(),
-            "title": self.title(),
-            "input_message_content": {
-                "message_text": self.message(),
-                "parse_mode": "HTML",
-                "disable_web_page_preview": True
-            },
-            "description": self.description(),
-            "thumb_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Icons8_flat_clock.svg/2000px-Icons8_flat_clock.svg.png"
-        }

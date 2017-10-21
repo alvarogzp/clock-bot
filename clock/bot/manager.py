@@ -11,7 +11,7 @@ from bot.action.standard.perchat import PerChatAction
 from bot.bot import Bot
 
 from clock.bot.inline.chosen_result import ChosenInlineResultClockAction
-from clock.bot.inline.query import InlineQueryClockAction
+from clock.bot.inline.query.action import InlineQueryClockAction
 
 
 class BotManager:
