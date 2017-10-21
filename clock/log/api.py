@@ -28,18 +28,18 @@ class LogApi:
     def log_query(self, query: ApiObject, time_point: TimePoint, locale: Locale, results_found: list,
                   results_sent: list, processing_seconds: float):
 
-        formatted_time_point = self.formatter.time_point(time_point.id())
+        formatted_query = self.formatter.query_as_title(query.query, query.offset)
         formatted_user = self.formatter.user(query.from_)
-        formatted_query = self.formatter.query(query.query, query.offset)
         formatted_locale = self.formatter.locale(locale)
+        formatted_time_point = self.formatter.time_point(time_point.id())
         formatted_processing_time = self.formatter.processing_time(processing_seconds)
         formatted_results_number = self.formatter.results(results_sent, results_found)
 
         formatted_message = self.formatter.message(
-            formatted_time_point,
-            formatted_user,
             formatted_query,
+            formatted_user,
             formatted_locale,
+            formatted_time_point,
             formatted_processing_time,
             formatted_results_number
         )
@@ -49,17 +49,17 @@ class LogApi:
     def log_chosen_result(self, user: ApiObject, time_point: str, chosen_zone_name: str, query: str,
                           choosing_seconds: float):
 
-        formatted_time_point = self.formatter.time_point(time_point)
+        formatted_chosen_zone = self.formatter.chosen_zone_as_title(chosen_zone_name)
         formatted_user = self.formatter.user(user)
         formatted_query = self.formatter.query(query, "")
-        formatted_chosen_zone = self.formatter.chosen_zone(chosen_zone_name)
+        formatted_time_point = self.formatter.time_point(time_point)
         formatted_choosing_time = self.formatter.choosing_time(choosing_seconds)
 
         formatted_message = self.formatter.message(
-            formatted_time_point,
+            formatted_chosen_zone,
             formatted_user,
             formatted_query,
-            formatted_chosen_zone,
+            formatted_time_point,
             formatted_choosing_time
         )
 

@@ -21,14 +21,24 @@ class LogFormatter:
             )
         return formatted_user
 
-    @staticmethod
-    def query(query: str, offset: str):
+    @classmethod
+    def query(cls, query: str, offset: str):
         formatted_query = FormattedText().normal("Query: {query}").start_format().bold(query=query).end_format()
-        if offset:
-            formatted_query.concat(
-                FormattedText().normal(" (offset: {offset})").start_format().bold(offset=offset).end_format()
-            )
+        formatted_query.concat(cls._offset(offset))
         return formatted_query
+
+    @classmethod
+    def query_as_title(cls, query: str, offset: str):
+        formatted_query = FormattedText().bold(query)
+        formatted_query.concat(cls._offset(offset))
+        return formatted_query
+
+    @staticmethod
+    def _offset(offset: str):
+        formatted_offset = FormattedText()
+        if offset:
+            formatted_offset.normal(" (offset {offset})").start_format().bold(offset=offset).end_format()
+        return formatted_offset
 
     @staticmethod
     def locale(locale: Locale):
@@ -50,11 +60,14 @@ class LogFormatter:
             .start_format().bold(zone_name=chosen_zone_name).end_format()
 
     @staticmethod
+    def chosen_zone_as_title(chosen_zone_name: str):
+        return FormattedText().bold(chosen_zone_name)
+
+    @staticmethod
     def choosing_time(choosing_seconds: float):
         return FormattedText().normal("Choosing time: {choosing_time}").start_format()\
             .bold(choosing_time=TimeFormatter.format(choosing_seconds)).end_format()
 
     @staticmethod
     def message(*message_parts: FormattedText):
-        joined_parts = FormattedText().newline().join(message_parts)
-        return FormattedText().newline().concat(joined_parts)
+        return FormattedText().newline().join(message_parts)
