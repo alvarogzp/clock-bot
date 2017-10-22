@@ -1,19 +1,20 @@
 from setuptools import setup, find_packages
 
+import project_info
 
 setup(
-    name='clock-bot',
+    name=project_info.name,
 
     use_scm_version=True,
 
-    description='A clock bot',
+    description=project_info.description,
 
-    url='https://github.com/alvarogzp/clock-bot',
+    url=project_info.source_url,
 
-    author='Alvaro Gutierrez Perez',
-    author_email='alvarogzp@gmail.com',
+    author=project_info.author_name,
+    author_email=project_info.author_email,
 
-    license='AGPL-3.0',
+    license=project_info.license_name,
 
     packages=find_packages(),
 
