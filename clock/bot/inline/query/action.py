@@ -15,13 +15,20 @@ MAX_RESULTS_PER_QUERY = 50
 
 
 class InlineQueryClockAction(Action):
+    def __init__(self):
+        super().__init__()
+        self.zone_finder_api = None  # initialized in post_setup when we have access to config
+
+    def post_setup(self):
+        self.zone_finder_api = ZoneFinderApi(bool(self.config.enable_countries))
+
     def process(self, event):
         current_time = TimePoint.current()
 
         query = event.query
         locale = self.__get_locale(query)
 
-        zones = ZoneFinderApi.find(query.query, locale, current_time)
+        zones = self.zone_finder_api.find(query.query, locale, current_time)
 
         offset = self.__get_offset(query)
         offset_end = offset + MAX_RESULTS_PER_QUERY

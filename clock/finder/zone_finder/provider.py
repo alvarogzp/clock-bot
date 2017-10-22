@@ -11,11 +11,11 @@ from clock.util import Cache
 
 
 class ZoneFindersProvider:
-    def __init__(self):
+    def __init__(self, find_countries: bool):
         zone_names = pytz.all_timezones
         self.zones = self.__build_zones(zone_names)
         self.name_zone_finder = NameZoneFinder(self.zones)
-        self.country_zone_finder = CountryZoneFinder(self.name_zone_finder, pytz.country_timezones)
+        self.country_zone_finder = CountryZoneFinder(self.name_zone_finder, pytz.country_timezones, find_countries)
         self._localized_zone_finder_cache = Cache()
 
     @staticmethod
