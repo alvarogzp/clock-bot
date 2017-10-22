@@ -11,7 +11,7 @@ from bot.action.standard.logger import LoggerAction
 from bot.action.standard.perchat import PerChatAction
 from bot.bot import Bot
 
-import project_info
+from clock import project_info
 from clock.bot.inline.chosen_result import ChosenInlineResultClockAction
 from clock.bot.inline.query.action import InlineQueryClockAction
 
