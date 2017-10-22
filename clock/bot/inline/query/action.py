@@ -1,4 +1,4 @@
-from babel import Locale
+from babel import Locale, UnknownLocaleError
 from bot.action.core.action import Action
 from bot.multithreading.work import Work
 
@@ -10,6 +10,8 @@ from clock.storage.api import StorageApi
 
 
 MAX_RESULTS_PER_QUERY = 50
+
+DEFAULT_LOCALE = Locale.parse("en_US")
 
 
 class InlineQueryClockAction(Action):
@@ -55,7 +57,13 @@ class InlineQueryClockAction(Action):
     @staticmethod
     def __get_locale(query):
         user_locale_code = query.from_.language_code
-        return Locale.parse(user_locale_code, sep="-")
+        try:
+            locale = Locale.parse(user_locale_code, sep="-")
+        except UnknownLocaleError:
+            locale = None
+        if locale is None:
+            locale = DEFAULT_LOCALE
+        return locale
 
     @staticmethod
     def __get_offset(query):
