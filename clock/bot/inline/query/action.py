@@ -2,7 +2,7 @@ from babel import Locale
 from bot.action.core.action import Action
 from bot.multithreading.work import Work
 
-from clock.bot.inline.query.result_formatter import InlineResultFormatter
+from clock.bot.inline.query.result.formatter.date_time_zone import DateTimeZoneResultFormatter
 from clock.domain.datetimezone import DateTimeZone, DateTimeZoneFormatter
 from clock.domain.time import TimePoint
 from clock.domain.zone import Zone
@@ -79,5 +79,5 @@ class InlineQueryClockAction(Action):
     def __get_result(time_point: TimePoint, zone: Zone, locale: Locale):
         date_time_zone = DateTimeZone(time_point, zone)
         date_time_zone_formatter = DateTimeZoneFormatter(date_time_zone, locale)
-        inline_date_time_zone_result_formatter = InlineResultFormatter(date_time_zone_formatter)
+        inline_date_time_zone_result_formatter = DateTimeZoneResultFormatter(date_time_zone_formatter)
         return inline_date_time_zone_result_formatter.result()

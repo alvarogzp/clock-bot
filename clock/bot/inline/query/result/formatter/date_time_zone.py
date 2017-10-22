@@ -1,7 +1,8 @@
+from clock.bot.inline.query.result.formatter import ResultFormatter
 from clock.domain.datetimezone import DateTimeZoneFormatter
 
 
-class InlineResultFormatter:
+class DateTimeZoneResultFormatter(ResultFormatter):
     def __init__(self, date_time_zone_formatter: DateTimeZoneFormatter):
         self.date_time_zone_formatter = date_time_zone_formatter
 
@@ -32,16 +33,5 @@ class InlineResultFormatter:
                 offset=self.date_time_zone_formatter.timezone_offset()
             )
 
-    def result(self):
-        return {
-            "type": "article",
-            "id": self.id(),
-            "title": self.title(),
-            "input_message_content": {
-                "message_text": self.message(),
-                "parse_mode": "HTML",
-                "disable_web_page_preview": True
-            },
-            "description": self.description(),
-            "thumb_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Icons8_flat_clock.svg/2000px-Icons8_flat_clock.svg.png"
-        }
+    def image_url(self):
+        return "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Icons8_flat_clock.svg/2000px-Icons8_flat_clock.svg.png"
