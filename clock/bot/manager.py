@@ -6,6 +6,8 @@ from bot.action.standard.about import AboutAction, VersionAction
 from bot.action.standard.admin import RestartAction, EvalAction, AdminActionWithErrorMessage, AdminAction, HaltAction
 from bot.action.standard.answer import AnswerAction
 from bot.action.standard.config import ConfigAction
+from bot.action.standard.config_status import ConfigStatusAction
+from bot.action.standard.instance import InstanceAction
 from bot.action.standard.internationalization import InternationalizationAction
 from bot.action.standard.logger import LoggerAction
 from bot.action.standard.perchat import PerChatAction
@@ -78,6 +80,16 @@ class BotManager:
                                         CommandAction("eval").then(
                                             AdminActionWithErrorMessage().then(
                                                 EvalAction()
+                                            )
+                                        ),
+                                        CommandAction("configstatus").then(
+                                            AdminActionWithErrorMessage().then(
+                                                ConfigStatusAction()
+                                            )
+                                        ),
+                                        CommandAction("instance").then(
+                                            AdminActionWithErrorMessage().then(
+                                                InstanceAction()
                                             )
                                         ),
                                         CommandAction("config").then(
