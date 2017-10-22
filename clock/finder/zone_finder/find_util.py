@@ -11,6 +11,7 @@ class FindUtil:
                 matches_equal.append(value)
             elif search_start and key.startswith(query):
                 matches_start.append(value)
-            elif search_fuzzy and (query in key or all((query_word in key for query_word in query_words))):
+            # it performs better (on 3.6) with a list comprehension than with a generator
+            elif search_fuzzy and (query in key or all([query_word in key for query_word in query_words])):
                 matches_fuzzy.append(value)
         return matches_equal, matches_start, matches_fuzzy
