@@ -13,7 +13,7 @@ class LocalizedDateTimeZoneFinder:
         self.time_point = time_point
 
     def match_time_lower(self, query_lower):
-        return FindUtil.match_key(self.__get_time_lower(), query_lower, search_fuzzy=False)
+        return FindUtil.match_key(self.__get_time_lower(), query_lower)
 
     def __get_time_lower(self):
         return [(babel.dates.format_time(self.time_point.at(zone), locale=self.locale).lower(), zone)

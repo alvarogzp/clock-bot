@@ -21,13 +21,13 @@ class LocalizedZoneFinder:
     @staticmethod
     def __get_names_for_zone(zone, locale):
         return {
-            ZoneFormatter.name(zone, locale, zone_variant="generic", short=False),
+            zone.name(locale),
             ZoneFormatter.name(zone, locale, zone_variant="generic", short=True),
             ZoneFormatter.name(zone, locale, zone_variant="daylight", short=False),
             ZoneFormatter.name(zone, locale, zone_variant="daylight", short=True),
             ZoneFormatter.name(zone, locale, zone_variant="standard", short=False),
             ZoneFormatter.name(zone, locale, zone_variant="standard", short=True),
-            ZoneFormatter.location(zone, locale),
+            zone.location(locale),
         }
 
     def match_names_lower(self, query_lower):

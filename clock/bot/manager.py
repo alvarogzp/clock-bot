@@ -5,6 +5,7 @@ from bot.action.core.filter import MessageAction, TextMessageAction, NoPendingAc
 from bot.action.standard.about import AboutAction, VersionAction
 from bot.action.standard.admin import RestartAction, EvalAction, AdminActionWithErrorMessage, AdminAction, HaltAction
 from bot.action.standard.answer import AnswerAction
+from bot.action.standard.benchmark import BenchmarkAction
 from bot.action.standard.config import ConfigAction
 from bot.action.standard.config_status import ConfigStatusAction
 from bot.action.standard.instance import InstanceAction
@@ -67,6 +68,11 @@ class BotManager:
                                             AnswerAction("Up and running, sir!")
                                         ),
 
+                                        CommandAction("benchmark").then(
+                                            AdminActionWithErrorMessage().then(
+                                                BenchmarkAction()
+                                            )
+                                        ),
                                         CommandAction("restart").then(
                                             AdminActionWithErrorMessage().then(
                                                 RestartAction()

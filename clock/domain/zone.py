@@ -4,11 +4,15 @@ import babel.dates
 import pytz
 from babel import Locale
 
+from clock.util import Cache
+
 
 class Zone:
     def __init__(self, zone_name):
         self.zone_name = zone_name
         self.timezone = pytz.timezone(zone_name)
+        self._name_cache = Cache()
+        self._location_cache = Cache()
 
     def id(self):
         """
@@ -17,6 +21,18 @@ class Zone:
         Example: 'Europe/Madrid'
         """
         return self.zone_name
+
+    def name(self, locale: Locale):
+        return self._name_cache.get_or_generate(locale, lambda: self._name__no_cache(locale))
+
+    def _name__no_cache(self, locale: Locale):
+        return ZoneFormatter.name(self, locale)
+
+    def location(self, locale: Locale):
+        return self._location_cache.get_or_generate(locale, lambda: self._location__no_cache(locale))
+
+    def _location__no_cache(self, locale: Locale):
+        return ZoneFormatter.location(self, locale)
 
     @staticmethod
     def utc():
