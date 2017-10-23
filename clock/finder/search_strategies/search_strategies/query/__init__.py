@@ -15,14 +15,7 @@ class QuerySearchStrategy(SearchStrategy):
         self.results = []
 
     def search(self):
-        # now inexact search
-        # if len(self.query_lower) > 2:
-        self.match_search()
-
-    def match_search(self):
-        match_search_strategy = MatchSearchStrategy(self.finders, self.locale, self.query_lower, self.time_point)
-        match_search_strategy.search()
-        self.results.extend(match_search_strategy.get_results())
+        pass
 
     def get_results(self):
         return self.results
