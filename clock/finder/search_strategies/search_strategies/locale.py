@@ -1,13 +1,13 @@
 from babel import Locale
 
 from clock.finder.search_strategies.strategy import SearchStrategy
-from clock.finder.zone_finder.provider import ZoneFindersProvider
+from clock.finder.zone_finder.zone_finders.country import CountryZoneFinder
 
 
 class LocaleSearchStrategy(SearchStrategy):
-    def __init__(self, finders: ZoneFindersProvider, locale: Locale):
-        self.finders = finders
+    def __init__(self, locale: Locale, country_zone_finder: CountryZoneFinder):
         self.locale = locale
+        self.country_zone_finder = country_zone_finder
         self.results = []
 
     def search(self):
@@ -15,7 +15,7 @@ class LocaleSearchStrategy(SearchStrategy):
 
     def country_search(self):
         country_code = self.locale.territory
-        results = self.finders.country_zone_finder.get_country_zones(country_code)
+        results = self.country_zone_finder.get_country_zones(country_code)
         self.results.extend(results)
 
     def get_results(self):
