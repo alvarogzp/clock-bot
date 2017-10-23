@@ -17,16 +17,7 @@ class MatchSearchStrategy(SearchStrategy):
         self.prioritized_results = [[] for _ in range(3)]
 
     def search(self):
-        self.zone_name_search()
-        self.localized_names_search()
-
-    def zone_name_search(self):
-        results = self.finders.name_zone_finder.match_lower(self.query_lower)
-        self.__add_results(results)
-
-    def localized_names_search(self):
-        results = self.finders.localized_zone_finder(self.locale).match_names_lower(self.query_lower)
-        self.__add_results(results)
+        pass
 
     def __add_results(self, results):
         for prioritized_result_list, result_list in zip(self.prioritized_results, results):
