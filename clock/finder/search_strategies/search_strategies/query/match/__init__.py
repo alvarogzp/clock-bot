@@ -19,9 +19,6 @@ class MatchSearchStrategy(SearchStrategy):
     def search(self):
         self.zone_name_search()
         self.localized_names_search()
-        self.tzname_search()
-        self.gmt_search()
-        self.time_search()
 
     def zone_name_search(self):
         results = self.finders.name_zone_finder.match_lower(self.query_lower)
@@ -29,18 +26,6 @@ class MatchSearchStrategy(SearchStrategy):
 
     def localized_names_search(self):
         results = self.finders.localized_zone_finder(self.locale).match_names_lower(self.query_lower)
-        self.__add_results(results)
-
-    def tzname_search(self):
-        results = self.localized_date_time_zone_finder.match_tzname_lower(self.query_lower)
-        self.__add_results(results)
-
-    def gmt_search(self):
-        results = self.localized_date_time_zone_finder.match_gmt_lower(self.query_lower)
-        self.__add_results(results)
-
-    def time_search(self):
-        results = self.localized_date_time_zone_finder.match_time_lower(self.query_lower)
         self.__add_results(results)
 
     def __add_results(self, results):
