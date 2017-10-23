@@ -37,7 +37,7 @@ class DateTimeZoneFormatter:
         return babel.dates.format_datetime(self.date_time_zone.date_time, locale=self.locale, format=format)
 
     def timezone_location(self):
-        return self.__title(ZoneFormatter.location(self.date_time_zone.zone, self.locale))
+        return self.__title(self.date_time_zone.zone.location(self.locale))
 
     def timezone_zone(self):
         return ZoneFormatter.zone_name(self.date_time_zone.zone)
@@ -46,7 +46,7 @@ class DateTimeZoneFormatter:
         return ZoneFormatter.tzname(self.date_time_zone.date_time)
 
     def timezone_name(self):
-        return self.__title(ZoneFormatter.name(self.date_time_zone.zone, self.locale))
+        return self.__title(self.date_time_zone.zone.name(self.locale))
 
     def timezone_offset(self):
         return ZoneFormatter.gmt_offset(self.date_time_zone.date_time, self.locale)
