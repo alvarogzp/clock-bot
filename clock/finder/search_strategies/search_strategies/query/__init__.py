@@ -15,22 +15,9 @@ class QuerySearchStrategy(SearchStrategy):
         self.results = []
 
     def search(self):
-        # first zone name exact match
-        self.zone_name_search()
-        # then country code exact match
-        self.country_code_search()
         # now inexact search
         # if len(self.query_lower) > 2:
         self.match_search()
-
-    def zone_name_search(self):
-        zone = self.finders.name_zone_finder.get_lower(self.query_lower)
-        if zone is not None:
-            self.results.append(zone)
-
-    def country_code_search(self):
-        results = self.finders.country_zone_finder.get_country_zones(self.query_lower)
-        self.results.extend(results)
 
     def match_search(self):
         match_search_strategy = MatchSearchStrategy(self.finders, self.locale, self.query_lower, self.time_point)
