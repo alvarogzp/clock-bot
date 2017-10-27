@@ -16,7 +16,7 @@ class ZoneFindersProvider:
         self.zones = self.__build_zones(zone_names)
         self.name_zone_finder = NameZoneFinder(self.zones)
         self.country_zone_finder = CountryZoneFinder(self.name_zone_finder, pytz.country_timezones, find_countries)
-        self._localized_zone_finder_cache = Cache()
+        self._localized_zone_finder_cache = LocalizedZoneFinderCache(self.__create_localized_zone_finder)
 
     @staticmethod
     def __build_zones(zone_names: list):
@@ -24,11 +24,23 @@ class ZoneFindersProvider:
 
     def localized_zone_finder(self, locale: Locale):
         """:rtype: LocalizedZoneFinder"""
-        return self._localized_zone_finder_cache\
-            .get_or_generate(str(locale), lambda: self.__create_localized_zone_finder(locale))
+        return self._localized_zone_finder_cache.get_or_generate(locale)
 
     def __create_localized_zone_finder(self, locale):
         return LocalizedZoneFinder(self.zones, locale)
 
     def localized_date_time_zone_finder(self, locale: Locale, time_point: TimePoint):
         return LocalizedDateTimeZoneFinder(self.zones, locale, time_point)
+
+
+class LocalizedZoneFinderCache:
+    def __init__(self, create_func: callable):
+        self.create_func = create_func
+        self.cache = Cache()
+
+    def get_or_generate(self, locale: Locale):
+        return self.cache.get_or_generate(self._key(locale), lambda: self.create_func(locale))
+
+    @staticmethod
+    def _key(locale: Locale):
+        return str(locale)
