@@ -4,7 +4,7 @@ import pytz
 import time
 
 from clock.domain.zone import Zone
-from clock.util import Cache
+from clock.util.cache import Cache
 
 
 class TimePoint:

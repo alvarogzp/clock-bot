@@ -4,7 +4,7 @@ import babel.dates
 import pytz
 from babel import Locale
 
-from clock.util import Cache
+from clock.util.cache import Cache
 
 
 class Zone:
