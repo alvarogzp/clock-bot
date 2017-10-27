@@ -2,6 +2,7 @@ from babel import Locale, UnknownLocaleError
 from bot.action.core.action import Action
 from bot.multithreading.work import Work
 
+from clock.bot.inline.query.locale_cacher import LocaleCacher
 from clock.bot.inline.query.result.generator import ResultGenerator
 from clock.domain.time import TimePoint
 from clock.finder.api import ZoneFinderApi
@@ -19,10 +20,12 @@ class InlineQueryClockAction(Action):
         super().__init__()
         self.zone_finder_api = None  # initialized in post_setup when we have access to config
         self.log_api = None  # initialized in post_setup
+        self.locale_cacher = None  # initialized in post_setup
 
     def post_setup(self):
-        self.log_api = LogApi.get(self.cache.logger)
         self.zone_finder_api = ZoneFinderApi(bool(self.config.enable_countries))
+        self.log_api = LogApi.get(self.cache.logger)
+        self.locale_cacher = LocaleCacher(self.zone_finder_api.cache(), self.scheduler, self.log_api)
 
     def process(self, event):
         current_time = TimePoint.current()
@@ -47,6 +50,8 @@ class InlineQueryClockAction(Action):
             cache_time=0,
             is_personal=True
         )
+
+        self.locale_cacher.cache(locale)
 
         self.__storage_schedule_save_query(
             lambda: StorageApi.get().save_query(query, current_time, locale, zones, results, processing_time)
