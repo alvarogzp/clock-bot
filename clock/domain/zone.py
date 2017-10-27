@@ -23,13 +23,13 @@ class Zone:
         return self.zone_name
 
     def name(self, locale: Locale):
-        return self._name_cache.get_or_generate(locale, lambda: self._name__no_cache(locale))
+        return self._name_cache.get_or_generate(str(locale), lambda: self._name__no_cache(locale))
 
     def _name__no_cache(self, locale: Locale):
         return ZoneFormatter.name(self, locale)
 
     def location(self, locale: Locale):
-        return self._location_cache.get_or_generate(locale, lambda: self._location__no_cache(locale))
+        return self._location_cache.get_or_generate(str(locale), lambda: self._location__no_cache(locale))
 
     def _location__no_cache(self, locale: Locale):
         return ZoneFormatter.location(self, locale)
