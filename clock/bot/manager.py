@@ -5,7 +5,7 @@ from bot.action.core.filter import MessageAction, TextMessageAction, NoPendingAc
 from bot.action.standard.about import AboutAction, VersionAction
 from bot.action.standard.admin import RestartAction, EvalAction, AdminActionWithErrorMessage, AdminAction, HaltAction
 from bot.action.standard.answer import AnswerAction
-from bot.action.standard.benchmark import BenchmarkAction
+from bot.action.standard.benchmark import BenchmarkAction, WorkersAction
 from bot.action.standard.config import ConfigAction
 from bot.action.standard.config_status import ConfigStatusAction
 from bot.action.standard.instance import InstanceAction
@@ -88,6 +88,11 @@ class BotManager:
                                                 EvalAction()
                                             )
                                         ),
+                                        CommandAction("config").then(
+                                            AdminActionWithErrorMessage().then(
+                                                ConfigAction()
+                                            )
+                                        ),
                                         CommandAction("configstatus").then(
                                             AdminActionWithErrorMessage().then(
                                                 ConfigStatusAction()
@@ -98,9 +103,9 @@ class BotManager:
                                                 InstanceAction()
                                             )
                                         ),
-                                        CommandAction("config").then(
+                                        CommandAction("workers").then(
                                             AdminActionWithErrorMessage().then(
-                                                ConfigAction()
+                                                WorkersAction()
                                             )
                                         )
 
