@@ -36,7 +36,14 @@ class BotManager:
                     NoPendingAction().then(
 
                         InlineQueryAction().then(
-                            InlineQueryClockAction()
+                            AsynchronousAction(
+                                "inline_query",
+                                min_workers=1,
+                                max_workers=8,
+                                max_seconds_idle=300
+                            ).then(
+                                InlineQueryClockAction()
+                            )
                         ),
 
                         MessageAction().then(
