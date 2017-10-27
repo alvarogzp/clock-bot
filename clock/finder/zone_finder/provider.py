@@ -29,6 +29,9 @@ class ZoneFindersProvider:
     def __create_localized_zone_finder(self, locale):
         return LocalizedZoneFinder(self.zones, locale)
 
+    def get_localized_zone_finder_cache(self):
+        return self._localized_zone_finder_cache
+
     def localized_date_time_zone_finder(self, locale: Locale, time_point: TimePoint):
         return LocalizedDateTimeZoneFinder(self.zones, locale, time_point)
 
@@ -40,6 +43,12 @@ class LocalizedZoneFinderCache:
 
     def get_or_generate(self, locale: Locale):
         return self.cache.get_or_generate(self._key(locale), lambda: self.create_func(locale))
+
+    def is_cached(self, locale: Locale):
+        return self.cache.is_cached(self._key(locale))
+
+    def cached_locales(self):
+        return self.cache.cached_keys()
 
     @staticmethod
     def _key(locale: Locale):
