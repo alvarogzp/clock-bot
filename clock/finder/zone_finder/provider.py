@@ -25,7 +25,7 @@ class ZoneFindersProvider:
     def localized_zone_finder(self, locale: Locale):
         """:rtype: LocalizedZoneFinder"""
         return self._localized_zone_finder_cache\
-            .get_or_generate(str(locale), lambda: self.__create_localized_zone_finder(locale))
+            .get_or_generate(locale, lambda: self.__create_localized_zone_finder(locale))
 
     def __create_localized_zone_finder(self, locale):
         return LocalizedZoneFinder(self.zones, locale)
