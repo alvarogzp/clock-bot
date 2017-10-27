@@ -7,7 +7,7 @@ from clock.finder.zone_finder.zone_finders.country import CountryZoneFinder
 from clock.finder.zone_finder.zone_finders.localized import LocalizedZoneFinder
 from clock.finder.zone_finder.zone_finders.localized_date_time import LocalizedDateTimeZoneFinder
 from clock.finder.zone_finder.zone_finders.name import NameZoneFinder
-from clock.util.cache import Cache
+from clock.util.cache import SynchronizedCache
 
 
 class ZoneFindersProvider:
@@ -36,7 +36,7 @@ class ZoneFindersProvider:
 class LocalizedZoneFinderCache:
     def __init__(self, create_func: callable):
         self.create_func = create_func
-        self.cache = Cache()
+        self.cache = SynchronizedCache()
 
     def get_or_generate(self, locale: Locale):
         return self.cache.get_or_generate(self._key(locale), lambda: self.create_func(locale))
