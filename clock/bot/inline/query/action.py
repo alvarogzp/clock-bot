@@ -18,8 +18,10 @@ class InlineQueryClockAction(Action):
     def __init__(self):
         super().__init__()
         self.zone_finder_api = None  # initialized in post_setup when we have access to config
+        self.log_api = None  # initialized in post_setup
 
     def post_setup(self):
+        self.log_api = LogApi.get(self.cache.logger)
         self.zone_finder_api = ZoneFinderApi(bool(self.config.enable_countries))
 
     def process(self, event):
@@ -52,7 +54,7 @@ class InlineQueryClockAction(Action):
         ))
 
         # event.logger is async
-        LogApi.get(event.logger).log_query(query, current_time, locale, zones, results, processing_time)
+        self.log_api.log_query(query, current_time, locale, zones, results, processing_time)
 
     @staticmethod
     def __get_locale(query):
