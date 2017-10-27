@@ -5,6 +5,7 @@ from bot.action.core.filter import MessageAction, TextMessageAction, NoPendingAc
 from bot.action.standard.about import AboutAction, VersionAction
 from bot.action.standard.admin import RestartAction, EvalAction, AdminActionWithErrorMessage, AdminAction, HaltAction
 from bot.action.standard.answer import AnswerAction
+from bot.action.standard.asynchronous import AsynchronousAction
 from bot.action.standard.benchmark import BenchmarkAction, WorkersAction
 from bot.action.standard.config import ConfigAction
 from bot.action.standard.config_status import ConfigStatusAction
@@ -70,7 +71,9 @@ class BotManager:
 
                                         CommandAction("benchmark").then(
                                             AdminActionWithErrorMessage().then(
-                                                BenchmarkAction()
+                                                AsynchronousAction("benchmark").then(
+                                                    BenchmarkAction()
+                                                )
                                             )
                                         ),
                                         CommandAction("restart").then(
