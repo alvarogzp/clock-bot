@@ -48,10 +48,9 @@ class InlineQueryClockAction(Action):
             is_personal=True
         )
 
-        self.scheduler.io(Work(
-            lambda: StorageApi.get().save_query(query, current_time, locale, zones, results, processing_time),
-            "storage:save_query"
-        ))
+        self.__storage_schedule_save_query(
+            lambda: StorageApi.get().save_query(query, current_time, locale, zones, results, processing_time)
+        )
 
         # event.logger is async
         self.log_api.log_query(query, current_time, locale, zones, results, processing_time)
@@ -79,3 +78,6 @@ class InlineQueryClockAction(Action):
         if result_number > offset_end:
             return str(offset_end)
         return None
+
+    def __storage_schedule_save_query(self, func: callable):
+        self.scheduler.io(Work(func, "storage:save_query"))
