@@ -45,6 +45,10 @@ class LogFormatter:
         return FormattedText().normal("Locale: {locale}").start_format().bold(locale=str(locale)).end_format()
 
     @staticmethod
+    def locale_as_title(locale: Locale):
+        return FormattedText().bold(str(locale))
+
+    @staticmethod
     def processing_time(processing_seconds: float):
         return FormattedText().normal("Processing time: {processing_time}").start_format()\
             .bold(processing_time=TimeFormatter.format(processing_seconds)).end_format()
@@ -67,6 +71,11 @@ class LogFormatter:
     def choosing_time(choosing_seconds: float):
         return FormattedText().normal("Choosing time: {choosing_time}").start_format()\
             .bold(choosing_time=TimeFormatter.format(choosing_seconds)).end_format()
+
+    @staticmethod
+    def caching_time(caching_seconds: float):
+        return FormattedText().normal("Caching time: {caching_time}").start_format()\
+            .bold(caching_time=TimeFormatter.format(caching_seconds)).end_format()
 
     @staticmethod
     def message(*message_parts: FormattedText):
