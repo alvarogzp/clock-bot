@@ -52,8 +52,7 @@ class BotManager:
                                     TextMessageAction().then(
 
                                         CommandAction("start").then(
-                                            AnswerAction(
-                                                "Hello! I am " + self.bot.cache.bot_info.first_name + ". Use me in inline mode to get the current time in any place on the world.")
+                                            AnswerAction("Hello! I am " + self.bot.cache.bot_info.first_name + ". Use me in inline mode to get the current time in any place on the world.")
                                         ),
 
                                         CommandAction("about").then(
