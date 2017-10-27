@@ -31,13 +31,13 @@ class ZoneFinderApi:
 
 class ZoneFinderLocaleCache:
     def __init__(self, cache: LocalizedZoneFinderCache):
-        self.cache = cache
+        self._cache = cache
 
     def cache(self, locale: Locale):
-        self.cache.get_or_generate(locale)
+        self._cache.get_or_generate(locale)
 
     def cached_locales(self):
-        return self.cache.cached_locales()
+        return self._cache.cached_locales()
 
     def is_cached(self, locale: Locale):
-        return self.cache.is_cached(locale)
+        return self._cache.is_cached(locale)
