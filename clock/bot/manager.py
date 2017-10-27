@@ -16,6 +16,7 @@ from bot.action.standard.perchat import PerChatAction
 from bot.bot import Bot
 
 from clock import project_info
+from clock.bot.commands.locale_cache import LocaleCacheAction
 from clock.bot.inline.chosen_result import ChosenInlineResultClockAction
 from clock.bot.inline.query.action import InlineQueryClockAction
 
@@ -80,6 +81,11 @@ class BotManager:
                                                 AsynchronousAction("benchmark").then(
                                                     BenchmarkAction()
                                                 )
+                                            )
+                                        ),
+                                        CommandAction("cache").then(
+                                            AdminActionWithErrorMessage().then(
+                                                LocaleCacheAction()
                                             )
                                         ),
                                         CommandAction("restart").then(
