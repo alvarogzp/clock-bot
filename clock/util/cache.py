@@ -12,6 +12,12 @@ class Cache:
             self.cache[key] = value = generate_func()
         return value
 
+    def is_cached(self, key):
+        return key in self.cache
+
+    def cached_keys(self):
+        return self.cache.keys()
+
 
 class SynchronizedCache(Cache):
     def __init__(self):
