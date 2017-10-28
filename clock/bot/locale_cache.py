@@ -16,6 +16,8 @@ LOCALES_TO_CACHE_ON_STARTUP = [
 class LocaleCache:
     def __init__(self, zone_finder_locale_cache: ZoneFinderLocaleCache, scheduler: SchedulerApi, log_api: LogApi):
         self.locale_cache = zone_finder_locale_cache
+        # using only one background thread to avoid consuming too many resources for locale caching
+        # this is a background cache, quickly processing queries is more important
         self.worker = scheduler.new_worker_pool("locale_cache", min_workers=0, max_workers=1, max_seconds_idle=60)
         self.log_api = log_api
         self._cache_initial_locales()
