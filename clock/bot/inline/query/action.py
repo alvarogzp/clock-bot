@@ -10,7 +10,7 @@ from clock.log.api import LogApi
 from clock.storage.api import StorageApi
 
 
-MAX_RESULTS_PER_QUERY = 20
+MAX_RESULTS_PER_QUERY = 25
 
 DEFAULT_LOCALE = Locale.parse("en_US")
 
