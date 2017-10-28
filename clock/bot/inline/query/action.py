@@ -27,7 +27,7 @@ class InlineQueryClockAction(Action):
         self.log_api = LogApi.get(self.cache.logger)
         self.locale_cache = LocaleCache(self.zone_finder_api.cache(), self.scheduler, self.log_api)
         # for others to use
-        self.cache.zone_finder_api = self.zone_finder_api
+        self.cache.locale_cache = self.locale_cache
 
     def process(self, event):
         current_time = TimePoint.current()
