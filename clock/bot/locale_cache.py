@@ -13,10 +13,10 @@ LOCALES_TO_CACHE_ON_STARTUP = [
 ]
 
 
-class LocaleCacher:
+class LocaleCache:
     def __init__(self, zone_finder_locale_cache: ZoneFinderLocaleCache, scheduler: SchedulerApi, log_api: LogApi):
         self.locale_cache = zone_finder_locale_cache
-        self.worker = scheduler.new_worker_pool("locale_cacher", min_workers=0, max_workers=1, max_seconds_idle=60)
+        self.worker = scheduler.new_worker_pool("locale_cache", min_workers=0, max_workers=1, max_seconds_idle=60)
         self.log_api = log_api
         self._cache_initial_locales()
 
@@ -32,3 +32,9 @@ class LocaleCacher:
         start_time = TimePoint.current_timestamp()
         self.locale_cache.cache(locale)
         self.log_api.log_locale_cache(locale, TimePoint.current_timestamp() - start_time)
+
+    def is_cached(self, locale: Locale):
+        return self.locale_cache.is_cached(locale)
+
+    def cached_locales(self):
+        return self.locale_cache.cached_locales()
