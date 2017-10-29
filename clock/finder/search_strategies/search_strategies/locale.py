@@ -36,7 +36,7 @@ class LocaleSearchStrategy(SearchStrategy):
 
     def __get_territory_from_language_only_locale(self):
         # try to get a territory specific locale (eg. "es_ES") from a language-only locale (eg. "es")
-        locale_with_territory = Locale.negotiate([str(self.locale)], babel.core.LOCALE_ALIASES)
+        locale_with_territory = Locale.negotiate([str(self.locale)], babel.core.LOCALE_ALIASES.values())
         if locale_with_territory:
             return locale_with_territory.territory
 
