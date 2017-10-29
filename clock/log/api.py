@@ -9,6 +9,7 @@ from clock.log.formatter import LogFormatter
 
 LOG_TAG_QUERY = FormattedText().normal("QUERY")
 LOG_TAG_CHOSEN_RESULT = FormattedText().bold("CHOSEN")
+LOG_TAG_LOCALE_CACHE = FormattedText().bold("CACHE")
 
 
 class LogApi:
@@ -64,3 +65,14 @@ class LogApi:
         )
 
         self.logger.log(LOG_TAG_CHOSEN_RESULT, formatted_message)
+
+    def log_locale_cache(self, locale: Locale, caching_seconds: float):
+        formatted_locale = self.formatter.locale_as_title(locale)
+        formatted_caching_time = self.formatter.caching_time(caching_seconds)
+
+        formatted_message = self.formatter.message(
+            formatted_locale,
+            formatted_caching_time
+        )
+
+        self.logger.log(LOG_TAG_LOCALE_CACHE, formatted_message)
