@@ -4,7 +4,7 @@ import pytz
 import time
 
 from clock.domain.zone import Zone
-from clock.util import Cache
+from clock.util.cache import Cache
 
 
 class TimePoint:
@@ -12,6 +12,7 @@ class TimePoint:
         self.timestamp = timestamp
         # this is the most direct way to get a UTC aware datetime from a timestamp
         self.utc = pytz.utc.localize(datetime.datetime.utcfromtimestamp(timestamp))
+        # un-synchronized cache: generation is quick and does not compensate the lock overhead of a synchronized cache
         self._at_cache = Cache()
 
     def id(self):

@@ -4,17 +4,19 @@ from bot.action.core.filter import MessageAction, TextMessageAction, NoPendingAc
     ChosenInlineResultAction
 from bot.action.standard.about import AboutAction, VersionAction
 from bot.action.standard.admin import RestartAction, EvalAction, AdminActionWithErrorMessage, AdminAction, HaltAction
+from bot.action.standard.admin.config_status import ConfigStatusAction
+from bot.action.standard.admin.instance import InstanceAction
+from bot.action.standard.admin.state import StateAction
 from bot.action.standard.answer import AnswerAction
-from bot.action.standard.benchmark import BenchmarkAction
-from bot.action.standard.config import ConfigAction
-from bot.action.standard.config_status import ConfigStatusAction
-from bot.action.standard.instance import InstanceAction
+from bot.action.standard.asynchronous import AsynchronousAction
+from bot.action.standard.benchmark import BenchmarkAction, WorkersAction
 from bot.action.standard.internationalization import InternationalizationAction
 from bot.action.standard.logger import LoggerAction
 from bot.action.standard.perchat import PerChatAction
 from bot.bot import Bot
 
 from clock import project_info
+from clock.bot.commands.locale_cache import LocaleCacheAction
 from clock.bot.inline.chosen_result import ChosenInlineResultClockAction
 from clock.bot.inline.query.action import InlineQueryClockAction
 
@@ -35,7 +37,14 @@ class BotManager:
                     NoPendingAction().then(
 
                         InlineQueryAction().then(
-                            InlineQueryClockAction()
+                            AsynchronousAction(
+                                "inline_query",
+                                min_workers=1,
+                                max_workers=8,
+                                max_seconds_idle=300
+                            ).then(
+                                InlineQueryClockAction()
+                            )
                         ),
 
                         MessageAction().then(
@@ -44,8 +53,7 @@ class BotManager:
                                     TextMessageAction().then(
 
                                         CommandAction("start").then(
-                                            AnswerAction(
-                                                "Hello! I am " + self.bot.cache.bot_info.first_name + ". Use me in inline mode to get the current time in any place on the world.")
+                                            AnswerAction("Hello! I am " + self.bot.cache.bot_info.first_name + ". Use me in inline mode to get the current time in any place on the world.")
                                         ),
 
                                         CommandAction("about").then(
@@ -70,7 +78,14 @@ class BotManager:
 
                                         CommandAction("benchmark").then(
                                             AdminActionWithErrorMessage().then(
-                                                BenchmarkAction()
+                                                AsynchronousAction("benchmark").then(
+                                                    BenchmarkAction()
+                                                )
+                                            )
+                                        ),
+                                        CommandAction("cache").then(
+                                            AdminActionWithErrorMessage().then(
+                                                LocaleCacheAction()
                                             )
                                         ),
                                         CommandAction("restart").then(
@@ -88,7 +103,12 @@ class BotManager:
                                                 EvalAction()
                                             )
                                         ),
-                                        CommandAction("configstatus").then(
+                                        CommandAction("state").then(
+                                            AdminActionWithErrorMessage().then(
+                                                StateAction()
+                                            )
+                                        ),
+                                        CommandAction("config").then(
                                             AdminActionWithErrorMessage().then(
                                                 ConfigStatusAction()
                                             )
@@ -98,9 +118,9 @@ class BotManager:
                                                 InstanceAction()
                                             )
                                         ),
-                                        CommandAction("config").then(
+                                        CommandAction("workers").then(
                                             AdminActionWithErrorMessage().then(
-                                                ConfigAction()
+                                                WorkersAction()
                                             )
                                         )
 
