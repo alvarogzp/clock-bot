@@ -11,6 +11,7 @@ class Zone:
     def __init__(self, zone_name):
         self.zone_name = zone_name
         self.timezone = pytz.timezone(zone_name)
+        # un-synchronized cache: generation is quick and does not compensate the lock overhead of a synchronized cache
         self._name_cache = Cache()
         self._location_cache = Cache()
 
