@@ -17,6 +17,7 @@ from bot.bot import Bot
 
 from clock import project_info
 from clock.bot.commands.admin.locale_cache import LocaleCacheAction
+from clock.bot.commands.start import StartAction
 from clock.bot.inline.chosen_result import ChosenInlineResultClockAction
 from clock.bot.inline.query.action import InlineQueryClockAction
 
@@ -53,7 +54,7 @@ class BotManager:
                                     TextMessageAction().then(
 
                                         CommandAction("start").then(
-                                            AnswerAction("Hello! I am " + self.bot.cache.bot_info.first_name + ". Use me in inline mode to get the current time in any place on the world.")
+                                            StartAction()
                                         ),
 
                                         CommandAction("about").then(
