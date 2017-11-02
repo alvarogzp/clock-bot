@@ -1,8 +1,8 @@
 from clock.domain.datetimezone import DateTimeZoneFormatter
-from clock.result.formatter import ResultFormatter
+from clock.result import Result
 
 
-class DateTimeZoneResultFormatter(ResultFormatter):
+class DateTimeZoneResult(Result):
     def __init__(self, date_time_zone_formatter: DateTimeZoneFormatter):
         self.date_time_zone_formatter = date_time_zone_formatter
 

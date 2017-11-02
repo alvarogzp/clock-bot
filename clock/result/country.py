@@ -3,10 +3,10 @@ from typing import List
 from clock.domain.country import CountryFormatter
 from clock.domain.datetimezone import DateTimeZoneFormatter
 from clock.domain.time import TimePoint
-from clock.result.formatter import ResultFormatter
+from clock.result import Result
 
 
-class CountryResultFormatter(ResultFormatter):
+class CountryResult(Result):
     def __init__(self, time_point: TimePoint, country_formatter: CountryFormatter,
                  date_time_zone_formatters: List[DateTimeZoneFormatter]):
         self.time_point = time_point
