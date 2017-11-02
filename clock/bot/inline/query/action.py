@@ -2,11 +2,11 @@ from babel import Locale, UnknownLocaleError
 from bot.action.core.action import Action
 from bot.multithreading.work import Work
 
-from clock.bot.inline.query.result.generator import ResultGenerator
 from clock.bot.locale_cache import LocaleCache
 from clock.domain.time import TimePoint
 from clock.finder.api import ZoneFinderApi
 from clock.log.api import LogApi
+from clock.result.generator import ResultGenerator
 from clock.storage.api import StorageApi
 
 

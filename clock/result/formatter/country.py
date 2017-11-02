@@ -1,9 +1,9 @@
 from typing import List
 
-from clock.bot.inline.query.result.formatter import ResultFormatter
 from clock.domain.country import CountryFormatter
 from clock.domain.datetimezone import DateTimeZoneFormatter
 from clock.domain.time import TimePoint
+from clock.result.formatter import ResultFormatter
 
 
 class CountryResultFormatter(ResultFormatter):

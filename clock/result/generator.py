@@ -2,10 +2,10 @@ from typing import Union
 
 from babel import Locale
 
-from clock.bot.inline.query.result.formatter.factory import ResultFormatterFactory
 from clock.domain.country import Country
 from clock.domain.time import TimePoint
 from clock.domain.zone import Zone
+from clock.result.formatter.factory import ResultFormatterFactory
 
 
 class ResultGenerator:

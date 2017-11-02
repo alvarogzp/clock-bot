@@ -1,5 +1,5 @@
-from clock.bot.inline.query.result.formatter import ResultFormatter
 from clock.domain.datetimezone import DateTimeZoneFormatter
+from clock.result.formatter import ResultFormatter
 
 
 class DateTimeZoneResultFormatter(ResultFormatter):

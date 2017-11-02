@@ -2,12 +2,12 @@ from typing import Union
 
 from babel import Locale
 
-from clock.bot.inline.query.result.formatter.country import CountryResultFormatter
-from clock.bot.inline.query.result.formatter.date_time_zone import DateTimeZoneResultFormatter
 from clock.domain.country import Country, CountryFormatter
 from clock.domain.datetimezone import DateTimeZone, DateTimeZoneFormatter
 from clock.domain.time import TimePoint
 from clock.domain.zone import Zone
+from clock.result.formatter.country import CountryResultFormatter
+from clock.result.formatter.date_time_zone import DateTimeZoneResultFormatter
 
 
 class ResultFormatterFactory:
