@@ -1,15 +1,17 @@
-from bot.action.core.action import Action
 from bot.action.util.textformat import FormattedText
 
+from clock.bot.commands.util.static_response import StaticResponseAction
 
-class HelpAction(Action):
-    def process(self, event):
-        message = self._get_message()
+
+class HelpAction(StaticResponseAction):
+    def build_message(self):
+        text = self._get_text()
+        message = text.build_message()
         message.data["reply_markup"] = self._get_reply_markup()
-        self.api.async.send_message(message.to_chat_replying(event.message))
+        return message
 
-    def _get_message(self):
-        text = FormattedText()\
+    def _get_text(self):
+        return FormattedText()\
             .bold("📎 Here you have some tips on how to use the bot correctly").newline().newline()\
             .normal("👉 First of all, you have to use the bot in inline mode.").newline()\
             .normal("{inline_bots_telegram_url}.").newline().newline()\
@@ -36,26 +38,17 @@ class HelpAction(Action):
                 "search_page"
             )\
             .end_format()
-        return text.build_message()
 
     def _get_reply_markup(self):
         return {
             "inline_keyboard": [
-                [self.__button("Get the current times in your country", "")],
-                [self.__button("Get all times in United States", "US")],
-                [self.__button("Get the UTC time", "UTC")],
-                [self.__button("Get Los Angeles time", "Los Angeles")],
-                [self.__button("Get all zones using Central European Time (CET)", "CET")],
-                [self.__button("Get all zones in GMT+07", "-gmt +07")],
-                [self.__button("Get all zones where it is now 11 hours", "-time 11")],
-                [self.__button("Send the London time to someone else", "London", current_chat=False)]
+                [self.switch_inline_button("Get the current times in your country", "")],
+                [self.switch_inline_button("Get all times in United States", "US")],
+                [self.switch_inline_button("Get the UTC time", "UTC")],
+                [self.switch_inline_button("Get Los Angeles time", "Los Angeles")],
+                [self.switch_inline_button("Get all zones using Central European Time (CET)", "CET")],
+                [self.switch_inline_button("Get all zones in GMT+07", "-gmt +07")],
+                [self.switch_inline_button("Get all zones where it is now 11 hours", "-time 11")],
+                [self.switch_inline_button("Send the London time to someone else", "London", current_chat=False)]
             ]
-        }
-
-    @staticmethod
-    def __button(text: str, query: str, current_chat: bool = True):
-        switch_inline_query_key = "switch_inline_query_current_chat" if current_chat else "switch_inline_query"
-        return {
-            "text": text,
-            switch_inline_query_key: query
         }
