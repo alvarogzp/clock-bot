@@ -45,7 +45,7 @@ class HelpAction(StaticResponseAction):
                 [self.switch_inline_button("Get the current times in your country", "")],
                 [self.switch_inline_button("Get all times in United States", "US")],
                 [self.switch_inline_button("Get the UTC time", "UTC")],
-                [self.switch_inline_button("Get Los Angeles time", "Los Angeles")],
+                [self.switch_inline_button("Get the time in Los Angeles", "Los Angeles")],
                 [self.switch_inline_button("Get all zones using Central European Time (CET)", "CET")],
                 [self.switch_inline_button("Get all zones in GMT+07", "-gmt +07")],
                 [self.switch_inline_button("Get all zones where it is now 11 hours", "-time 11")],
