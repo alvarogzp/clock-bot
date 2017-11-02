@@ -1,4 +1,4 @@
-from babel import Locale, UnknownLocaleError
+from babel import Locale
 from bot.action.core.action import Action
 from bot.multithreading.work import Work
 
