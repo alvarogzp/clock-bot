@@ -67,7 +67,7 @@ class InlineQueryClockAction(Action):
         user_locale_code = query.from_.language_code
         try:
             locale = Locale.parse(user_locale_code, sep="-")
-        except UnknownLocaleError:
+        except Exception:
             locale = None
         if locale is None:
             locale = DEFAULT_LOCALE
