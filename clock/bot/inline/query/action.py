@@ -1,8 +1,8 @@
-from babel import Locale, UnknownLocaleError
+from babel import Locale
 from bot.action.core.action import Action
 from bot.multithreading.work import Work
 
-from clock.bot.inline.query.result.generator import ResultGenerator
+from clock.bot.inline.query.result.generator import InlineResultGenerator
 from clock.bot.locale_cache import LocaleCache
 from clock.domain.time import TimePoint
 from clock.finder.api import ZoneFinderApi
@@ -41,7 +41,7 @@ class InlineQueryClockAction(Action):
         offset_end = offset + MAX_RESULTS_PER_QUERY
         next_offset = self.__get_next_offset(len(zones), offset_end)
 
-        results = ResultGenerator.generate(current_time, locale, zones[offset:offset_end])
+        results = InlineResultGenerator.generate(current_time, locale, zones[offset:offset_end])
 
         processing_time = TimePoint.current_timestamp() - current_time.timestamp
 
@@ -67,7 +67,7 @@ class InlineQueryClockAction(Action):
         user_locale_code = query.from_.language_code
         try:
             locale = Locale.parse(user_locale_code, sep="-")
-        except UnknownLocaleError:
+        except Exception:
             locale = None
         if locale is None:
             locale = DEFAULT_LOCALE
