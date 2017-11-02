@@ -36,10 +36,10 @@ The language exceptions are:
 ## Configuration
 
 If you want to run your own bot instance,
-the telegram-bot framework requires a few configuration values
+the telegram-bot-framework requires a few configuration values
 that must be set before running it (the auth token and admin user).
 
-Please, refer to the [telegram-bot configuration section](https://github.com/alvarogzp/telegram-bot/blob/develop/README.md#set-up-your-own-bot-using-this-framework)
+Please, refer to the [telegram-bot-framework configuration section](https://github.com/alvarogzp/telegram-bot-framework#configuration)
 to set them.
 
 Once configured, you can run the `main.py` file directly, or the
@@ -49,7 +49,7 @@ all dependencies before running the bot.
 
 ## Architecture
 
-This bot uses the [**telegram-bot**](https://github.com/alvarogzp/telegram-bot) framework.
+This bot uses the [**telegram-bot-framework**](https://github.com/alvarogzp/telegram-bot-framework).
 The code that integrates with it is in the [`clock.bot`](clock/bot) package.
 Other frameworks may be added in the future.
 

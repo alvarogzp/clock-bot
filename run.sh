@@ -63,6 +63,11 @@ setup_virtualenv()
         debug "Activating virtualenv on '$VIRTUALENV_LOCATION'"
         . "$VIRTUALENV_ACTIVATE_SCRIPT_PATH"
     fi
+    if ! is_virtualenv_activated
+    then
+        debug "Could not set-up virtualenv, exiting!"
+        exit 1
+    fi
 }
 
 is_virtualenv_activated()
