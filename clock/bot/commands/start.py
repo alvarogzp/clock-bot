@@ -16,7 +16,7 @@ class StartAction(Action):
         self.start_message = StartMessageBuilder(self.cache).get_message()
 
     def process(self, event):
-        self.api.async.send_message(self.start_message.to_chat_replying(event.message))
+        self.api.async.send_message(self.start_message.copy().to_chat_replying(event.message))
 
 
 class StartMessageBuilder(MessageWithReplyMarkupBuilder):

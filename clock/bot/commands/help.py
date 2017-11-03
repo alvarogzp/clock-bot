@@ -16,7 +16,7 @@ class HelpAction(Action):
         self.help_message = HelpMessageBuilder(self.cache).get_message()
 
     def process(self, event):
-        self.api.async.send_message(self.help_message.to_chat_replying(event.message))
+        self.api.async.send_message(self.help_message.copy().to_chat_replying(event.message))
 
 
 class HelpMessageBuilder(MessageWithReplyMarkupBuilder):
