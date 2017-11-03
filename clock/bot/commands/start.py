@@ -1,4 +1,6 @@
 from bot.action.core.action import Action
+from bot.action.util.reply_markup.inline_keyboard.button import InlineKeyboardButton
+from bot.action.util.reply_markup.inline_keyboard.markup import InlineKeyboardMarkup
 from bot.action.util.textformat import FormattedText
 from bot.storage import Cache
 
@@ -36,9 +38,7 @@ class StartMessageBuilder(MessageWithReplyMarkupBuilder):
         return self.cache.bot_info.first_name
 
     def get_reply_markup(self):
-        return {
-            "inline_keyboard": [
-                [self.switch_inline_button("What time is it in New York?", "New York", current_chat=True)],
-                [self.switch_inline_button("Send the current time to someone", "", current_chat=False)]
-            ]
-        }
+        switch_inline_button = InlineKeyboardButton.switch_inline_query
+        return InlineKeyboardMarkup.with_fixed_columns(1)\
+            .add(switch_inline_button("What time is it in New York?", "New York", current_chat=True))\
+            .add(switch_inline_button("Send the current time to someone", "", current_chat=False))

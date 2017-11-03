@@ -1,4 +1,6 @@
 from bot.action.core.action import Action
+from bot.action.util.reply_markup.inline_keyboard.button import InlineKeyboardButton
+from bot.action.util.reply_markup.inline_keyboard.markup import InlineKeyboardMarkup
 from bot.action.util.textformat import FormattedText
 from bot.storage import Cache
 
@@ -51,15 +53,13 @@ class HelpMessageBuilder(MessageWithReplyMarkupBuilder):
             .end_format()
 
     def get_reply_markup(self):
-        return {
-            "inline_keyboard": [
-                [self.switch_inline_button("Get the current times in your country", "")],
-                [self.switch_inline_button("Get all times in United States", "US")],
-                [self.switch_inline_button("Get the UTC time", "UTC")],
-                [self.switch_inline_button("Get the time in Los Angeles", "Los Angeles")],
-                [self.switch_inline_button("Get all zones using Central European Time (CET)", "CET")],
-                [self.switch_inline_button("Get all zones in GMT+07", "-gmt +07")],
-                [self.switch_inline_button("Get all zones where it is now 11 hours", "-time 11")],
-                [self.switch_inline_button("Send the London time to someone else", "London", current_chat=False)]
-            ]
-        }
+        switch_inline_button = InlineKeyboardButton.switch_inline_query
+        return InlineKeyboardMarkup.with_fixed_columns(1)\
+            .add(switch_inline_button("Get the current times in your country", ""))\
+            .add(switch_inline_button("Get all times in United States", "US"))\
+            .add(switch_inline_button("Get the UTC time", "UTC"))\
+            .add(switch_inline_button("Get the time in Los Angeles", "Los Angeles"))\
+            .add(switch_inline_button("Get all zones using Central European Time (CET)", "CET"))\
+            .add(switch_inline_button("Get all zones in GMT+07", "-gmt +07"))\
+            .add(switch_inline_button("Get all zones where it is now 11 hours", "-time 11"))\
+            .add(switch_inline_button("Send the London time to someone else", "London", current_chat=False))
