@@ -1,16 +1,27 @@
+from bot.action.core.action import Action
 from bot.action.util.textformat import FormattedText
+from bot.storage import Cache
 
-from clock.bot.commands.util.static_response import StaticResponseAction
+from clock.bot.commands.util.message_builder import MessageWithReplyMarkupBuilder
 
 
-class HelpAction(StaticResponseAction):
-    def build_message(self):
-        text = self._get_text()
-        message = text.build_message()
-        message.data["reply_markup"] = self._get_reply_markup()
-        return message
+class HelpAction(Action):
+    def __init__(self):
+        super().__init__()
+        self.help_message = None  # initialized in post_setup
 
-    def _get_text(self):
+    def post_setup(self):
+        self.help_message = HelpMessageBuilder(self.cache).get_message()
+
+    def process(self, event):
+        self.api.async.send_message(self.help_message.to_chat_replying(event.message))
+
+
+class HelpMessageBuilder(MessageWithReplyMarkupBuilder):
+    def __init__(self, cache: Cache):
+        self.cache = cache
+
+    def get_text(self):
         return FormattedText()\
             .bold("📎 Here you have some tips on how to use the bot correctly").newline().newline()\
             .normal("👉 First of all, you have to use the bot in inline mode.").newline()\
@@ -39,7 +50,7 @@ class HelpAction(StaticResponseAction):
             )\
             .end_format()
 
-    def _get_reply_markup(self):
+    def get_reply_markup(self):
         return {
             "inline_keyboard": [
                 [self.switch_inline_button("Get the current times in your country", "")],
