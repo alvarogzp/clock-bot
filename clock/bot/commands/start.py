@@ -29,6 +29,7 @@ class StartMessageBuilder(MessageWithReplyMarkupBuilder):
             .normal("I am {name}.").newline()\
             .bold("I can tell you the current time of any place in the world.").newline()\
             .normal("You have to use me in inline mode.").newline().newline()\
+            .normal("👉 Use the /help command to get more info and cool examples.").newline().newline()\
             .bold("👇 Tap any button below to try me 👇")\
             .start_format()\
             .bold(name=self._get_bot_name())\
