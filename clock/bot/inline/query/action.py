@@ -3,9 +3,9 @@ from bot.multithreading.work import Work
 
 from clock.bot.inline.query.result.generator import InlineResultGenerator, AnswerInlineQueryResultGenerator
 from clock.bot.locale_cache import LocaleCache
-from clock.bot.locale_getter import LocaleGetter
 from clock.domain.time import TimePoint
 from clock.finder.api import ZoneFinderApi
+from clock.locale.getter import LocaleGetter
 from clock.log.api import LogApi
 from clock.storage.api import StorageApi
 
