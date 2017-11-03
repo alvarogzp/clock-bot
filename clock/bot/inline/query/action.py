@@ -2,7 +2,7 @@ from babel import Locale
 from bot.action.core.action import Action
 from bot.multithreading.work import Work
 
-from clock.bot.inline.query.result.generator import InlineResultGenerator
+from clock.bot.inline.query.result.generator import InlineResultGenerator, AnswerInlineQueryResultGenerator
 from clock.bot.locale_cache import LocaleCache
 from clock.domain.time import TimePoint
 from clock.finder.api import ZoneFinderApi
@@ -45,13 +45,8 @@ class InlineQueryClockAction(Action):
 
         processing_time = TimePoint.current_timestamp() - current_time.timestamp
 
-        self.api.async.answerInlineQuery(
-            inline_query_id=query.id,
-            results=results,
-            next_offset=next_offset,
-            cache_time=0,
-            is_personal=True
-        )
+        result = AnswerInlineQueryResultGenerator.generate(query, results, next_offset)
+        self.api.async.answerInlineQuery(**result)
 
         self.locale_cache.cache(locale)
 

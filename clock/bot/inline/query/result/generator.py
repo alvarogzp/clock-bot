@@ -1,6 +1,7 @@
-from typing import Union
+from typing import Union, Optional
 
 from babel import Locale
+from bot.api.domain import ApiObject
 
 from clock.bot.inline.query.result.inline import InlineResult
 from clock.domain.country import Country
@@ -18,3 +19,15 @@ class InlineResultGenerator:
     def _get_inline_result(time_point: TimePoint, zone: Union[Zone, Country], locale: Locale):
         result = ResultFactory.get(time_point, zone, locale)
         return InlineResult.from_result(result)
+
+
+class AnswerInlineQueryResultGenerator:
+    @staticmethod
+    def generate(query: ApiObject, results: list, next_offset: Optional[str]):
+        return {
+            "inline_query_id": query.id,
+            "results": results,
+            "next_offset": next_offset,
+            "cache_time": 0,
+            "is_personal": True
+        }
