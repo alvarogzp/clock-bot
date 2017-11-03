@@ -1,9 +1,9 @@
-from babel import Locale
 from bot.action.core.action import Action
 from bot.multithreading.work import Work
 
 from clock.bot.inline.query.result.generator import InlineResultGenerator, AnswerInlineQueryResultGenerator
 from clock.bot.locale_cache import LocaleCache
+from clock.bot.locale_getter import LocaleGetter
 from clock.domain.time import TimePoint
 from clock.finder.api import ZoneFinderApi
 from clock.log.api import LogApi
@@ -11,8 +11,6 @@ from clock.storage.api import StorageApi
 
 
 MAX_RESULTS_PER_QUERY = 25
-
-DEFAULT_LOCALE = Locale.parse("en_US")
 
 
 class InlineQueryClockAction(Action):
@@ -33,7 +31,7 @@ class InlineQueryClockAction(Action):
         current_time = TimePoint.current()
 
         query = event.query
-        locale = self.__get_locale(query)
+        locale = LocaleGetter.from_user(query.from_)
 
         zones = self.zone_finder_api.find(query.query, locale, current_time)
 
@@ -56,17 +54,6 @@ class InlineQueryClockAction(Action):
 
         # event.logger is async
         self.log_api.log_query(query, current_time, locale, zones, results, processing_time)
-
-    @staticmethod
-    def __get_locale(query):
-        user_locale_code = query.from_.language_code
-        try:
-            locale = Locale.parse(user_locale_code, sep="-")
-        except Exception:
-            locale = None
-        if locale is None:
-            locale = DEFAULT_LOCALE
-        return locale
 
     @staticmethod
     def __get_offset(query):
