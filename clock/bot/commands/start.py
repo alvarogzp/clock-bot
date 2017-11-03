@@ -1,6 +1,6 @@
 from bot.action.core.action import Action
 
-from clock.bot.commands.util.messages.start import StartMessageBuilder
+from clock.bot.commands.util import messages
 
 
 class StartAction(Action):
@@ -9,7 +9,7 @@ class StartAction(Action):
         self.start_message = None  # initialized in post_setup
 
     def post_setup(self):
-        self.start_message = StartMessageBuilder(self.cache).get_message()
+        self.start_message = messages.start(self.cache)
 
     def process(self, event):
         self.api.async.send_message(self.start_message.copy().to_chat_replying(event.message))

@@ -1,6 +1,6 @@
 from bot.action.core.action import Action
 
-from clock.bot.commands.util.messages.help import HelpMessageBuilder
+from clock.bot.commands.util import messages
 
 
 class HelpAction(Action):
@@ -9,7 +9,7 @@ class HelpAction(Action):
         self.help_message = None  # initialized in post_setup
 
     def post_setup(self):
-        self.help_message = HelpMessageBuilder(self.cache).get_message()
+        self.help_message = messages.help(self.cache)
 
     def process(self, event):
         self.api.async.send_message(self.help_message.copy().to_chat_replying(event.message))
