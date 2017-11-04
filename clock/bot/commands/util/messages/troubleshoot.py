@@ -14,12 +14,19 @@ class TroubleshootMessageBuilder(MessageWithReplyMarkupBuilder):
     def __init__(self, user: ApiObject, zone_finder: ZoneFinderApi):
         locale = LocaleGetter.from_user(user)
         self.language = locale.display_name
-        self.country_name = Territory.with_territory(locale).territory_name or ""
-        self.country_code = CountryCode.from_locale(locale)
+        country_name = Territory.with_territory(locale).territory_name or ""
+        country_code = CountryCode.from_locale(locale)
         zone = LocaleToZone.get_zone_from_locale(locale, zone_finder)
-        self.location = ZoneFormatter.location_city(zone, locale)
-        self.name = zone.name(locale)
-        self.zone_name = zone.zone_name
+        location = ZoneFormatter.location_city(zone, locale)
+        name = zone.name(locale)
+        zone_name = zone.zone_name
+        self.search_types = (
+            ("country name", country_name),
+            ("country code", country_code),
+            ("time zone location", location),
+            ("time zone name", name),
+            ("time zone identifier", zone_name)
+        )
 
     def get_text(self):
         return FormattedText()\
@@ -27,15 +34,12 @@ class TroubleshootMessageBuilder(MessageWithReplyMarkupBuilder):
             .normal("Please, note that you have to type the search in your language.").newline()\
             .normal("The language you are currently using is: {language}").newline().newline()\
             .normal("Try typing:").newline()\
-            .concat(self._bullet("country name", self.country_name))\
-            .concat(self._bullet("country code", self.country_code))\
-            .concat(self._bullet("time zone location", self.location))\
-            .concat(self._bullet("time zone name", self.name))\
-            .concat(self._bullet("time zone identifier", self.zone_name, last=True)).newline()\
+            .normal("{search_types}").newline().newline()\
             .normal("👉 Use the /help command to get more info and some cool examples.").newline().newline()\
             .normal("👉 Read the {search_page} for technical information and advanced search options.")\
             .start_format()\
             .bold(language=self.language)\
+            .concat(search_types=self._formatted_search_types())\
             .url(
                 "search documentation page",
                 "https://github.com/alvarogzp/clock-bot/wiki/Search",
@@ -43,17 +47,18 @@ class TroubleshootMessageBuilder(MessageWithReplyMarkupBuilder):
             )\
             .end_format()
 
+    def _formatted_search_types(self):
+        bullets = [self._bullet(name, value) for name, value in self.search_types]
+        return FormattedText().newline().join(bullets)
+
     @staticmethod
-    def _bullet(label: str, example: str, last: bool = False):
-        bullet = FormattedText()\
+    def _bullet(label: str, example: str):
+        return FormattedText()\
             .normal("🔹 a {label} (eg. {example})")\
             .start_format()\
             .bold(label=label)\
             .code_inline(example=example)\
             .end_format()
-        if not last:
-            bullet.normal(",")
-        return bullet.newline()
 
     def get_reply_markup(self):
         # do not return any switch_inline_query button to avoid Telegram returning the user to
