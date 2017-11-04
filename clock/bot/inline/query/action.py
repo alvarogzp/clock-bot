@@ -16,14 +16,14 @@ MAX_RESULTS_PER_QUERY = 25
 class InlineQueryClockAction(Action):
     def __init__(self):
         super().__init__()
-        self.zone_finder_api = None  # initialized in post_setup when we have access to config
-        self.log_api = None  # initialized in post_setup
+        self.zone_finder = None  # initialized in post_setup when we have access to config
+        self.logger = None  # initialized in post_setup
         self.locale_cache = None  # initialized in post_setup
 
     def post_setup(self):
-        self.zone_finder_api = ZoneFinderApi(bool(self.config.enable_countries))
-        self.log_api = LogApi.get(self.cache.logger)
-        self.locale_cache = LocaleCache(self.zone_finder_api.cache(), self.scheduler, self.log_api)
+        self.zone_finder = ZoneFinderApi(bool(self.config.enable_countries))
+        self.logger = LogApi.get(self.cache.logger)
+        self.locale_cache = LocaleCache(self.zone_finder.cache(), self.scheduler, self.logger)
         # for others to use
         self.cache.locale_cache = self.locale_cache
 
@@ -33,7 +33,7 @@ class InlineQueryClockAction(Action):
         query = event.query
         locale = LocaleGetter.from_user(query.from_)
 
-        zones = self.zone_finder_api.find(query.query, locale, current_time)
+        zones = self.zone_finder.find(query.query, locale, current_time)
 
         offset = self.__get_offset(query)
         offset_end = offset + MAX_RESULTS_PER_QUERY
@@ -53,7 +53,7 @@ class InlineQueryClockAction(Action):
         )
 
         # event.logger is async
-        self.log_api.log_query(query, current_time, locale, zones, results, processing_time)
+        self.logger.log_query(query, current_time, locale, zones, results, processing_time)
 
     @staticmethod
     def __get_offset(query):
