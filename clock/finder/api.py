@@ -9,14 +9,20 @@ from clock.finder.zone_finder.provider import ZoneFindersProvider, LocalizedZone
 
 class ZoneFinderApi:
     def __init__(self, find_countries: bool):
-        finders = ZoneFindersProvider(find_countries)
-        self.search_strategy_factory = SearchStrategyFactory(finders)
-        self.locale_cache = ZoneFinderLocaleCache(finders.get_localized_zone_finder_cache())
+        self.finders = ZoneFindersProvider(find_countries)
+        self.search_strategy_factory = SearchStrategyFactory(self.finders)
+        self.locale_cache = ZoneFinderLocaleCache(self.finders.get_localized_zone_finder_cache())
 
     def find(self, query: str, locale: Locale, time_point: TimePoint):
         search_strategy = self.__get_search_strategy(query, locale, time_point)
         search_strategy.search()
         return self.__removed_duplicates(search_strategy.get_results())
+
+    def zones(self):
+        return self.finders.zones
+
+    def country_finder(self):
+        return self.finders.country_zone_finder
 
     def cache(self):
         return self.locale_cache
