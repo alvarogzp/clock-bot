@@ -19,6 +19,7 @@ from clock import project_info
 from clock.bot.commands.admin.locale_cache import LocaleCacheAction
 from clock.bot.commands.help import HelpAction
 from clock.bot.commands.start import StartAction
+from clock.bot.commands.troubleshoot import TroubleshootAction
 from clock.bot.inline.chosen_result import ChosenInlineResultClockAction
 from clock.bot.inline.query.action import InlineQueryClockAction
 
@@ -60,6 +61,10 @@ class BotManager:
 
                                         CommandAction("help").then(
                                             HelpAction()
+                                        ),
+
+                                        CommandAction("troubleshooting").then(
+                                            TroubleshootAction()
                                         ),
 
                                         CommandAction("about").then(
