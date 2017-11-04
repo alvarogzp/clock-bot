@@ -1,3 +1,5 @@
+from bot.action.util.reply_markup.inline_keyboard.button import InlineKeyboardButton
+from bot.action.util.reply_markup.inline_keyboard.markup import InlineKeyboardMarkup
 from bot.action.util.textformat import FormattedText
 from bot.api.domain import ApiObject
 
@@ -36,7 +38,9 @@ class TroubleshootMessageBuilder(MessageWithReplyMarkupBuilder):
             .normal("Try typing:").newline()\
             .normal("{search_types}").newline().newline()\
             .normal("👉 Use the /help command to get more info and some cool examples.").newline().newline()\
-            .normal("👉 Read the {search_page} for technical information and advanced search options.")\
+            .normal("👉 Read the {search_page} for technical information and "
+                    "advanced search options.").newline().newline()\
+            .bold("👇 Try the suggested searches below 👇")\
             .start_format()\
             .bold(language=self.language)\
             .concat(search_types=self._formatted_search_types())\
@@ -61,6 +65,12 @@ class TroubleshootMessageBuilder(MessageWithReplyMarkupBuilder):
             .end_format()
 
     def get_reply_markup(self):
-        # do not return any switch_inline_query button to avoid Telegram returning the user to
-        # where (s)he came from using the query string of the first switch_inline_query button in the message
-        return None
+        # do not return any switch_inline_query button not using the current chat
+        # to avoid Telegram returning the user to where (s)he came from
+        # using the query string of that button
+        button = InlineKeyboardButton.switch_inline_query
+        markup = InlineKeyboardMarkup.with_fixed_columns(1)
+        for name, value in self.search_types:
+            text = "Search by {name} ({value})".format(name=name, value=value)
+            markup.add(button(text, value))
+        return markup
