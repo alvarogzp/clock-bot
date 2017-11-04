@@ -25,5 +25,6 @@ class StartMessageBuilder(MessageWithReplyMarkupBuilder):
     def get_reply_markup(self):
         switch_inline_button = InlineKeyboardButton.switch_inline_query
         return InlineKeyboardMarkup.with_fixed_columns(1)\
+            .add(switch_inline_button("Get the time in your country", ""))\
             .add(switch_inline_button("What time is it in New York?", "New York", current_chat=True))\
             .add(switch_inline_button("Send the current time to someone", "", current_chat=False))
