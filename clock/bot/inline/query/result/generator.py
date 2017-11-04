@@ -30,7 +30,7 @@ class AnswerInlineQueryResultGenerator:
             "results": results,
             "next_offset": next_offset,
             "cache_time": 0,
-            "is_personal": True
+            "is_personal": "true"
         }
         if len(results) == 0:
             result["switch_pm_text"] = "☹ No results for '{query}' ☹".format(query=query.query)
