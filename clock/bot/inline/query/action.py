@@ -1,41 +1,40 @@
-from babel import Locale
 from bot.action.core.action import Action
 from bot.multithreading.work import Work
 
-from clock.bot.inline.query.result.generator import InlineResultGenerator
+from clock.bot.inline.query.result.generator import InlineResultGenerator, AnswerInlineQueryResultGenerator
 from clock.bot.locale_cache import LocaleCache
 from clock.domain.time import TimePoint
 from clock.finder.api import ZoneFinderApi
+from clock.locale.getter import LocaleGetter
 from clock.log.api import LogApi
 from clock.storage.api import StorageApi
 
 
 MAX_RESULTS_PER_QUERY = 25
 
-DEFAULT_LOCALE = Locale.parse("en_US")
-
 
 class InlineQueryClockAction(Action):
     def __init__(self):
         super().__init__()
-        self.zone_finder_api = None  # initialized in post_setup when we have access to config
-        self.log_api = None  # initialized in post_setup
+        self.zone_finder = None  # initialized in post_setup when we have access to config
+        self.logger = None  # initialized in post_setup
         self.locale_cache = None  # initialized in post_setup
 
     def post_setup(self):
-        self.zone_finder_api = ZoneFinderApi(bool(self.config.enable_countries))
-        self.log_api = LogApi.get(self.cache.logger)
-        self.locale_cache = LocaleCache(self.zone_finder_api.cache(), self.scheduler, self.log_api)
+        self.zone_finder = ZoneFinderApi(bool(self.config.enable_countries))
+        self.logger = LogApi.get(self.cache.logger)
+        self.locale_cache = LocaleCache(self.zone_finder.cache(), self.scheduler, self.logger)
         # for others to use
+        self.cache.zone_finder = self.zone_finder
         self.cache.locale_cache = self.locale_cache
 
     def process(self, event):
         current_time = TimePoint.current()
 
         query = event.query
-        locale = self.__get_locale(query)
+        locale = LocaleGetter.from_user(query.from_)
 
-        zones = self.zone_finder_api.find(query.query, locale, current_time)
+        zones = self.zone_finder.find(query.query, locale, current_time)
 
         offset = self.__get_offset(query)
         offset_end = offset + MAX_RESULTS_PER_QUERY
@@ -45,13 +44,8 @@ class InlineQueryClockAction(Action):
 
         processing_time = TimePoint.current_timestamp() - current_time.timestamp
 
-        self.api.async.answerInlineQuery(
-            inline_query_id=query.id,
-            results=results,
-            next_offset=next_offset,
-            cache_time=0,
-            is_personal=True
-        )
+        result = AnswerInlineQueryResultGenerator.generate(query, results, next_offset)
+        self.api.async.answerInlineQuery(**result)
 
         self.locale_cache.cache(locale)
 
@@ -60,18 +54,7 @@ class InlineQueryClockAction(Action):
         )
 
         # event.logger is async
-        self.log_api.log_query(query, current_time, locale, zones, results, processing_time)
-
-    @staticmethod
-    def __get_locale(query):
-        user_locale_code = query.from_.language_code
-        try:
-            locale = Locale.parse(user_locale_code, sep="-")
-        except Exception:
-            locale = None
-        if locale is None:
-            locale = DEFAULT_LOCALE
-        return locale
+        self.logger.log_query(query, current_time, locale, zones, results, processing_time)
 
     @staticmethod
     def __get_offset(query):
