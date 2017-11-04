@@ -1,4 +1,3 @@
-from bot.storage import Cache
 from bot.api.domain import ApiObject
 
 from clock.bot.commands.util.messages.help import HelpMessageBuilder
@@ -7,12 +6,12 @@ from clock.bot.commands.util.messages.troubleshoot import TroubleshootMessageBui
 from clock.finder.api import ZoneFinderApi
 
 
-def start(cache: Cache):
-    return StartMessageBuilder(cache).get_message()
+def start(bot_user: ApiObject):
+    return StartMessageBuilder(bot_user).get_message()
 
 
-def help(cache: Cache):
-    return HelpMessageBuilder(cache).get_message()
+def help(bot_user: ApiObject):
+    return HelpMessageBuilder(bot_user).get_message()
 
 
 def troubleshoot(user: ApiObject, zone_finder: ZoneFinderApi):

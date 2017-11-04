@@ -1,14 +1,14 @@
 from bot.action.util.reply_markup.inline_keyboard.button import InlineKeyboardButton
 from bot.action.util.reply_markup.inline_keyboard.markup import InlineKeyboardMarkup
 from bot.action.util.textformat import FormattedText
-from bot.storage import Cache
+from bot.api.domain import ApiObject
 
 from clock.bot.commands.util.message_builder import MessageWithReplyMarkupBuilder
 
 
 class StartMessageBuilder(MessageWithReplyMarkupBuilder):
-    def __init__(self, cache: Cache):
-        self.cache = cache
+    def __init__(self, bot_user: ApiObject):
+        self.bot_name = bot_user.first_name
 
     def get_text(self):
         return FormattedText()\
@@ -19,11 +19,8 @@ class StartMessageBuilder(MessageWithReplyMarkupBuilder):
             .normal("👉 Use the /help command to get more info and cool examples.").newline().newline()\
             .bold("👇 Tap any button below to try me 👇")\
             .start_format()\
-            .bold(name=self._get_bot_name())\
+            .bold(name=self.bot_name)\
             .end_format()
-
-    def _get_bot_name(self):
-        return self.cache.bot_info.first_name
 
     def get_reply_markup(self):
         switch_inline_button = InlineKeyboardButton.switch_inline_query

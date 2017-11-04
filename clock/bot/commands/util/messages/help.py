@@ -1,14 +1,14 @@
 from bot.action.util.reply_markup.inline_keyboard.button import InlineKeyboardButton
 from bot.action.util.reply_markup.inline_keyboard.markup import InlineKeyboardMarkup
 from bot.action.util.textformat import FormattedText
-from bot.storage import Cache
+from bot.api.domain import ApiObject
 
 from clock.bot.commands.util.message_builder import MessageWithReplyMarkupBuilder
 
 
 class HelpMessageBuilder(MessageWithReplyMarkupBuilder):
-    def __init__(self, cache: Cache):
-        self.cache = cache
+    def __init__(self, bot_user: ApiObject):
+        self.bot_username = bot_user.username
 
     def get_text(self):
         return FormattedText()\
@@ -31,7 +31,7 @@ class HelpMessageBuilder(MessageWithReplyMarkupBuilder):
                 "https://telegram.org/blog/inline-bots#how-does-it-work",
                 "inline_bots_telegram_url"
             )\
-            .code_inline(bot_username="@" + self.cache.bot_info.username)\
+            .code_inline(bot_username="@" + self.bot_username)\
             .url(
                 "search documentation page",
                 "https://github.com/alvarogzp/clock-bot/wiki/Search",
