@@ -81,10 +81,6 @@ class BotManager:
                                         )
                                     ),
 
-                                    CommandAction("ping").then(
-                                        AnswerAction("Up and running, sir!")
-                                    ),
-
                                     CommandAction("benchmark").then(
                                         AdminActionWithErrorMessage().then(
                                             AsynchronousAction("benchmark").then(
@@ -133,6 +129,18 @@ class BotManager:
                                         )
                                     )
 
+                                )
+                            )
+                        )
+                    ),
+
+                    NoPendingAction().then(
+                        MessageAction().then(
+                            PerChatAction().then(
+                                TextMessageAction().then(
+                                    CommandAction("ping").then(
+                                        AnswerAction("Up and running, sir!")
+                                    )
                                 )
                             )
                         )
