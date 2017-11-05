@@ -23,7 +23,8 @@ class InlineQueryClockAction(Action):
     def post_setup(self):
         self.zone_finder = ZoneFinderApi(bool(self.config.enable_countries))
         self.logger = LogApi.get(self.cache.logger)
-        self.locale_cache = LocaleCache(self.zone_finder.cache(), self.scheduler, self.logger)
+        initial_locales_to_cache = self.config.locales_to_cache_on_startup
+        self.locale_cache = LocaleCache(self.zone_finder.cache(), self.scheduler, self.logger, initial_locales_to_cache)
         # for others to use
         self.cache.zone_finder = self.zone_finder
         self.cache.locale_cache = self.locale_cache
