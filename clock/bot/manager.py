@@ -33,10 +33,6 @@ class BotManager:
             ActionGroup(
                 LoggerAction().then(
 
-                    ChosenInlineResultAction().then(
-                        ChosenInlineResultClockAction()
-                    ),
-
                     InlineQueryAction().then(
                         AsynchronousAction(
                             "inline_query",
@@ -46,6 +42,10 @@ class BotManager:
                         ).then(
                             InlineQueryClockAction()
                         )
+                    ),
+
+                    ChosenInlineResultAction().then(
+                        ChosenInlineResultClockAction()
                     ),
 
                     MessageAction().then(
