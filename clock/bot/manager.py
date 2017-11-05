@@ -3,7 +3,7 @@ from bot.action.core.command import CommandAction
 from bot.action.core.filter import MessageAction, TextMessageAction, NoPendingAction, PendingAction, InlineQueryAction, \
     ChosenInlineResultAction
 from bot.action.standard.about import AboutAction, VersionAction
-from bot.action.standard.admin import RestartAction, EvalAction, AdminActionWithErrorMessage, AdminAction, HaltAction
+from bot.action.standard.admin import RestartAction, EvalAction, AdminActionWithErrorMessage, HaltAction
 from bot.action.standard.admin.config_status import ConfigStatusAction
 from bot.action.standard.admin.instance import InstanceAction
 from bot.action.standard.admin.state import StateAction
@@ -142,20 +142,9 @@ class BotManager:
                         MessageAction().then(
                             PerChatAction().then(
                                 TextMessageAction().then(
-
                                     CommandAction("ping").then(
                                         AnswerAction("I'm back! Sorry for the delay...")
-                                    ),
-
-                                    AdminAction().then(
-                                        CommandAction("restart").then(
-                                            RestartAction()
-                                        ),
-                                        CommandAction("halt").then(
-                                            HaltAction()
-                                        )
                                     )
-
                                 )
                             )
                         )
