@@ -21,10 +21,10 @@ class LocaleCache:
         # this is a background cache, quickly processing queries is more important
         self.worker = scheduler.new_worker_pool("locale_cache", min_workers=0, max_workers=1, max_seconds_idle=60)
         self.log_api = log_api
-        self._cache_initial_locales(self._get_initial_locales(initial_locales_to_cache))
+        self._cache_initial_locales(self._parse_initial_locales(initial_locales_to_cache))
 
     @staticmethod
-    def _get_initial_locales(initial_locales_to_cache: str):
+    def _parse_initial_locales(initial_locales_to_cache: str):
         if initial_locales_to_cache is None:
             initial_locales_to_cache = DEFAULT_INITIAL_LOCALES_TO_CACHE
         for line in initial_locales_to_cache.splitlines():
