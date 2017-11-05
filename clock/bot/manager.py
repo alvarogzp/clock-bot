@@ -37,109 +37,105 @@ class BotManager:
                         ChosenInlineResultClockAction()
                     ),
 
-                    NoPendingAction().then(
+                    InlineQueryAction().then(
+                        AsynchronousAction(
+                            "inline_query",
+                            min_workers=1,
+                            max_workers=8,
+                            max_seconds_idle=300
+                        ).then(
+                            InlineQueryClockAction()
+                        )
+                    ),
 
-                        InlineQueryAction().then(
-                            AsynchronousAction(
-                                "inline_query",
-                                min_workers=1,
-                                max_workers=8,
-                                max_seconds_idle=300
-                            ).then(
-                                InlineQueryClockAction()
-                            )
-                        ),
+                    MessageAction().then(
+                        PerChatAction().then(
+                            InternationalizationAction().then(
+                                TextMessageAction().then(
 
-                        MessageAction().then(
-                            PerChatAction().then(
-                                InternationalizationAction().then(
-                                    TextMessageAction().then(
+                                    CommandAction("start").then(
+                                        StartAction()
+                                    ),
 
-                                        CommandAction("start").then(
-                                            StartAction()
-                                        ),
+                                    CommandAction("help").then(
+                                        HelpAction()
+                                    ),
 
-                                        CommandAction("help").then(
-                                            HelpAction()
-                                        ),
+                                    CommandAction("troubleshooting").then(
+                                        TroubleshootAction()
+                                    ),
 
-                                        CommandAction("troubleshooting").then(
-                                            TroubleshootAction()
-                                        ),
+                                    CommandAction("about").then(
+                                        AboutAction(
+                                            project_info.name,
+                                            author_handle=project_info.author_handle,
+                                            is_open_source=True,
+                                            source_url=project_info.source_url,
+                                            license_name=project_info.license_name)
+                                    ),
 
-                                        CommandAction("about").then(
-                                            AboutAction(
-                                                project_info.name,
-                                                author_handle=project_info.author_handle,
-                                                is_open_source=True,
-                                                source_url=project_info.source_url,
-                                                license_name=project_info.license_name)
-                                        ),
+                                    CommandAction("version").then(
+                                        VersionAction(
+                                            project_info.name,
+                                            project_info.source_url + "/releases"
+                                        )
+                                    ),
 
-                                        CommandAction("version").then(
-                                            VersionAction(
-                                                project_info.name,
-                                                project_info.source_url + "/releases"
-                                            )
-                                        ),
+                                    CommandAction("ping").then(
+                                        AnswerAction("Up and running, sir!")
+                                    ),
 
-                                        CommandAction("ping").then(
-                                            AnswerAction("Up and running, sir!")
-                                        ),
-
-                                        CommandAction("benchmark").then(
-                                            AdminActionWithErrorMessage().then(
-                                                AsynchronousAction("benchmark").then(
-                                                    BenchmarkAction()
-                                                )
-                                            )
-                                        ),
-                                        CommandAction("cache").then(
-                                            AdminActionWithErrorMessage().then(
-                                                LocaleCacheAction()
-                                            )
-                                        ),
-                                        CommandAction("restart").then(
-                                            AdminActionWithErrorMessage().then(
-                                                RestartAction()
-                                            )
-                                        ),
-                                        CommandAction("halt").then(
-                                            AdminActionWithErrorMessage().then(
-                                                HaltAction()
-                                            )
-                                        ),
-                                        CommandAction("eval").then(
-                                            AdminActionWithErrorMessage().then(
-                                                EvalAction()
-                                            )
-                                        ),
-                                        CommandAction("state").then(
-                                            AdminActionWithErrorMessage().then(
-                                                StateAction()
-                                            )
-                                        ),
-                                        CommandAction("config").then(
-                                            AdminActionWithErrorMessage().then(
-                                                ConfigStatusAction()
-                                            )
-                                        ),
-                                        CommandAction("instance").then(
-                                            AdminActionWithErrorMessage().then(
-                                                InstanceAction()
-                                            )
-                                        ),
-                                        CommandAction("workers").then(
-                                            AdminActionWithErrorMessage().then(
-                                                WorkersAction()
+                                    CommandAction("benchmark").then(
+                                        AdminActionWithErrorMessage().then(
+                                            AsynchronousAction("benchmark").then(
+                                                BenchmarkAction()
                                             )
                                         )
-
+                                    ),
+                                    CommandAction("cache").then(
+                                        AdminActionWithErrorMessage().then(
+                                            LocaleCacheAction()
+                                        )
+                                    ),
+                                    CommandAction("restart").then(
+                                        AdminActionWithErrorMessage().then(
+                                            RestartAction()
+                                        )
+                                    ),
+                                    CommandAction("halt").then(
+                                        AdminActionWithErrorMessage().then(
+                                            HaltAction()
+                                        )
+                                    ),
+                                    CommandAction("eval").then(
+                                        AdminActionWithErrorMessage().then(
+                                            EvalAction()
+                                        )
+                                    ),
+                                    CommandAction("state").then(
+                                        AdminActionWithErrorMessage().then(
+                                            StateAction()
+                                        )
+                                    ),
+                                    CommandAction("config").then(
+                                        AdminActionWithErrorMessage().then(
+                                            ConfigStatusAction()
+                                        )
+                                    ),
+                                    CommandAction("instance").then(
+                                        AdminActionWithErrorMessage().then(
+                                            InstanceAction()
+                                        )
+                                    ),
+                                    CommandAction("workers").then(
+                                        AdminActionWithErrorMessage().then(
+                                            WorkersAction()
+                                        )
                                     )
+
                                 )
                             )
                         )
-
                     ),
 
                     PendingAction().then(
