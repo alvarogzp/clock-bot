@@ -40,6 +40,8 @@ class LocaleParser:
             pass
         else:
             # return the language only (eg. "en")
-            yield language
+            if language:
+                yield language
             # return a special language code that will try to get the most common language for the territory
-            yield "und_" + territory
+            if territory:
+                yield "und_" + territory
