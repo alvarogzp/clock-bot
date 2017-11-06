@@ -48,6 +48,8 @@ They must be defined along with telegram-bot-framework configuration options (ie
 The recognised options are:
  - `enable_countries`, which, if defined and not empty, will make the bot return a 'country' as the first result with all country time zones when a country code is specified. By default, it is disabled.
  - `locales_to_cache_on_startup`, that can have a space-separated or newline-separated list of locale codes to be cached on startup. By default, `en_US` and `es_ES` locales are cached.
+ - `min_query_workers`, with the number of minimum workers that must be always ready to process inline requests. By default, 1 worker is always ready.
+ - `max_query_workers`, with the number of maximum workers that can be spawned to process inline requests under heavy load situations. By default, 8 workers are allowed.
 
 Once configured, you can run the `main.py` file directly, or the
 `run.sh` script that will set-up a virtual environment and install

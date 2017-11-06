@@ -36,8 +36,8 @@ class BotManager:
                     InlineQueryAction().then(
                         AsynchronousAction(
                             "inline_query",
-                            min_workers=1,
-                            max_workers=8,
+                            min_workers=int(self.bot.config.min_query_workers or 1),
+                            max_workers=int(self.bot.config.max_query_workers or 8),
                             max_seconds_idle=300
                         ).then(
                             InlineQueryClockAction()
