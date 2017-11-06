@@ -28,7 +28,7 @@ class LocaleParser:
     def _get_language_codes(language_code: str):
         """
         Return all acceptable language codes for a given language code, in order of priority.
-        For example, for "en_US", it would return "en_US", "en", "und_US".
+        For example, for "en-US", it would return "en-US", "en", "und-US".
         """
         # first of all, return the language code as is
         yield language_code
@@ -44,4 +44,4 @@ class LocaleParser:
                 yield language
             # return a special language code that will try to get the most common language for the territory
             if territory:
-                yield "und_" + territory
+                yield "und-" + territory
