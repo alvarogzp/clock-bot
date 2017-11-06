@@ -4,12 +4,13 @@ from bot.multithreading.work import Work
 
 from clock.domain.time import TimePoint
 from clock.finder.api import ZoneFinderLocaleCache
+from clock.locale.getter import LocaleGetter
 from clock.log.api import LogApi
 
 
 DEFAULT_INITIAL_LOCALES_TO_CACHE = """
-en_US
-es_ES
+en-US
+es-ES
 """
 
 
@@ -28,11 +29,11 @@ class LocaleCache:
         if initial_locales_to_cache is None:
             initial_locales_to_cache = DEFAULT_INITIAL_LOCALES_TO_CACHE
         for line in initial_locales_to_cache.splitlines():
-            for locale_code in line.split():
-                if locale_code.startswith("#"):
+            for language_code in line.split():
+                if language_code.startswith("#"):
                     # a comment was found, ignore until the next line
                     break
-                yield Locale.parse(locale_code)
+                yield LocaleGetter.from_language_code(language_code)
 
     def _cache_initial_locales(self, initial_locales_to_cache: iter):
         for locale in initial_locales_to_cache:
