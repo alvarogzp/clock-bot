@@ -1,18 +1,33 @@
-from babel import Locale
 from bot.api.domain import ApiObject
 
-
-DEFAULT_LOCALE = Locale.parse("en_US")
+from clock.locale.parser import LocaleParser
+from clock.util.cache import Cache
 
 
 class LocaleGetter:
+    instance = None
+
+    @classmethod
+    def getter(cls):
+        if cls.instance is None:
+            cls.instance = LocaleGetter()
+        return cls.instance
+
+    def __init__(self):
+        self.cache = Cache()
+
+    def get(self, language_code: str):
+        return self.cache.get_or_generate(language_code, lambda: self._parse_locale(language_code))
+
     @staticmethod
-    def from_user(user: ApiObject):
-        user_locale_code = user.language_code
-        try:
-            locale = Locale.parse(user_locale_code, sep="-")
-        except Exception:
-            locale = None
-        if locale is None:
-            locale = DEFAULT_LOCALE
-        return locale
+    def _parse_locale(language_code: str):
+        return LocaleParser.parse(language_code)
+
+    @classmethod
+    def from_language_code(cls, language_code: str):
+        return cls.getter().get(language_code)
+
+    @classmethod
+    def from_user(cls, user: ApiObject):
+        user_language_code = user.language_code
+        return cls.from_language_code(user_language_code)

@@ -4,26 +4,39 @@ from bot.multithreading.work import Work
 
 from clock.domain.time import TimePoint
 from clock.finder.api import ZoneFinderLocaleCache
+from clock.locale.getter import LocaleGetter
 from clock.log.api import LogApi
 
 
-LOCALES_TO_CACHE_ON_STARTUP = [
-    Locale.parse("en_US"),
-    Locale.parse("es_ES")
-]
+DEFAULT_INITIAL_LOCALES_TO_CACHE = """
+en-US
+es-ES
+"""
 
 
 class LocaleCache:
-    def __init__(self, zone_finder_locale_cache: ZoneFinderLocaleCache, scheduler: SchedulerApi, log_api: LogApi):
+    def __init__(self, zone_finder_locale_cache: ZoneFinderLocaleCache, scheduler: SchedulerApi, log_api: LogApi,
+                 initial_locales_to_cache: str):
         self.locale_cache = zone_finder_locale_cache
         # using only one background thread to avoid consuming too many resources for locale caching
         # this is a background cache, quickly processing queries is more important
         self.worker = scheduler.new_worker_pool("locale_cache", min_workers=0, max_workers=1, max_seconds_idle=60)
         self.log_api = log_api
-        self._cache_initial_locales()
+        self._cache_initial_locales(self._parse_initial_locales(initial_locales_to_cache))
 
-    def _cache_initial_locales(self):
-        for locale in LOCALES_TO_CACHE_ON_STARTUP:
+    @staticmethod
+    def _parse_initial_locales(initial_locales_to_cache: str):
+        if initial_locales_to_cache is None:
+            initial_locales_to_cache = DEFAULT_INITIAL_LOCALES_TO_CACHE
+        for line in initial_locales_to_cache.splitlines():
+            for language_code in line.split():
+                if language_code.startswith("#"):
+                    # a comment was found, ignore until the next line
+                    break
+                yield LocaleGetter.from_language_code(language_code)
+
+    def _cache_initial_locales(self, initial_locales_to_cache: iter):
+        for locale in initial_locales_to_cache:
             self.cache(locale)
 
     def cache(self, locale: Locale):

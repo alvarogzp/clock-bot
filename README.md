@@ -36,11 +36,20 @@ The language exceptions are:
 ## Configuration
 
 If you want to run your own bot instance,
-the telegram-bot-framework requires a few configuration values
-that must be set before running it (the auth token and admin user).
+the telegram-bot-framework requires a few configuration options
+that must be set before running it (like the auth token and admin user).
 
 Please, refer to the [telegram-bot-framework configuration section](https://github.com/alvarogzp/telegram-bot-framework#configuration)
 to set them.
+
+There are also configuration options specific to this bot.
+They are optional and if not specified their default values are used.
+They must be defined along with telegram-bot-framework configuration options (ie. in the same directory).
+The recognised options are:
+ - `enable_countries`, which, if defined and not empty, will make the bot return a 'country' as the first result with all country time zones when a country code is specified. By default, it is disabled.
+ - `locales_to_cache_on_startup`, that can have a space-separated or newline-separated list of locale codes to be cached on startup. By default, `en_US` and `es_ES` locales are cached.
+ - `min_query_workers`, with the number of minimum workers that must be always ready to process inline requests. By default, 1 worker is always ready.
+ - `max_query_workers`, with the number of maximum workers that can be spawned to process inline requests under heavy load situations. By default, 8 workers are allowed.
 
 Once configured, you can run the `main.py` file directly, or the
 `run.sh` script that will set-up a virtual environment and install

@@ -2,9 +2,9 @@ from babel import Locale
 from bot.action.core.action import Action
 from bot.action.util.textformat import FormattedText
 from bot.api.domain import Message
-from bot.logger.formatter.exception import ExceptionFormatter
 
 from clock.bot.locale_cache import LocaleCache
+from clock.locale.getter import LocaleGetter
 
 
 class LocaleCacheAction(Action):
@@ -72,33 +72,22 @@ class SendCachedLocalesSubAction(LocaleCacheSubAction):
 
 class CacheLocaleSubAction(LocaleCacheSubAction):
     def cache(self, locale: str, send_formatted_text_func: callable):
-        try:
-            locale = self._get_locale(locale)
-        except Exception as e:
-            self.__send_error(e, send_formatted_text_func)
+        locale = self._get_locale(locale)
+        if self._is_cached(locale):
+            self.__send_response_is_cached(locale, send_formatted_text_func)
         else:
-            if self._is_cached(locale):
-                self.__send_response_is_cached(locale, send_formatted_text_func)
-            else:
-                self._cache_locale(locale)
-                self.__send_response_caching_scheduled(locale, send_formatted_text_func)
+            self._cache_locale(locale)
+            self.__send_response_caching_scheduled(locale, send_formatted_text_func)
 
     @staticmethod
-    def _get_locale(locale: str):
-        return Locale.parse(locale)
+    def _get_locale(language_code: str):
+        return LocaleGetter.from_language_code(language_code)
 
     def _is_cached(self, locale: Locale):
         return self.locale_cache.is_cached(locale)
 
     def _cache_locale(self, locale: Locale):
         self.locale_cache.cache(locale)
-
-    @staticmethod
-    def __send_error(error: Exception, send_formatted_text_func: callable):
-        response = FormattedText()\
-            .normal("Error: {error}").start_format()\
-            .bold(error=ExceptionFormatter.format(error)).end_format()
-        send_formatted_text_func(response)
 
     @staticmethod
     def __send_response_is_cached(locale: Locale, send_formatted_text_func: callable):

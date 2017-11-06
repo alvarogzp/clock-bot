@@ -11,15 +11,8 @@ class LogFormatter:
 
     @staticmethod
     def user(user: ApiObject):
-        formatted_user = FormattedText().normal("From: {user}").start_format()\
-            .bold(user=UserFormatter(user).full_format).end_format()
-        user_language_code = user.language_code
-        if user_language_code:
-            formatted_user.concat(
-                FormattedText().normal(" ({language_code})").start_format()
-                    .bold(language_code=user_language_code).end_format()
-            )
-        return formatted_user
+        return FormattedText().normal("From: {user}").start_format()\
+            .bold(user=UserFormatter(user).full_data).end_format()
 
     @classmethod
     def query(cls, query: str, offset: str):
