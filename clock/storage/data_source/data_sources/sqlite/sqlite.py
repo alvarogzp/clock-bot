@@ -35,30 +35,26 @@ class SqliteStorageDataSource(StorageDataSource):
         component.init()
         return component
 
-    def save_user(self, user_id: int, first_name: str, last_name: str, username: str, language_code: str):
-        self.user.save_user(user_id, first_name, last_name, username, language_code)
+    def save_user(self, *args):
+        self.user.save_user(*args)
 
-    def save_chat(self, chat_id: int, chat_type: str, title: str, username: str):
-        self.chat.save_chat(chat_id, chat_type, title, username)
+    def save_chat(self, *args):
+        self.chat.save_chat(*args)
 
-    def save_query(self, user_id: int, timestamp: str, query: str, offset: str, locale: str, results_found_len: int,
-                   results_sent_len: int, processing_seconds: float):
-        self.query.save_query(
-            user_id, timestamp, query, offset, locale, results_found_len, results_sent_len, processing_seconds
-        )
+    def save_query(self, *args):
+        self.query.save_query(*args)
 
-    def save_chosen_result(self, user_id: int, timestamp: str, chosen_zone_name: str, query: str,
-                           choosing_seconds: float):
-        self.query.save_chosen_result(user_id, timestamp, chosen_zone_name, query, choosing_seconds)
+    def save_chosen_result(self, *args):
+        self.query.save_chosen_result(*args)
 
-    def save_message(self, chat_id: int, message_id: int, user_id: int, date: int, text: str):
-        self.message.save_message(chat_id, message_id, user_id, date, text)
+    def save_message(self, *args):
+        self.message.save_message(*args)
 
-    def save_command(self, message_id: int, command: str, command_args: str):
-        self.message.save_command(message_id, command, command_args)
+    def save_command(self, *args):
+        self.message.save_command(*args)
 
-    def get_message_id(self, chat_id: int, message_id: int):
-        return self.message.get_message_id(chat_id, message_id)
+    def get_message_id(self, *args):
+        return self.message.get_message_id(*args)
 
     def commit(self):
         self.connection.commit()
