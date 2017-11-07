@@ -15,12 +15,13 @@ class ChosenInlineResultClockAction(Action):
         query = chosen_result.query
         choosing_time = self.__get_choosing_time(timestamp)
 
+        # async operations:
+
         self.scheduler.io(Work(
             lambda: StorageApi.get().save_chosen_result(user, timestamp, chosen_zone_name, query, choosing_time),
             "storage:save_chosen_result"
         ))
 
-        # event.logger is async
         LogApi.get(event.logger).log_chosen_result(user, timestamp, chosen_zone_name, query, choosing_time)
 
     @staticmethod

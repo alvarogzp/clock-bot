@@ -16,9 +16,10 @@ MAX_RESULTS_PER_QUERY = 25
 class InlineQueryClockAction(Action):
     def __init__(self):
         super().__init__()
-        self.zone_finder = None  # initialized in post_setup when we have access to config
-        self.logger = None  # initialized in post_setup
-        self.locale_cache = None  # initialized in post_setup
+        # values initialized in post_setup as they need access to values not yet available
+        self.zone_finder = None
+        self.logger = None
+        self.locale_cache = None
 
     def post_setup(self):
         self.zone_finder = ZoneFinderApi(bool(self.config.enable_countries))
@@ -48,13 +49,14 @@ class InlineQueryClockAction(Action):
         result = AnswerInlineQueryResultGenerator.generate(query, results, next_offset)
         self.api.async.answerInlineQuery(**result)
 
+        # async operations:
+
         self.locale_cache.cache(locale)
 
         self.__storage_schedule_save_query(
             lambda: StorageApi.get().save_query(query, current_time, locale, zones, results, processing_time)
         )
 
-        # event.logger is async
         self.logger.log_query(query, current_time, locale, zones, results, processing_time)
 
     @staticmethod
