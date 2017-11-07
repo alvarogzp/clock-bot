@@ -10,3 +10,7 @@ class SqliteStorageComponent:
 
     def _sql(self, sql: str, params=()):
         return self.connection.execute(sql, params)
+
+    @staticmethod
+    def _empty_if_none(field: str):
+        return field if field is not None else ""

@@ -22,10 +22,10 @@ class UserSqliteComponent(SqliteStorageComponent):
                   ")")
 
     def save_user(self, user_id: int, first_name: str, last_name: str, username: str, language_code: str):
-        first_name = self.__empty_if_none(first_name)
-        last_name = self.__empty_if_none(last_name)
-        username = self.__empty_if_none(username)
-        language_code = self.__empty_if_none(language_code)
+        first_name = self._empty_if_none(first_name)
+        last_name = self._empty_if_none(last_name)
+        username = self._empty_if_none(username)
+        language_code = self._empty_if_none(language_code)
         if not self.__is_user_saved_equal(user_id, first_name, last_name, username, language_code):
             self.__add_to_user_history(user_id)
             self._sql("insert or replace into user "
@@ -45,7 +45,3 @@ class UserSqliteComponent(SqliteStorageComponent):
                   "select user_id, first_name, last_name, username, language_code, "
                   "timestamp_added, strftime('%s', 'now') "
                   "from user where user_id = ?", (user_id,))
-
-    @staticmethod
-    def __empty_if_none(field: str):
-        return field if field is not None else ""
