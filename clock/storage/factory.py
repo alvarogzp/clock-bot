@@ -2,7 +2,7 @@ from bot.multithreading.worker import Worker
 
 from clock.storage.api import StorageApi
 from clock.storage.async.scheduler import StorageScheduler
-from clock.storage.data_source.data_sources.sqlite import SqliteStorageDataSource
+from clock.storage.data_source.data_sources.sqlite.sqlite import SqliteStorageDataSource
 
 
 class StorageApiFactory:

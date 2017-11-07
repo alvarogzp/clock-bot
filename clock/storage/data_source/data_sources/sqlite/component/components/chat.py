@@ -1,4 +1,4 @@
-from clock.storage.data_source.data_sources.sqlite import SqliteStorageComponent
+from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 
 
 class ChatSqliteComponent(SqliteStorageComponent):
