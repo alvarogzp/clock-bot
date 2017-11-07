@@ -27,6 +27,11 @@ class StorageApi:
             lambda: self._save_chosen_result(user, timestamp, chosen_zone_name, query, choosing_seconds)
         )
 
+    def save_message(self, message: ApiObject):
+        self.scheduler.schedule_no_result(
+            lambda: self._save_message(message)
+        )
+
     def _init(self):
         self.data_source.init()
 
@@ -46,3 +51,17 @@ class StorageApi:
         self._save_user(user)
         self.data_source.save_chosen_result(user.id, timestamp, chosen_zone_name, query, choosing_seconds)
         self.data_source.commit()
+
+    def _save_message(self, message: ApiObject):
+        user_id = None
+        user = message.from_
+        if user:
+            user_id = user.id
+            self._save_user(user)
+        chat = message.chat
+        self._save_chat(chat)
+        self.data_source.save_message(chat.id, message.message_id, user_id, message.date, message.text)
+        self.data_source.commit()
+
+    def _save_chat(self, chat: ApiObject):
+        self.data_source.save_chat(chat.id, chat.type, chat.title, chat.username)
