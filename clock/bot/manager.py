@@ -22,6 +22,7 @@ from clock.bot.commands.start import StartAction
 from clock.bot.commands.troubleshoot import TroubleshootAction
 from clock.bot.inline.chosen_result import ChosenInlineResultClockAction
 from clock.bot.inline.query.action import InlineQueryClockAction
+from clock.bot.save.command import SaveCommandAction
 from clock.bot.save.message import SaveMessageAction
 
 
@@ -58,18 +59,22 @@ class BotManager:
                                 TextMessageAction().then(
 
                                     CommandAction("start").then(
+                                        SaveCommandAction(),
                                         StartAction()
                                     ),
 
                                     CommandAction("help").then(
+                                        SaveCommandAction(),
                                         HelpAction()
                                     ),
 
                                     CommandAction("troubleshooting").then(
+                                        SaveCommandAction(),
                                         TroubleshootAction()
                                     ),
 
                                     CommandAction("about").then(
+                                        SaveCommandAction(),
                                         AboutAction(
                                             project_info.name,
                                             author_handle=project_info.author_handle,
@@ -79,6 +84,7 @@ class BotManager:
                                     ),
 
                                     CommandAction("version").then(
+                                        SaveCommandAction(),
                                         VersionAction(
                                             project_info.name,
                                             project_info.source_url + "/releases"
@@ -88,47 +94,56 @@ class BotManager:
                                     CommandAction("benchmark").then(
                                         AdminActionWithErrorMessage().then(
                                             AsynchronousAction("benchmark").then(
+                                                SaveCommandAction(),
                                                 BenchmarkAction()
                                             )
                                         )
                                     ),
                                     CommandAction("cache").then(
                                         AdminActionWithErrorMessage().then(
+                                            SaveCommandAction(),
                                             LocaleCacheAction()
                                         )
                                     ),
                                     CommandAction("restart").then(
                                         AdminActionWithErrorMessage().then(
+                                            SaveCommandAction(),
                                             RestartAction()
                                         )
                                     ),
                                     CommandAction("halt").then(
                                         AdminActionWithErrorMessage().then(
+                                            SaveCommandAction(),
                                             HaltAction()
                                         )
                                     ),
                                     CommandAction("eval").then(
                                         AdminActionWithErrorMessage().then(
+                                            SaveCommandAction(),
                                             EvalAction()
                                         )
                                     ),
                                     CommandAction("state").then(
                                         AdminActionWithErrorMessage().then(
+                                            SaveCommandAction(),
                                             StateAction()
                                         )
                                     ),
                                     CommandAction("config").then(
                                         AdminActionWithErrorMessage().then(
+                                            SaveCommandAction(),
                                             ConfigStatusAction()
                                         )
                                     ),
                                     CommandAction("instance").then(
                                         AdminActionWithErrorMessage().then(
+                                            SaveCommandAction(),
                                             InstanceAction()
                                         )
                                     ),
                                     CommandAction("workers").then(
                                         AdminActionWithErrorMessage().then(
+                                            SaveCommandAction(),
                                             WorkersAction()
                                         )
                                     )
@@ -143,6 +158,7 @@ class BotManager:
                             PerChatAction().then(
                                 TextMessageAction().then(
                                     CommandAction("ping").then(
+                                        SaveCommandAction(),
                                         AnswerAction("Up and running, sir!")
                                     )
                                 )
@@ -155,6 +171,7 @@ class BotManager:
                             PerChatAction().then(
                                 TextMessageAction().then(
                                     CommandAction("ping").then(
+                                        SaveCommandAction(),
                                         AnswerAction("I'm back! Sorry for the delay...")
                                     )
                                 )
