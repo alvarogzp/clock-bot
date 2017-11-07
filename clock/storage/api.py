@@ -31,5 +31,7 @@ class StorageApi:
 
     def save_chosen_result(self, user: ApiObject, timestamp: str, chosen_zone_name: str, query: str,
                            choosing_seconds: float):
+        # the query might have been retrieved from server-side cache and the user could be unknown for us
+        self._save_user(user)
         self.data_source.save_chosen_result(user.id, timestamp, chosen_zone_name, query, choosing_seconds)
         self.data_source.commit()
