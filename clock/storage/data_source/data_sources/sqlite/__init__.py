@@ -1,16 +1,16 @@
 import sqlite3
 
 from clock.storage.data_source.data_source import StorageDataSource
+from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.query import QuerySqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.user import UserSqliteComponent
+from clock.storage.data_source.data_sources.sqlite.component.factory import SqliteStorageComponentFactory
 
 
 DATABASE_FILENAME = "state/clock.db"
 
 
 class SqliteStorageDataSource(StorageDataSource):
-    version = 1
-
     def __init__(self):
         # initialized in init to avoid creating sqlite objects outside the thread in which it will be operating
         self.connection = None
@@ -20,14 +20,14 @@ class SqliteStorageDataSource(StorageDataSource):
     def init(self):
         self.connection = sqlite3.connect(DATABASE_FILENAME)
         self.connection.row_factory = sqlite3.Row  # improved rows
-        self.user = UserSqliteComponent(self.connection)
-        self.user.init()
-        self.query = QuerySqliteComponent(self.connection)
-        self.query.init()
-        self._init_db()
+        components = SqliteStorageComponentFactory(self.connection)
+        self.user = self._get_and_init(components.user())
+        self.query = self._get_and_init(components.query())
 
-    def _init_db(self):
-        pass
+    @staticmethod
+    def _get_and_init(component: SqliteStorageComponent):
+        component.init()
+        return component
 
     def save_user(self, user_id: int, first_name: str, last_name: str, username: str, language_code: str):
         self.user.save_user(user_id, first_name, last_name, username, language_code)
@@ -44,6 +44,3 @@ class SqliteStorageDataSource(StorageDataSource):
 
     def commit(self):
         self.connection.commit()
-
-    def __sql(self, sql: str, params=()):
-        return self.connection.execute(sql, params)
