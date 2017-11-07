@@ -4,19 +4,9 @@ from bot.api.domain import ApiObject
 from clock.domain.time import TimePoint
 from clock.storage.async.scheduler import StorageScheduler
 from clock.storage.data_source.data_source import StorageDataSource
-from clock.storage.data_source.data_sources.sqlite import SqliteStorageDataSource
 
 
 class StorageApi:
-    _instance = None
-
-    @classmethod
-    def get(cls):
-        """:rtype: StorageApi"""
-        if cls._instance is None:
-            cls._instance = StorageApi(SqliteStorageDataSource())
-        return cls._instance
-
     def __init__(self, data_source: StorageDataSource, scheduler: StorageScheduler):
         self.data_source = data_source
         self.scheduler = scheduler
