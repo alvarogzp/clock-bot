@@ -10,6 +10,10 @@ class StorageApi:
     def __init__(self, data_source: StorageDataSource, scheduler: StorageScheduler):
         self.data_source = data_source
         self.scheduler = scheduler
+        self.init()
+
+    def init(self):
+        self.scheduler.schedule_no_result(self._init)
 
     def save_query(self, query: ApiObject, time_point: TimePoint, locale: Locale, results_found: list,
                    results_sent: list, processing_seconds: float):
@@ -22,6 +26,9 @@ class StorageApi:
         self.scheduler.schedule_no_result(
             lambda: self._save_chosen_result(user, timestamp, chosen_zone_name, query, choosing_seconds)
         )
+
+    def _init(self):
+        self.data_source.init()
 
     def _save_query(self, query: ApiObject, time_point: TimePoint, locale: Locale, results_found: list,
                     results_sent: list, processing_seconds: float):
