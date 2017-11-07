@@ -32,7 +32,7 @@ class ChatSqliteComponent(SqliteStorageComponent):
 
     def __is_chat_saved_equal(self, chat_id: int, chat_type: str, title: str, username: str):
         return self._sql("select 1 from chat where "
-                         "id = ? and type = ? and title = ? and username = ?",
+                         "chat_id = ? and chat_type = ? and title = ? and username = ?",
                          (chat_id, chat_type, title, username)).fetchone()
 
     def __add_to_chat_history(self, chat_id: int):
