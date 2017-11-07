@@ -10,6 +10,10 @@ class SqliteStorageDataSource(StorageDataSource):
     version = 1
 
     def __init__(self):
+        # initialized in init to avoid creating sqlite objects outside the thread in which it will be operating
+        self.connection = None
+
+    def init(self):
         self.connection = sqlite3.connect(DATABASE_FILENAME)
         self.connection.row_factory = sqlite3.Row  # improved rows
         self._init_db()
