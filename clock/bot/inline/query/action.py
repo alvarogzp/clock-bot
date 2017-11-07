@@ -7,7 +7,7 @@ from clock.domain.time import TimePoint
 from clock.finder.api import ZoneFinderApi
 from clock.locale.getter import LocaleGetter
 from clock.log.api import LogApi
-from clock.storage.api import StorageApi
+from clock.storage.factory import StorageApiFactory
 
 
 MAX_RESULTS_PER_QUERY = 25
@@ -20,12 +20,14 @@ class InlineQueryClockAction(Action):
         self.zone_finder = None
         self.logger = None
         self.locale_cache = None
+        self.storage = None
 
     def post_setup(self):
         self.zone_finder = ZoneFinderApi(bool(self.config.enable_countries))
         self.logger = LogApi.get(self.cache.logger)
         initial_locales_to_cache = self.config.locales_to_cache_on_startup
         self.locale_cache = LocaleCache(self.zone_finder.cache(), self.scheduler, self.logger, initial_locales_to_cache)
+        self.storage = StorageApiFactory.with_worker(self.scheduler.io_worker)
         # for others to use
         self.cache.zone_finder = self.zone_finder
         self.cache.log_api = self.logger
@@ -54,9 +56,7 @@ class InlineQueryClockAction(Action):
 
         self.locale_cache.cache(locale)
 
-        self.__storage_schedule_save_query(
-            lambda: StorageApi.get().save_query(query, current_time, locale, zones, results, processing_time)
-        )
+        self.storage.save_query(query, current_time, locale, zones, results, processing_time)
 
         self.logger.log_query(query, current_time, locale, zones, results, processing_time)
 
@@ -72,6 +72,3 @@ class InlineQueryClockAction(Action):
         if result_number > offset_end:
             return str(offset_end)
         return None
-
-    def __storage_schedule_save_query(self, func: callable):
-        self.scheduler.io(Work(func, "storage:save_query"))
