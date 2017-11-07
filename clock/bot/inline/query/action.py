@@ -28,6 +28,7 @@ class InlineQueryClockAction(Action):
         self.locale_cache = LocaleCache(self.zone_finder.cache(), self.scheduler, self.logger, initial_locales_to_cache)
         # for others to use
         self.cache.zone_finder = self.zone_finder
+        self.cache.log_api = self.logger
         self.cache.locale_cache = self.locale_cache
 
     def process(self, event):
