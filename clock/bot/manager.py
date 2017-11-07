@@ -22,6 +22,7 @@ from clock.bot.commands.start import StartAction
 from clock.bot.commands.troubleshoot import TroubleshootAction
 from clock.bot.inline.chosen_result import ChosenInlineResultClockAction
 from clock.bot.inline.query.action import InlineQueryClockAction
+from clock.bot.save.message import SaveMessageAction
 
 
 class BotManager:
@@ -50,6 +51,9 @@ class BotManager:
 
                     MessageAction().then(
                         PerChatAction().then(
+
+                            SaveMessageAction(),
+
                             InternationalizationAction().then(
                                 TextMessageAction().then(
 
