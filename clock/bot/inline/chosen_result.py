@@ -1,10 +1,7 @@
 from bot.action.core.action import Action
-from bot.multithreading.work import Work
 
 from clock.domain.datetimezone import DateTimeZone
 from clock.domain.time import TimePoint
-from clock.log.api import LogApi
-from clock.storage.api import StorageApi
 
 
 class ChosenInlineResultClockAction(Action):
@@ -27,7 +24,7 @@ class ChosenInlineResultClockAction(Action):
 
         # async operations:
 
-        self.storage.save_chosen_result(user, timestamp, chosen_zone_name, query, choosing_time),
+        self.storage.save_chosen_result(user, timestamp, chosen_zone_name, query, choosing_time)
 
         self.logger.log_chosen_result(user, timestamp, chosen_zone_name, query, choosing_time)
 

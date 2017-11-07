@@ -27,6 +27,16 @@ class StorageApi:
             lambda: self._save_chosen_result(user, timestamp, chosen_zone_name, query, choosing_seconds)
         )
 
+    def save_message(self, message: ApiObject):
+        self.scheduler.schedule_no_result(
+            lambda: self._save_message(message)
+        )
+
+    def save_command(self, message: ApiObject, command: str, command_args: str):
+        self.scheduler.schedule_no_result(
+            lambda: self._save_command(message, command, command_args)
+        )
+
     def _init(self):
         self.data_source.init()
 
@@ -45,4 +55,23 @@ class StorageApi:
         # the query might have been retrieved from server-side cache and the user could be unknown for us
         self._save_user(user)
         self.data_source.save_chosen_result(user.id, timestamp, chosen_zone_name, query, choosing_seconds)
+        self.data_source.commit()
+
+    def _save_message(self, message: ApiObject):
+        user_id = None
+        user = message.from_
+        if user:
+            user_id = user.id
+            self._save_user(user)
+        chat = message.chat
+        self._save_chat(chat)
+        self.data_source.save_message(chat.id, message.message_id, user_id, message.date, message.text)
+        self.data_source.commit()
+
+    def _save_chat(self, chat: ApiObject):
+        self.data_source.save_chat(chat.id, chat.type, chat.title, chat.username)
+
+    def _save_command(self, message: ApiObject, command: str, command_args: str):
+        message_id = self.data_source.get_message_id(message.chat.id, message.message_id)
+        self.data_source.save_command(message_id, command, command_args)
         self.data_source.commit()
