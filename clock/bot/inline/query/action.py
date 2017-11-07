@@ -1,5 +1,4 @@
 from bot.action.core.action import Action
-from bot.multithreading.work import Work
 
 from clock.bot.inline.query.result.generator import InlineResultGenerator, AnswerInlineQueryResultGenerator
 from clock.bot.locale_cache import LocaleCache
