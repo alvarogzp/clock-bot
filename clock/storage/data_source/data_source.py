@@ -10,7 +10,13 @@ class StorageDataSource:
                            choosing_seconds: float):
         raise NotImplementedError()
 
+    def save_command(self, message_id: int, command: str, command_args: str):
+        raise NotImplementedError()
+
     def save_message(self, chat_id: int, message_id: int, user_id: int, date: int, text: str):
+        raise NotImplementedError()
+
+    def get_message_id(self, chat_id: int, message_id: int):
         raise NotImplementedError()
 
     def save_chat(self, chat_id: int, chat_type: str, title: str, username: str):

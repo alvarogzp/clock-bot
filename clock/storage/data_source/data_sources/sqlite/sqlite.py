@@ -54,5 +54,11 @@ class SqliteStorageDataSource(StorageDataSource):
     def save_message(self, chat_id: int, message_id: int, user_id: int, date: int, text: str):
         self.message.save_message(chat_id, message_id, user_id, date, text)
 
+    def save_command(self, message_id: int, command: str, command_args: str):
+        self.message.save_command(message_id, command, command_args)
+
+    def get_message_id(self, chat_id: int, message_id: int):
+        return self.message.get_message_id(chat_id, message_id)
+
     def commit(self):
         self.connection.commit()

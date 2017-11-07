@@ -32,6 +32,11 @@ class StorageApi:
             lambda: self._save_message(message)
         )
 
+    def save_command(self, message: ApiObject, command: str, command_args: str):
+        self.scheduler.schedule_no_result(
+            lambda: self._save_command(message, command, command_args)
+        )
+
     def _init(self):
         self.data_source.init()
 
@@ -65,3 +70,8 @@ class StorageApi:
 
     def _save_chat(self, chat: ApiObject):
         self.data_source.save_chat(chat.id, chat.type, chat.title, chat.username)
+
+    def _save_command(self, message: ApiObject, command: str, command_args: str):
+        message_id = self.data_source.get_message_id(message.chat.id, message.message_id)
+        self.data_source.save_command(message_id, command, command_args)
+        self.data_source.commit()
