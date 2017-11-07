@@ -12,9 +12,11 @@ class ChosenInlineResultClockAction(Action):
         super().__init__()
         # initialized in post_setup
         self.logger = None
+        self.storage = None
 
     def post_setup(self):
         self.logger = self.cache.log_api
+        self.storage = self.cache.storage
 
     def process(self, event):
         chosen_result = event.chosen_result
@@ -25,10 +27,7 @@ class ChosenInlineResultClockAction(Action):
 
         # async operations:
 
-        self.scheduler.io(Work(
-            lambda: StorageApi.get().save_chosen_result(user, timestamp, chosen_zone_name, query, choosing_time),
-            "storage:save_chosen_result"
-        ))
+        self.storage.save_chosen_result(user, timestamp, chosen_zone_name, query, choosing_time),
 
         self.logger.log_chosen_result(user, timestamp, chosen_zone_name, query, choosing_time)
 

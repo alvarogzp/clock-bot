@@ -32,6 +32,7 @@ class InlineQueryClockAction(Action):
         self.cache.zone_finder = self.zone_finder
         self.cache.log_api = self.logger
         self.cache.locale_cache = self.locale_cache
+        self.cache.storage = self.storage
 
     def process(self, event):
         current_time = TimePoint.current()
