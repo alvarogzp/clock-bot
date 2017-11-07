@@ -31,7 +31,7 @@ class BotManager:
     def setup_actions(self):
         self.bot.set_action(
             ActionGroup(
-                LoggerAction().then(
+                LoggerAction(reuse_max_length=2000, reuse_max_time=1, reuse_max_number=10).then(
 
                     InlineQueryAction().then(
                         AsynchronousAction(
