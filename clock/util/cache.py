@@ -63,4 +63,27 @@ class SynchronizedCache(Cache):
         with self.locks[key]:
             # with lock acquired we need to check again if key is in dict before inserting
             # because it could have been added between the unlocked check and the lock acquire
-            return super().get_or_generate(key, generate_func)
+            value = super().get_or_generate(key, generate_func)
+            self._remove_lock(key)
+            return value
+
+    def _remove_lock(self, key):
+        """
+        Once a key has been generated, we can remove the lock acquired to generate it,
+        so that its memory can be released.
+        It won't be used any longer, as next calls for the key will get through the quick path.
+        But there could be some edge cases, described below:
+          - There are threads waiting to acquire it. In this case, the threads will keep waiting,
+            as we are only removing the key from the dict, not the lock itself. Once they acquire
+            it, they will also try to remove the lock, so we must not fail in those cases (double
+            freeing the same key).
+          - After removing the lock from the dict, a thread that did not go through the quick path
+            (because it made the check before having the result generated) tries to get the lock.
+            In that case, a new lock will be allocated for the key. But, as the value has already
+            been generated, once the thread acquire the new lock and check again if the value
+            exists, it will find it on the cache. Later, that lock will be removed too.
+        """
+        try:
+            del self.locks[key]
+        except KeyError:
+            pass
