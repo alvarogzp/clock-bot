@@ -1,5 +1,6 @@
 from sqlite3 import Connection
 
+from clock.storage.data_source.data_sources.sqlite.component.components.active_chat import ActiveChatSqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.chat import ChatSqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.message import MessageSqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.query import QuerySqliteComponent
@@ -21,3 +22,6 @@ class SqliteStorageComponentFactory:
 
     def message(self):
         return MessageSqliteComponent(self.connection)
+
+    def active_chat(self):
+        return ActiveChatSqliteComponent(self.connection)
