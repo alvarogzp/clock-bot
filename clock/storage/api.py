@@ -37,6 +37,11 @@ class StorageApi:
             lambda: self._save_command(message, command, command_args)
         )
 
+    def set_inactive_chat(self, chat: ApiObject, reason: str):
+        self.scheduler.schedule_no_result(
+            lambda: self._set_inactive_chat(chat, reason)
+        )
+
     def _init(self):
         self.data_source.init()
 
@@ -65,6 +70,7 @@ class StorageApi:
             self._save_user(user)
         chat = message.chat
         self._save_chat(chat)
+        self._set_active_chat(chat)
         self.data_source.save_message(chat.id, message.message_id, user_id, message.date, message.text)
         self.data_source.commit()
 
@@ -74,4 +80,11 @@ class StorageApi:
     def _save_command(self, message: ApiObject, command: str, command_args: str):
         message_id = self.data_source.get_message_id(message.chat.id, message.message_id)
         self.data_source.save_command(message_id, command, command_args)
+        self.data_source.commit()
+
+    def _set_active_chat(self, chat: ApiObject):
+        self.data_source.set_active_chat(chat.id)
+
+    def _set_inactive_chat(self, chat: ApiObject, reason: str):
+        self.data_source.set_inactive_chat(chat.id, reason)
         self.data_source.commit()
