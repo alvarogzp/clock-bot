@@ -1,5 +1,7 @@
 import sqlite3
 
+from sqlite3 import Connection
+
 from clock.storage.data_source.data_source import StorageDataSource
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.active_chat import ActiveChatSqliteComponent
@@ -16,7 +18,7 @@ DATABASE_FILENAME = "state/clock.db"
 class SqliteStorageDataSource(StorageDataSource):
     def __init__(self):
         # initialized in init to avoid creating sqlite objects outside the thread in which it will be operating
-        self.connection = None
+        self.connection = None  # type: Connection
         self.user = None  # type: UserSqliteComponent
         self.chat = None  # type: ChatSqliteComponent
         self.query = None  # type: QuerySqliteComponent
