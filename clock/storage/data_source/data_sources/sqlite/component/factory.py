@@ -29,4 +29,5 @@ class SqliteStorageComponentFactory:
 
     def _initialized(self, component: SqliteStorageComponent):
         component.set_connection(self.connection)
+        component.init()
         return component
