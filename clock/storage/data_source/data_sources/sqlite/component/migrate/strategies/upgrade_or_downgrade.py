@@ -1,7 +1,5 @@
 import inspect
 
-import math
-
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.component.migrate.migrator import SqliteComponentMigratorException
 from clock.storage.data_source.data_sources.sqlite.component.migrate.strategy import SqliteMigrationStrategy
@@ -41,7 +39,7 @@ class SqliteUpgradeOrDowngradeMigration(SqliteMigrationStrategy):
         best_version = None
         best_func = None
         for func, new_version in self._get_available_migrates_from(old_version):
-            if not self._has_passed_destination(new_version):
+            if self._is_between_migration_versions(new_version):
                 distance = abs(self.new_version - new_version)
                 if distance < best_distance:
                     best_distance = distance
@@ -72,19 +70,14 @@ class SqliteUpgradeOrDowngradeMigration(SqliteMigrationStrategy):
             # not a valid migration function
             return
 
+    def _is_between_migration_versions(self, version: int):
+        return self.old_version <= version <= self.new_version or \
+               self.old_version >= version >= self.new_version
+
     def _raise_no_path_found(self):
         raise NoMigratePathFoundException(
             self.component, self.migration_type, self.old_version, self.new_version
         )
-
-    def _has_passed_destination(self, version: int):
-        migration_sign = self._sign(self.new_version - self.old_version)
-        current_sign = self._sign(self.new_version - version)
-        return current_sign != migration_sign
-
-    @staticmethod
-    def _sign(x: int):
-        return math.copysign(1, x)
 
 
 class NoMigratePathFoundException(SqliteComponentMigratorException):
