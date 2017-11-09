@@ -15,7 +15,9 @@ class SqliteStorageComponentFactory:
         self.version_info = self._version_info()  # type: VersionInfoSqliteComponent
 
     def _version_info(self):
-        return self._initialized(VersionInfoSqliteComponent())
+        # set self.version_info now to not fail on _initialized
+        self.version_info = VersionInfoSqliteComponent()
+        return self._initialized(self.version_info)
 
     def user(self):
         return self._initialized(UserSqliteComponent())
@@ -34,5 +36,5 @@ class SqliteStorageComponentFactory:
 
     def _initialized(self, component: SqliteStorageComponent):
         component.set_connection(self.connection)
-        component.init()
+        component.migrate_if_necessary(self.version_info)
         return component
