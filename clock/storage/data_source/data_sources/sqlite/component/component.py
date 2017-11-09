@@ -2,7 +2,9 @@ from sqlite3 import Connection
 
 
 class SqliteStorageComponent:
-    def __init__(self):
+    def __init__(self, name: str, version: int):
+        self.name = name
+        self.version = version
         self.connection = None  # type: Connection
 
     def set_connection(self, connection: Connection):

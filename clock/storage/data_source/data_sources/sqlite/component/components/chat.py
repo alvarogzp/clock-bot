@@ -2,6 +2,11 @@ from clock.storage.data_source.data_sources.sqlite.component.component import Sq
 
 
 class ChatSqliteComponent(SqliteStorageComponent):
+    version = 1
+
+    def __init__(self):
+        super().__init__("chat", self.version)
+
     def init(self):
         self._sql("create table if not exists chat ("
                   "chat_id integer primary key not null,"

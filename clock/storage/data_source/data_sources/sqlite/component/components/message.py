@@ -2,6 +2,11 @@ from clock.storage.data_source.data_sources.sqlite.component.component import Sq
 
 
 class MessageSqliteComponent(SqliteStorageComponent):
+    version = 1
+
+    def __init__(self):
+        super().__init__("message", self.version)
+
     def init(self):
         self._sql("create table if not exists message ("
                   "id integer primary key not null,"  # automatically filled
