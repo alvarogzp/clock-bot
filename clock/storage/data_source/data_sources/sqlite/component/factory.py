@@ -1,5 +1,6 @@
 from sqlite3 import Connection
 
+from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.active_chat import ActiveChatSqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.chat import ChatSqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.message import MessageSqliteComponent
@@ -12,16 +13,20 @@ class SqliteStorageComponentFactory:
         self.connection = connection
 
     def user(self):
-        return UserSqliteComponent(self.connection)
+        return self._initialized(UserSqliteComponent())
 
     def query(self):
-        return QuerySqliteComponent(self.connection)
+        return self._initialized(QuerySqliteComponent())
 
     def chat(self):
-        return ChatSqliteComponent(self.connection)
+        return self._initialized(ChatSqliteComponent())
 
     def message(self):
-        return MessageSqliteComponent(self.connection)
+        return self._initialized(MessageSqliteComponent())
 
     def active_chat(self):
-        return ActiveChatSqliteComponent(self.connection)
+        return self._initialized(ActiveChatSqliteComponent())
+
+    def _initialized(self, component: SqliteStorageComponent):
+        component.set_connection(self.connection)
+        return component
