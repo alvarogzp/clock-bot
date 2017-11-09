@@ -1,6 +1,7 @@
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.version_info import VersionInfoSqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.migrate.strategies.create import SqliteCreateMigration
+from clock.storage.data_source.data_sources.sqlite.component.migrate.strategies.none import SqliteNoMigration
 from clock.storage.data_source.data_sources.sqlite.component.migrate.strategies.upgrade_or_downgrade import \
     SqliteUpgradeOrDowngradeMigration
 
@@ -43,7 +44,9 @@ class SqliteComponentMigrator:
             return SqliteCreateMigration(*migration_args)
         elif self.migration_type in (MIGRATION_TYPE_UPGRADE, MIGRATION_TYPE_DOWNGRADE):
             return SqliteUpgradeOrDowngradeMigration(*migration_args)
-        elif self.migration_type != MIGRATION_TYPE_NONE:
+        elif self.migration_type == MIGRATION_TYPE_NONE:
+            return SqliteNoMigration(*migration_args)
+        else:
             raise MigrationStrategyNotFound(self.component, self.migration_type)
 
 
