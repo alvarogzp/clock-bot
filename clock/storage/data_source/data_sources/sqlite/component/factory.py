@@ -7,6 +7,7 @@ from clock.storage.data_source.data_sources.sqlite.component.components.message 
 from clock.storage.data_source.data_sources.sqlite.component.components.query import QuerySqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.user import UserSqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.version_info import VersionInfoSqliteComponent
+from clock.storage.data_source.data_sources.sqlite.component.migrate.migrator import SqliteComponentMigrator
 
 
 class SqliteStorageComponentFactory:
@@ -36,5 +37,8 @@ class SqliteStorageComponentFactory:
 
     def _initialized(self, component: SqliteStorageComponent):
         component.set_connection(self.connection)
-        component.migrate_if_necessary(self.version_info)
+        self._migrate(component)
         return component
+
+    def _migrate(self, component: SqliteStorageComponent):
+        SqliteComponentMigrator(component, self.version_info).migrate()
