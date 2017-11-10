@@ -1,5 +1,6 @@
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.version_info import VersionInfoSqliteComponent
+from clock.storage.data_source.data_sources.sqlite.component.migrate.exception import SqliteComponentMigratorException
 from clock.storage.data_source.data_sources.sqlite.component.migrate.strategies.create import SqliteCreateMigration
 from clock.storage.data_source.data_sources.sqlite.component.migrate.strategies.none import SqliteNoMigration
 from clock.storage.data_source.data_sources.sqlite.component.migrate.strategies.upgrade_or_downgrade import \
@@ -49,16 +50,6 @@ class SqliteComponentMigrator:
             return SqliteNoMigration(*migration_args)
         else:
             raise MigrationStrategyNotFound(self.component, self.migration_type)
-
-
-class SqliteComponentMigratorException(Exception):
-    def __init__(self, component: SqliteStorageComponent, migration_type: str, message: str):
-        super().__init__(
-            "Component '{name}' {type} migration failed with error: {message}. "
-            "Component was not migrated. "
-            "Unexpected things may happen."
-            .format(name=component.name, type=migration_type, message=message)
-        )
 
 
 class MigrationStrategyNotFound(SqliteComponentMigratorException):

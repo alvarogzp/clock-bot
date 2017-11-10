@@ -1,7 +1,7 @@
 import inspect
 
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
-from clock.storage.data_source.data_sources.sqlite.component.migrate.migrator import SqliteComponentMigratorException
+from clock.storage.data_source.data_sources.sqlite.component.migrate.exception import SqliteComponentMigratorException
 from clock.storage.data_source.data_sources.sqlite.component.migrate.strategy import SqliteMigrationStrategy
 
 
