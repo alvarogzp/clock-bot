@@ -17,7 +17,9 @@ class SqliteComponentMigrator:
     def __init__(self, component: SqliteStorageComponent, version_info: VersionInfoSqliteComponent):
         self.component = component
         self.version_info = version_info
+        # the current version of the component in the storage is stored on the version_info component
         self.old_version = version_info.get_version(self.component.name)
+        # the target version is the one that the component declares
         self.new_version = self.component.version
         self.migration_type = self._get_migration_type()
 
