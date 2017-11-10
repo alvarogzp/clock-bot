@@ -10,6 +10,9 @@ class SqliteStorageComponent:
     def set_connection(self, connection: Connection):
         self.connection = connection
 
+    def create(self):
+        raise NotImplementedError()
+
     def _sql(self, sql: str, params=()):
         return self.connection.execute(sql, params)
 
