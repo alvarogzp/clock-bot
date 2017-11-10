@@ -7,7 +7,7 @@ class UserSqliteComponent(SqliteStorageComponent):
     def __init__(self):
         super().__init__("user", self.version)
 
-    def init(self):
+    def create(self):
         self._sql("create table if not exists user ("
                   "user_id integer primary key not null,"
                   "first_name text,"

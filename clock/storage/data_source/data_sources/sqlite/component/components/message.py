@@ -7,7 +7,7 @@ class MessageSqliteComponent(SqliteStorageComponent):
     def __init__(self):
         super().__init__("message", self.version)
 
-    def init(self):
+    def create(self):
         self._sql("create table if not exists message ("
                   "id integer primary key not null,"  # automatically filled
                   "timestamp text,"

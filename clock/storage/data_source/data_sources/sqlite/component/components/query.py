@@ -7,7 +7,7 @@ class QuerySqliteComponent(SqliteStorageComponent):
     def __init__(self):
         super().__init__("query", self.version)
 
-    def init(self):
+    def create(self):
         self._sql("create table if not exists query ("
                   "timestamp text,"
                   "user_id integer not null,"

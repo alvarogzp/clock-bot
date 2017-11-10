@@ -7,7 +7,7 @@ class ChatSqliteComponent(SqliteStorageComponent):
     def __init__(self):
         super().__init__("chat", self.version)
 
-    def init(self):
+    def create(self):
         self._sql("create table if not exists chat ("
                   "chat_id integer primary key not null,"
                   "chat_type text,"
