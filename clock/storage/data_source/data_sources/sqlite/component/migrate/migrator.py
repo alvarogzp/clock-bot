@@ -14,12 +14,11 @@ MIGRATION_TYPE_UNKNOWN = "unknown"
 
 
 class SqliteComponentMigrator:
-    def __init__(self, component: SqliteStorageComponent, version_info: VersionInfoSqliteComponent, old_version: int,
-                 new_version: int):
+    def __init__(self, component: SqliteStorageComponent, version_info: VersionInfoSqliteComponent):
         self.component = component
         self.version_info = version_info
-        self.old_version = old_version
-        self.new_version = new_version
+        self.old_version = version_info.get_version(self.component.name)
+        self.new_version = self.component.version
         self.migration_type = self._get_migration_type()
 
     def _get_migration_type(self):

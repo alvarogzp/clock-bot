@@ -14,9 +14,7 @@ class SqliteStorageComponent:
         self.connection = connection
 
     def migrate_if_necessary(self, version_info: VersionInfoSqliteComponent):
-        old_version = version_info.get_version(self.name)
-        new_version = self.version
-        SqliteComponentMigrator(self, version_info, old_version, new_version).migrate()
+        SqliteComponentMigrator(self, version_info).migrate()
 
     def _sql(self, sql: str, params=()):
         return self.connection.execute(sql, params)
