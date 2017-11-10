@@ -14,18 +14,14 @@ class VersionInfoSqliteComponent(SqliteStorageComponent):
 
     def __init__(self):
         super().__init__("version_info", self.version)
-        self.initialized = False
-
-    def migrate_if_necessary(self, version_info):
-        result = super().migrate_if_necessary(version_info)
-        self.initialized = True
-        return result
+        self.migrated = False
 
     def create(self):
         self._sql("create table version_info ("
                   "component text primary key not null,"
                   "version integer"
                   ")")
+        self.migrated = True
 
     def set_version(self, component: str, version: int):
         self._sql("insert or replace into version_info "
@@ -39,10 +35,9 @@ class VersionInfoSqliteComponent(SqliteStorageComponent):
                             "where component = ?",
                             (component,)).fetchone()
         except OperationalError as e:
-            if component == self.name and not self.initialized:
-                # if the version of this module is being checked and it has not yet being initialized
-                # it could fail as the table may not yet exist or has not been migrated from a previous
-                # version
+            if component == self.name and not self.migrated:
+                # if the version of this module is being checked and it has not yet being migrated
+                # it could fail as the table may not yet exist or have a different schema
                 row = None
             else:
                 # if the error is for another reason, let it propagate
