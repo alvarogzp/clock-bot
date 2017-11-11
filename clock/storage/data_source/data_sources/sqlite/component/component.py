@@ -2,13 +2,21 @@ from sqlite3 import Connection
 
 
 class SqliteStorageComponent:
-    def __init__(self, connection: Connection):
+    def __init__(self, name: str, version: int):
+        self.name = name
+        self.version = version
+        self.connection = None  # type: Connection
+
+    def set_connection(self, connection: Connection):
         self.connection = connection
 
-    def init(self):
+    def create(self):
         raise NotImplementedError()
 
     def _sql(self, sql: str, params=()):
+        return self.connection.execute(sql, params)
+
+    def sql(self, sql: str, *params):
         return self.connection.execute(sql, params)
 
     @staticmethod

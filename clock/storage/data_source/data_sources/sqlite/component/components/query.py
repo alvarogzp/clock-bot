@@ -2,7 +2,12 @@ from clock.storage.data_source.data_sources.sqlite.component.component import Sq
 
 
 class QuerySqliteComponent(SqliteStorageComponent):
-    def init(self):
+    version = 1
+
+    def __init__(self):
+        super().__init__("query", self.version)
+
+    def create(self):
         self._sql("create table if not exists query ("
                   "timestamp text,"
                   "user_id integer not null,"
