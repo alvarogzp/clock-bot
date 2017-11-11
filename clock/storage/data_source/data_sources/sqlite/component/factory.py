@@ -16,7 +16,7 @@ class SqliteStorageComponentFactory:
         self.version_info = self._version_info()  # type: VersionInfoSqliteComponent
 
     def _version_info(self):
-        # set self.version_info now to not fail on _initialized
+        # set self.version_info now to not fail on _migrate
         self.version_info = VersionInfoSqliteComponent()
         return self._initialized(self.version_info)
 
