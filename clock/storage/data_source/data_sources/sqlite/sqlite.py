@@ -14,10 +14,11 @@ DATABASE_FILENAME = "state/clock.db"
 
 
 class SqliteStorageDataSource(StorageDataSource):
-    def __init__(self):
+    def __init__(self, debug: bool):
+        self.debug = debug
+        self.inside_pending_context_manager = False
         # initialized in init to avoid creating sqlite objects outside the thread in which it will be operating
         self.connection = None  # type: Connection
-        self.inside_pending_context_manager = False
         self.user = None  # type: UserSqliteComponent
         self.chat = None  # type: ChatSqliteComponent
         self.query = None  # type: QuerySqliteComponent
@@ -30,6 +31,9 @@ class SqliteStorageDataSource(StorageDataSource):
 
     def _init_connection(self):
         self.connection = sqlite3.connect(DATABASE_FILENAME)
+        if self.debug:
+            # print all sentences to stdout
+            self.connection.set_trace_callback(lambda x: print(x))
         # disable implicit transactions as we are manually handling them
         self.connection.isolation_level = None
         # improved rows
