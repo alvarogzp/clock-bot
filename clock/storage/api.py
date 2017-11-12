@@ -70,11 +70,11 @@ class StorageApi:
         chat = message.chat
         self._save_chat(chat)
         self._set_active_chat(chat)
-        is_forward = bool(message.forward_date)
+        is_forward = True if message.forward_date is not None else None
         reply_to_message = message.reply_to_message
         if reply_to_message:
             reply_to_message = reply_to_message.message_id
-        is_edit = bool(message.edit_date)
+        is_edit = True if message.edit_date is not None else None
         left_chat_member = message.left_chat_member
         if left_chat_member:
             left_chat_member = left_chat_member.id
