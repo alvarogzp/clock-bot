@@ -71,7 +71,14 @@ class StorageApi:
         chat = message.chat
         self._save_chat(chat)
         self._set_active_chat(chat)
-        self.data_source.save_message(chat.id, message.message_id, user_id, message.date, message.text)
+        self.data_source.save_message(
+            chat.id,
+            message.message_id,
+            user_id,
+            message.date,
+            message.text,
+            message.migrate_from_chat_id
+        )
         self.data_source.commit()
 
     def _save_chat(self, chat: ApiObject):
