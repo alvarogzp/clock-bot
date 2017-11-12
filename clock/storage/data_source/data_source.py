@@ -13,8 +13,9 @@ class StorageDataSource:
     def save_command(self, message_id: int, command: str, command_args: str):
         raise NotImplementedError()
 
-    def save_message(self, chat_id: int, message_id: int, user_id: int, date: int, text: str,
-                     migrate_from_chat_id: int):
+    def save_message(self, chat_id: int, message_id: int, user_id: int, date: int, is_forward: bool,
+                     reply_to_message: int, is_edit: bool, text: str, new_chat_member: int, left_chat_member: int,
+                     group_chat_created: bool, migrate_to_chat_id: int, migrate_from_chat_id: int):
         raise NotImplementedError()
 
     def get_message_id(self, chat_id: int, message_id: int):
