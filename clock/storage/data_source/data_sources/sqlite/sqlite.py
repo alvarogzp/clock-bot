@@ -1,9 +1,7 @@
 import sqlite3
-
 from sqlite3 import Connection
 
 from clock.storage.data_source.data_source import StorageDataSource
-from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.active_chat import ActiveChatSqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.chat import ChatSqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.message import MessageSqliteComponent
