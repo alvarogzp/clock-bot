@@ -10,6 +10,7 @@ class StorageApi:
     def __init__(self, data_source: StorageDataSource, scheduler: StorageScheduler):
         self.data_source = data_source
         self.scheduler = scheduler
+        scheduler.set_context_manager(data_source.context_manager())
         self.init()
 
     def init(self):
