@@ -26,8 +26,14 @@ class SqliteStorageDataSource(StorageDataSource):
         self.active_chat = None  # type: ActiveChatSqliteComponent
 
     def init(self):
+        self._init_connection()
+        self._init_components()
+
+    def _init_connection(self):
         self.connection = sqlite3.connect(DATABASE_FILENAME)
         self.connection.row_factory = sqlite3.Row  # improved rows
+
+    def _init_components(self):
         components = SqliteStorageComponentFactory(self.connection)
         self.user = components.user()
         self.chat = components.chat()
