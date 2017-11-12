@@ -1,9 +1,7 @@
 import sqlite3
-
 from sqlite3 import Connection
 
 from clock.storage.data_source.data_source import StorageDataSource
-from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.active_chat import ActiveChatSqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.chat import ChatSqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.message import MessageSqliteComponent
@@ -19,6 +17,7 @@ class SqliteStorageDataSource(StorageDataSource):
     def __init__(self):
         # initialized in init to avoid creating sqlite objects outside the thread in which it will be operating
         self.connection = None  # type: Connection
+        self.inside_pending_context_manager = False
         self.user = None  # type: UserSqliteComponent
         self.chat = None  # type: ChatSqliteComponent
         self.query = None  # type: QuerySqliteComponent
@@ -26,8 +25,19 @@ class SqliteStorageDataSource(StorageDataSource):
         self.active_chat = None  # type: ActiveChatSqliteComponent
 
     def init(self):
+        self._init_connection()
+        self._init_components()
+
+    def _init_connection(self):
         self.connection = sqlite3.connect(DATABASE_FILENAME)
-        self.connection.row_factory = sqlite3.Row  # improved rows
+        # disable implicit transactions as we are manually handling them
+        self.connection.isolation_level = None
+        # improved rows
+        self.connection.row_factory = sqlite3.Row
+        if self.inside_pending_context_manager:
+            self.__enter__()
+
+    def _init_components(self):
         components = SqliteStorageComponentFactory(self.connection)
         self.user = components.user()
         self.chat = components.chat()
@@ -62,5 +72,22 @@ class SqliteStorageDataSource(StorageDataSource):
     def set_inactive_chat(self, *args):
         return self.active_chat.set_inactive(*args)
 
-    def commit(self):
-        self.connection.commit()
+    def context_manager(self):
+        return self
+
+    def __enter__(self):
+        if self.connection is not None:
+            self.connection.execute("begin")
+        else:
+            # the first init() operation does not yet have the connection created
+            # so delay the begin until we create it
+            self.inside_pending_context_manager = True
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.inside_pending_context_manager:
+            self.inside_pending_context_manager = False
+        if exc_type is None and exc_val is None and exc_tb is None:
+            # no error
+            self.connection.execute("commit")
+        else:
+            self.connection.execute("rollback")
