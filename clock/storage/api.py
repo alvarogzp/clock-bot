@@ -51,7 +51,6 @@ class StorageApi:
         self._save_user(query.from_)
         self.data_source.save_query(query.from_.id, time_point.id(), query.query, query.offset, str(locale),
                                     len(results_found), len(results_sent), processing_seconds)
-        self.data_source.commit()
 
     def _save_user(self, user: ApiObject):
         self.data_source.save_user(user.id, user.first_name, user.last_name, user.username, user.language_code)
@@ -61,7 +60,6 @@ class StorageApi:
         # the query might have been retrieved from server-side cache and the user could be unknown for us
         self._save_user(user)
         self.data_source.save_chosen_result(user.id, timestamp, chosen_zone_name, query, choosing_seconds)
-        self.data_source.commit()
 
     def _save_message(self, message: ApiObject):
         user_id = None
@@ -73,7 +71,6 @@ class StorageApi:
         self._save_chat(chat)
         self._set_active_chat(chat)
         self.data_source.save_message(chat.id, message.message_id, user_id, message.date, message.text)
-        self.data_source.commit()
 
     def _save_chat(self, chat: ApiObject):
         self.data_source.save_chat(chat.id, chat.type, chat.title, chat.username)
@@ -81,11 +78,9 @@ class StorageApi:
     def _save_command(self, message: ApiObject, command: str, command_args: str):
         message_id = self.data_source.get_message_id(message.chat.id, message.message_id)
         self.data_source.save_command(message_id, command, command_args)
-        self.data_source.commit()
 
     def _set_active_chat(self, chat: ApiObject):
         self.data_source.set_active_chat(chat.id)
 
     def _set_inactive_chat(self, chat: ApiObject, reason: str):
         self.data_source.set_inactive_chat(chat.id, reason)
-        self.data_source.commit()
