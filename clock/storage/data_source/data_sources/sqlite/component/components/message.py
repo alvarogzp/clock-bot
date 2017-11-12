@@ -32,8 +32,19 @@ class MessageSqliteComponent(SqliteStorageComponent):
                   ")")
 
     def upgrade_from_1_to_2(self):
-        self.sql("alter table message "
-                 "add column migrate_from_chat_id integer")
+        self._add_columns(
+            "message",
+            "is_forward integer", "reply_to_message integer", "is_edit integer",
+            "new_chat_member integer", "left_chat_member integer",
+            "group_chat_created integer", "migrate_to_chat_id integer", "migrate_from_chat_id integer"
+        )
+
+    def _add_columns(self, table: str, *columns: str):
+        for column in columns:
+            # table names and column definitions cannot be safely parametrized
+            # but as the caller is safe, we can format them in an unsafely way
+            sql = "alter table {table} add column {column}".format(table=table, column=column)
+            self.sql(sql)
 
     def save_message(self, chat_id: int, message_id: int, user_id: int, date: int, text: str, migrate_from_chat_id: int):
         self._sql("insert into message "
