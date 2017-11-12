@@ -47,11 +47,15 @@ class MessageSqliteComponent(SqliteStorageComponent):
             sql = "alter table {table} add column {column}".format(table=table, column=column)
             self.sql(sql)
 
-    def save_message(self, chat_id: int, message_id: int, user_id: int, date: int, text: str, migrate_from_chat_id: int):
+    def save_message(self, chat_id: int, message_id: int, user_id: int, date: int, is_forward: bool,
+                     reply_to_message: int, is_edit: bool, text: str, new_chat_member: int, left_chat_member: int,
+                     group_chat_created: bool, migrate_to_chat_id: int, migrate_from_chat_id: int):
         self._sql("insert into message "
-                  "(timestamp, chat_id, message_id, user_id, date, text, migrate_from_chat_id) "
-                  "values (strftime('%s', 'now'), ?, ?, ?, ?, ?, ?)",
-                  (chat_id, message_id, user_id, date, text, migrate_from_chat_id))
+                  "(timestamp, chat_id, message_id, user_id, date, is_forward, reply_to_message, is_edit, text, "
+                  "new_chat_member, left_chat_member, group_chat_created, migrate_to_chat_id, migrate_from_chat_id) "
+                  "values (strftime('%s', 'now'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                  (chat_id, message_id, user_id, date, is_forward, reply_to_message, is_edit, text, new_chat_member,
+                   left_chat_member, group_chat_created, migrate_to_chat_id, migrate_from_chat_id))
 
     def save_command(self, message_id: int, command: str, command_args: str):
         self._sql("insert into command "
