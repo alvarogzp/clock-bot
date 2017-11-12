@@ -2,7 +2,7 @@ from clock.storage.data_source.data_sources.sqlite.component.component import Sq
 
 
 class MessageSqliteComponent(SqliteStorageComponent):
-    version = 1
+    version = 2
 
     def __init__(self):
         super().__init__("message", self.version)
@@ -15,13 +15,18 @@ class MessageSqliteComponent(SqliteStorageComponent):
                   "message_id integer,"
                   "user_id integer,"
                   "date integer,"
-                  "text text"
+                  "text text,"
+                  "migrate_from_chat_id integer"
                   ")")
         self._sql("create table if not exists command ("
                   "message_id integer,"
                   "command text,"
                   "command_args text"
                   ")")
+
+    def upgrade_from_1_to_2(self):
+        self.sql("alter table message "
+                 "add column migrate_from_chat_id integer")
 
     def save_message(self, chat_id: int, message_id: int, user_id: int, date: int, text: str):
         self._sql("insert into message "
