@@ -7,14 +7,14 @@ from clock.storage.data_source.data_sources.sqlite.sqlite import SqliteStorageDa
 
 class StorageApiFactory:
     @classmethod
-    def with_worker(cls, worker: Worker):
-        data_source = cls._get_default_data_source()
+    def with_worker(cls, worker: Worker, debug: bool):
+        data_source = cls._get_default_data_source(debug)
         scheduler = cls._get_scheduler_for(worker)
         return StorageApi(data_source, scheduler)
 
     @staticmethod
-    def _get_default_data_source():
-        return SqliteStorageDataSource()
+    def _get_default_data_source(debug: bool):
+        return SqliteStorageDataSource(debug)
 
     @staticmethod
     def _get_scheduler_for(worker: Worker):
