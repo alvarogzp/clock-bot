@@ -17,9 +17,8 @@ class SqliteMigrationStrategy:
         raise NotImplementedError()
 
     def do_migration(self, func: callable, to_version: int):
-        with self.component.connection:
-            func()
-            self.version_info.set_version(self.component.name, to_version)
+        func()
+        self.version_info.set_version(self.component.name, to_version)
 
     def get_migrate_func(self, name: str = None):
         if name is None:
