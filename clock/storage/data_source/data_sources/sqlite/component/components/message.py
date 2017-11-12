@@ -15,7 +15,14 @@ class MessageSqliteComponent(SqliteStorageComponent):
                   "message_id integer,"
                   "user_id integer,"
                   "date integer,"
+                  "is_forward integer,"  # boolean
+                  "reply_to_message integer,"  # references: message_id column
+                  "is_edit integer,"  # boolean
                   "text text,"
+                  "new_chat_member integer,"  # user_id
+                  "left_chat_member integer,"  # user_id
+                  "group_chat_created integer,"  # boolean
+                  "migrate_to_chat_id integer,"
                   "migrate_from_chat_id integer"
                   ")")
         self._sql("create table if not exists command ("
