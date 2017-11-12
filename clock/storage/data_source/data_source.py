@@ -32,5 +32,5 @@ class StorageDataSource:
     def set_inactive_chat(self, chat_id: int, reason: str):
         raise NotImplementedError()
 
-    def commit(self):
+    def context_manager(self):
         raise NotImplementedError()
