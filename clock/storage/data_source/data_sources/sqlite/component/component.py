@@ -13,9 +13,6 @@ class SqliteStorageComponent:
     def create(self):
         raise NotImplementedError()
 
-    def _sql(self, sql: str, params=()):
-        return self.connection.execute(sql, params)
-
     def sql(self, sql: str, *qmark_params, **named_params):
         there_are_qmark_params = len(qmark_params) > 0
         there_are_named_params = len(named_params) > 0
@@ -25,6 +22,9 @@ class SqliteStorageComponent:
         if there_are_named_params:
             params = named_params
         return self._sql(sql, params)
+
+    def _sql(self, sql: str, params=()):
+        return self.connection.execute(sql, params)
 
     @staticmethod
     def _empty_if_none(field: str):
