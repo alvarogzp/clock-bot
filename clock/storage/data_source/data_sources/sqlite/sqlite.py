@@ -32,8 +32,10 @@ class SqliteStorageDataSource(StorageDataSource):
 
     def _init_connection(self):
         self.connection = sqlite3.connect(DATABASE_FILENAME)
+        # disable implicit transactions as we are manually handling them
         self.connection.isolation_level = None
-        self.connection.row_factory = sqlite3.Row  # improved rows
+        # improved rows
+        self.connection.row_factory = sqlite3.Row
         if self.inside_pending_context_manager:
             self.__enter__()
 
