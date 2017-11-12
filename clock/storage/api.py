@@ -70,7 +70,33 @@ class StorageApi:
         chat = message.chat
         self._save_chat(chat)
         self._set_active_chat(chat)
-        self.data_source.save_message(chat.id, message.message_id, user_id, message.date, message.text)
+        is_forward = True if message.forward_date is not None else None
+        reply_to_message = message.reply_to_message
+        if reply_to_message:
+            reply_to_message = reply_to_message.message_id
+        is_edit = True if message.edit_date is not None else None
+        left_chat_member = message.left_chat_member
+        if left_chat_member:
+            left_chat_member = left_chat_member.id
+        new_chat_members = message.new_chat_members or [None]
+        for new_chat_member in new_chat_members:
+            if new_chat_member:
+                new_chat_member = new_chat_member.id
+            self.data_source.save_message(
+                chat.id,
+                message.message_id,
+                user_id,
+                message.date,
+                is_forward,
+                reply_to_message,
+                is_edit,
+                message.text,
+                new_chat_member,
+                left_chat_member,
+                message.group_chat_created,
+                message.migrate_to_chat_id,
+                message.migrate_from_chat_id
+            )
 
     def _save_chat(self, chat: ApiObject):
         self.data_source.save_chat(chat.id, chat.type, chat.title, chat.username)

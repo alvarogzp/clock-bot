@@ -26,7 +26,7 @@ class InlineQueryClockAction(Action):
         self.logger = LogApi.get(self.cache.logger)
         initial_locales_to_cache = self.config.locales_to_cache_on_startup
         self.locale_cache = LocaleCache(self.zone_finder.cache(), self.scheduler, self.logger, initial_locales_to_cache)
-        self.storage = StorageApiFactory.with_worker(self.scheduler.io_worker)
+        self.storage = StorageApiFactory.with_worker(self.scheduler.io_worker, self.config.debug())
         # for others to use
         self.cache.zone_finder = self.zone_finder
         self.cache.log_api = self.logger

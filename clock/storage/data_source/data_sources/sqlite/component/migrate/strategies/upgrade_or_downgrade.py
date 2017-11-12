@@ -84,6 +84,6 @@ class NoMigratePathFoundException(SqliteComponentMigratorException):
     def __init__(self, component: SqliteStorageComponent, migration_type: str, old_version: int, new_version: int):
         super().__init__(
             component, migration_type,
-            "no valid path to fully {migration_type} from {old} to {new} version was found"
+            "no valid path to fully {migration_type} from version {old} to {new} was found"
             .format(migration_type=migration_type, old=old_version, new=new_version)
         )

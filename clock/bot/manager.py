@@ -1,7 +1,7 @@
 from bot.action.core.action import ActionGroup
 from bot.action.core.command import CommandAction
 from bot.action.core.filter import MessageAction, TextMessageAction, NoPendingAction, PendingAction, InlineQueryAction, \
-    ChosenInlineResultAction
+    ChosenInlineResultAction, EditedMessageAction
 from bot.action.standard.about import AboutAction, VersionAction
 from bot.action.standard.admin import RestartAction, EvalAction, AdminActionWithErrorMessage, HaltAction
 from bot.action.standard.admin.config_status import ConfigStatusAction
@@ -48,6 +48,10 @@ class BotManager:
 
                     ChosenInlineResultAction().then(
                         ChosenInlineResultClockAction()
+                    ),
+
+                    EditedMessageAction().then(
+                        SaveMessageAction()
                     ),
 
                     MessageAction().then(
