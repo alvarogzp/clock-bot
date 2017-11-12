@@ -28,11 +28,11 @@ class MessageSqliteComponent(SqliteStorageComponent):
         self.sql("alter table message "
                  "add column migrate_from_chat_id integer")
 
-    def save_message(self, chat_id: int, message_id: int, user_id: int, date: int, text: str):
+    def save_message(self, chat_id: int, message_id: int, user_id: int, date: int, text: str, migrate_from_chat_id: int):
         self._sql("insert into message "
-                  "(timestamp, chat_id, message_id, user_id, date, text) "
-                  "values (strftime('%s', 'now'), ?, ?, ?, ?, ?)",
-                  (chat_id, message_id, user_id, date, text))
+                  "(timestamp, chat_id, message_id, user_id, date, text, migrate_from_chat_id) "
+                  "values (strftime('%s', 'now'), ?, ?, ?, ?, ?, ?)",
+                  (chat_id, message_id, user_id, date, text, migrate_from_chat_id))
 
     def save_command(self, message_id: int, command: str, command_args: str):
         self._sql("insert into command "
