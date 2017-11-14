@@ -14,33 +14,38 @@ class StorageApi:
         self.init()
 
     def init(self):
-        self.scheduler.schedule_no_result(self._init)
+        self.scheduler.schedule_no_result(self._init, "init")
 
     def save_query(self, query: ApiObject, time_point: TimePoint, locale: Locale, results_found: list,
                    results_sent: list, processing_seconds: float):
         self.scheduler.schedule_no_result(
-            lambda: self._save_query(query, time_point, locale, results_found, results_sent, processing_seconds)
+            lambda: self._save_query(query, time_point, locale, results_found, results_sent, processing_seconds),
+            "save_query"
         )
 
     def save_chosen_result(self, user: ApiObject, timestamp: str, chosen_zone_name: str, query: str,
                            choosing_seconds: float):
         self.scheduler.schedule_no_result(
-            lambda: self._save_chosen_result(user, timestamp, chosen_zone_name, query, choosing_seconds)
+            lambda: self._save_chosen_result(user, timestamp, chosen_zone_name, query, choosing_seconds),
+            "save_chosen_result"
         )
 
     def save_message(self, message: ApiObject):
         self.scheduler.schedule_no_result(
-            lambda: self._save_message(message)
+            lambda: self._save_message(message),
+            "save_message"
         )
 
     def save_command(self, message: ApiObject, command: str, command_args: str):
         self.scheduler.schedule_no_result(
-            lambda: self._save_command(message, command, command_args)
+            lambda: self._save_command(message, command, command_args),
+            "save_command"
         )
 
     def set_inactive_chat(self, chat: ApiObject, reason: str):
         self.scheduler.schedule_no_result(
-            lambda: self._set_inactive_chat(chat, reason)
+            lambda: self._set_inactive_chat(chat, reason),
+            "set_inactive_chat"
         )
 
     def _init(self):
