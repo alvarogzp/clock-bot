@@ -5,10 +5,11 @@ from bot.multithreading.worker import Worker
 
 
 class StorageOperation:
-    def __init__(self, worker: Worker, context_manager, func: callable, ignore_result: bool):
+    def __init__(self, worker: Worker, context_manager, func: callable, name: str, ignore_result: bool):
         self.worker = worker
         self.context_manager = context_manager
         self.func = func
+        self.name = name
         self.ignore_result = ignore_result
         self.result_queue = queue.Queue() if not ignore_result else None
 
@@ -21,7 +22,7 @@ class StorageOperation:
 
     def _get_work(self):
         func = self._wrapper_func
-        name = "storage_operation"
+        name = self._get_work_name()
         return Work(func, name)
 
     def _wrapper_func(self):
@@ -37,3 +38,11 @@ class StorageOperation:
     def _run_func_in_context_manager(self):
         with self.context_manager:
             return self.func()
+
+    def _get_work_name(self):
+        is_blocking = "NO" if self.ignore_result else ""
+        return ":".join([
+            "storage_operation",
+            self.name,
+            is_blocking + "blocking"
+        ])
