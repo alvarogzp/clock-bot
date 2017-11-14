@@ -11,11 +11,11 @@ class StorageScheduler:
     def set_context_manager(self, context_manager):
         self.context_manager = context_manager
 
-    def schedule_no_result(self, func: callable):
-        return self._schedule(func, ignore_result=True)
+    def schedule_no_result(self, func: callable, name: str):
+        return self._schedule(func, name, ignore_result=True)
 
-    def schedule_with_result(self, func: callable):
-        return self._schedule(func, ignore_result=False)
+    def schedule_with_result(self, func: callable, name: str):
+        return self._schedule(func, name, ignore_result=False)
 
-    def _schedule(self, func: callable, ignore_result: bool):
-        return StorageOperation(self.worker, self.context_manager, func, ignore_result).execute()
+    def _schedule(self, func: callable, name: str, ignore_result: bool):
+        return StorageOperation(self.worker, self.context_manager, func, name, ignore_result).execute()
