@@ -10,9 +10,9 @@ class LogFormatter:
         return FormattedText().normal("Time: {time_point}").start_format().bold(time_point=time_point).end_format()
 
     @staticmethod
-    def user(user: ApiObject):
-        return FormattedText().normal("From: {user}").start_format()\
-            .bold(user=UserFormatter(user).full_data).end_format()
+    def user(user: ApiObject, label: str = "From"):
+        return FormattedText().normal("{label}: {user}").start_format()\
+            .normal(label=label).bold(user=UserFormatter(user).full_data).end_format()
 
     @classmethod
     def query(cls, query: str, offset: str):
