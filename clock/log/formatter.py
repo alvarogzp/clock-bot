@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from babel import Locale
 from bot.action.util.format import UserFormatter, TimeFormatter, ChatFormatter
 from bot.action.util.textformat import FormattedText
@@ -98,6 +100,11 @@ class LogFormatter:
     def message_id(message_id: int):
         return FormattedText().normal("Id: {message_id}").start_format()\
             .bold(message_id=message_id).end_format()
+
+    @staticmethod
+    def date(date: int):
+        return FormattedText().normal("Date: {date}").start_format()\
+            .bold(date=datetime.fromtimestamp(date)).end_format()
 
     @staticmethod
     def message(*message_parts: FormattedText):
