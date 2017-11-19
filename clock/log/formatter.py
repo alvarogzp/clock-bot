@@ -1,5 +1,5 @@
 from babel import Locale
-from bot.action.util.format import UserFormatter, TimeFormatter
+from bot.action.util.format import UserFormatter, TimeFormatter, ChatFormatter
 from bot.action.util.textformat import FormattedText
 from bot.api.domain import ApiObject
 
@@ -13,6 +13,11 @@ class LogFormatter:
     def user(user: ApiObject, label: str = "From"):
         return FormattedText().normal("{label}: {user}").start_format()\
             .normal(label=label).bold(user=UserFormatter(user).full_data).end_format()
+
+    @staticmethod
+    def chat(chat: ApiObject):
+        return FormattedText().normal("Chat: {chat}").start_format()\
+            .bold(chat=ChatFormatter(chat).full_data).end_format()
 
     @classmethod
     def query(cls, query: str, offset: str):
