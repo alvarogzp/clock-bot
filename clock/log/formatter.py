@@ -107,5 +107,15 @@ class LogFormatter:
             .bold(date=datetime.fromtimestamp(date)).end_format()
 
     @staticmethod
+    def created(kind: str = "group"):
+        return FormattedText().bold("{kind} {created}").start_format()\
+            .normal(kind=kind.title(), created="created").end_format()
+
+    @staticmethod
+    def migrated(chat_id: int, direction: str = "to"):
+        return FormattedText().bold("Migrated {direction} chat {id}").start_format()\
+            .normal(direction=direction, id=chat_id).end_format()
+
+    @staticmethod
     def message(*message_parts: FormattedText):
         return FormattedText().newline().join(message_parts)
