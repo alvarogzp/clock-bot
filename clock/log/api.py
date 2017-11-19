@@ -10,6 +10,7 @@ from clock.log.formatter import LogFormatter
 LOG_TAG_QUERY = FormattedText().normal("QUERY")
 LOG_TAG_CHOSEN_RESULT = FormattedText().bold("CHOSEN")
 LOG_TAG_LOCALE_CACHE = FormattedText().bold("CACHE")
+LOG_TAG_MESSAGE = FormattedText().normal("MESSAGE")
 
 
 class LogApi:
@@ -76,3 +77,54 @@ class LogApi:
         )
 
         self.logger.log(LOG_TAG_LOCALE_CACHE, formatted_message)
+
+    def log_message(self, message: ApiObject):
+        formatted_text = self.formatter.text_as_title(message.text or "")
+        formatted_user = self._if(self.formatter.user, message.from_, pass_condition=True)
+        formatted_chat = self.formatter.chat(message.chat)
+        formatted_date = self.formatter.date(message.date)
+        formatted_message_id = self.formatter.message_id(message.message_id)
+        formatted_forward = self._if(self.formatter.forward, message.forward_date)
+        formatted_reply = self._if(self.formatter.reply, message.reply_to_message)
+        formatted_edit = self._if(self.formatter.edit, message.edit_date)
+        formatted_join = self._list(self.formatter.user, message.new_chat_members, "New member", pass_condition=True)
+        formatted_left = self._if(self.formatter.user, message.left_chat_member, "Left member", pass_condition=True)
+        formatted_created = self._if(self.formatter.created, message.group_chat_created)
+        formatted_migrated_to = self._if(self.formatter.migrated, message.migrate_to_chat_id, "to", pass_condition=True)
+        formatted_migrated_from = self._if(self.formatter.migrated, message.migrate_from_chat_id, "from", pass_condition=True)
+
+        formatted_items = (
+                formatted_text,
+                formatted_user,
+                formatted_chat,
+                formatted_date,
+                formatted_message_id,
+                formatted_forward,
+                formatted_reply,
+                formatted_edit,
+                formatted_join,
+                formatted_left,
+                formatted_created,
+                formatted_migrated_to,
+                formatted_migrated_from
+            )
+
+        formatted_items = filter(None, formatted_items)
+
+        formatted_message = self.formatter.message(*formatted_items)
+
+        self.logger.log(LOG_TAG_MESSAGE, formatted_message)
+
+    @staticmethod
+    def _if(func: callable, condition, *additional_params, pass_condition: bool = False):
+        if condition:
+            args = (condition,) + additional_params if pass_condition else additional_params
+            return func(*args)
+
+    def _list(self, func: callable, condition_list, *additional_params, pass_condition: bool = False):
+        items = []
+        for condition in condition_list or []:
+            item = self._if(func, condition, *additional_params, pass_condition=pass_condition)
+            if item:
+                items.append(item)
+        return self.formatter.message(*items) if items else None

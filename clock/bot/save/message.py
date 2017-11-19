@@ -1,5 +1,6 @@
 from bot.action.core.action import Action
 
+from clock.log.api import LogApi
 from clock.storage.api import StorageApi
 
 
@@ -7,14 +8,17 @@ class SaveMessageAction(Action):
     def __init__(self):
         super().__init__()
         self.storage = None  # type: StorageApi
+        self.logger = None  # type: LogApi
 
     def post_setup(self):
         self.storage = self.cache.storage
+        self.logger = self.cache.log_api
 
     def process(self, event):
         message = event.message
         self.storage.save_message(message)
         self._check_inactive(message)
+        self.logger.log_message(message)
 
     def _check_inactive(self, message):
         self._check_left_chat(message)
