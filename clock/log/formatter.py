@@ -91,5 +91,14 @@ class LogFormatter:
             .bold(message_edit="message edit").end_format()
 
     @staticmethod
+    def text_as_title(text: str):
+        return FormattedText().bold(text)
+
+    @staticmethod
+    def message_id(message_id: int):
+        return FormattedText().normal("Id: {message_id}").start_format()\
+            .bold(message_id=message_id).end_format()
+
+    @staticmethod
     def message(*message_parts: FormattedText):
         return FormattedText().newline().join(message_parts)
