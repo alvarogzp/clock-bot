@@ -76,5 +76,20 @@ class LogFormatter:
             .bold(caching_time=TimeFormatter.format(caching_seconds)).end_format()
 
     @staticmethod
+    def forward():
+        return FormattedText().normal("Is a {forwarded_message}").start_format()\
+            .bold(forwarded_message="forwarded message").end_format()
+
+    @staticmethod
+    def reply():
+        return FormattedText().normal("Is a {reply}").start_format()\
+            .bold(reply="reply").end_format()
+
+    @staticmethod
+    def edit():
+        return FormattedText().normal("Is a {message_edit}").start_format()\
+            .bold(message_edit="message edit").end_format()
+
+    @staticmethod
     def message(*message_parts: FormattedText):
         return FormattedText().newline().join(message_parts)
