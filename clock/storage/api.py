@@ -82,10 +82,12 @@ class StorageApi:
         is_edit = True if message.edit_date is not None else None
         left_chat_member = message.left_chat_member
         if left_chat_member:
+            self._save_user(left_chat_member)
             left_chat_member = left_chat_member.id
         new_chat_members = message.new_chat_members or [None]
         for new_chat_member in new_chat_members:
             if new_chat_member:
+                self._save_user(new_chat_member)
                 new_chat_member = new_chat_member.id
             self.data_source.save_message(
                 chat.id,
