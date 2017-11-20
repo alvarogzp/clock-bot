@@ -15,13 +15,13 @@ es-ES
 
 
 class LocaleCache:
-    def __init__(self, zone_finder_locale_cache: ZoneFinderLocaleCache, scheduler: SchedulerApi, log_api: LogApi,
+    def __init__(self, zone_finder_locale_cache: ZoneFinderLocaleCache, scheduler: SchedulerApi, logger: LogApi,
                  initial_locales_to_cache: str):
         self.locale_cache = zone_finder_locale_cache
         # using only one background thread to avoid consuming too many resources for locale caching
         # this is a background cache, quickly processing queries is more important
         self.worker = scheduler.new_worker_pool("locale_cache", min_workers=0, max_workers=1, max_seconds_idle=60)
-        self.log_api = log_api
+        self.logger = logger
         self._cache_initial_locales(self._parse_initial_locales(initial_locales_to_cache))
 
     @staticmethod
@@ -46,7 +46,7 @@ class LocaleCache:
     def _cache(self, locale: Locale):
         start_time = TimePoint.current_timestamp()
         self.locale_cache.cache(locale)
-        self.log_api.log_locale_cache(locale, TimePoint.current_timestamp() - start_time)
+        self.logger.log_locale_cache(locale, TimePoint.current_timestamp() - start_time)
 
     def is_cached(self, locale: Locale):
         return self.locale_cache.is_cached(locale)
