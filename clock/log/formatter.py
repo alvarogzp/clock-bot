@@ -1,5 +1,7 @@
+from datetime import datetime
+
 from babel import Locale
-from bot.action.util.format import UserFormatter, TimeFormatter
+from bot.action.util.format import UserFormatter, TimeFormatter, ChatFormatter
 from bot.action.util.textformat import FormattedText
 from bot.api.domain import ApiObject
 
@@ -10,9 +12,14 @@ class LogFormatter:
         return FormattedText().normal("Time: {time_point}").start_format().bold(time_point=time_point).end_format()
 
     @staticmethod
-    def user(user: ApiObject):
-        return FormattedText().normal("From: {user}").start_format()\
-            .bold(user=UserFormatter(user).full_data).end_format()
+    def user(user: ApiObject, label: str = "From"):
+        return FormattedText().normal("{label}: {user}").start_format()\
+            .normal(label=label).bold(user=UserFormatter(user).full_data).end_format()
+
+    @staticmethod
+    def chat(chat: ApiObject):
+        return FormattedText().normal("Chat: {chat}").start_format()\
+            .bold(chat=ChatFormatter(chat).full_data).end_format()
 
     @classmethod
     def query(cls, query: str, offset: str):
@@ -69,6 +76,45 @@ class LogFormatter:
     def caching_time(caching_seconds: float):
         return FormattedText().normal("Caching time: {caching_time}").start_format()\
             .bold(caching_time=TimeFormatter.format(caching_seconds)).end_format()
+
+    @staticmethod
+    def forward():
+        return FormattedText().normal("Is a {forwarded_message}").start_format()\
+            .bold(forwarded_message="forwarded message").end_format()
+
+    @staticmethod
+    def reply():
+        return FormattedText().normal("Is a {reply}").start_format()\
+            .bold(reply="reply").end_format()
+
+    @staticmethod
+    def edit():
+        return FormattedText().normal("Is a {message_edit}").start_format()\
+            .bold(message_edit="message edit").end_format()
+
+    @staticmethod
+    def text_as_title(text: str):
+        return FormattedText().bold(text)
+
+    @staticmethod
+    def message_id(message_id: int):
+        return FormattedText().normal("Id: {message_id}").start_format()\
+            .bold(message_id=message_id).end_format()
+
+    @staticmethod
+    def date(date: int):
+        return FormattedText().normal("Date: {date}").start_format()\
+            .bold(date=datetime.fromtimestamp(date)).end_format()
+
+    @staticmethod
+    def created(kind: str = "group"):
+        return FormattedText().bold("{kind} {created}").start_format()\
+            .normal(kind=kind.title(), created="created").end_format()
+
+    @staticmethod
+    def migrated(chat_id: int, direction: str = "to"):
+        return FormattedText().bold("Migrated {direction} chat {id}").start_format()\
+            .normal(direction=direction, id=chat_id).end_format()
 
     @staticmethod
     def message(*message_parts: FormattedText):

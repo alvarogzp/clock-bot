@@ -1,13 +1,20 @@
 from bot.action.core.action import Action
-from bot.multithreading.work import Work
 
 from clock.domain.datetimezone import DateTimeZone
 from clock.domain.time import TimePoint
-from clock.log.api import LogApi
-from clock.storage.api import StorageApi
 
 
 class ChosenInlineResultClockAction(Action):
+    def __init__(self):
+        super().__init__()
+        # initialized in post_setup
+        self.logger = None
+        self.storage = None
+
+    def post_setup(self):
+        self.logger = self.cache.log_api
+        self.storage = self.cache.storage
+
     def process(self, event):
         chosen_result = event.chosen_result
         user = chosen_result.from_
@@ -15,13 +22,11 @@ class ChosenInlineResultClockAction(Action):
         query = chosen_result.query
         choosing_time = self.__get_choosing_time(timestamp)
 
-        self.scheduler.io(Work(
-            lambda: StorageApi.get().save_chosen_result(user, timestamp, chosen_zone_name, query, choosing_time),
-            "storage:save_chosen_result"
-        ))
+        # async operations:
 
-        # event.logger is async
-        LogApi.get(event.logger).log_chosen_result(user, timestamp, chosen_zone_name, query, choosing_time)
+        self.storage.save_chosen_result(user, timestamp, chosen_zone_name, query, choosing_time)
+
+        self.logger.log_chosen_result(user, timestamp, chosen_zone_name, query, choosing_time)
 
     @staticmethod
     def __get_timestamp_and_chosen_zone_name_from_result_id(result_id):
