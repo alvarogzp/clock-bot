@@ -39,14 +39,6 @@ class MessageSqliteComponent(SqliteStorageComponent):
             "group_chat_created integer", "migrate_to_chat_id integer", "migrate_from_chat_id integer"
         )
 
-    def _add_columns(self, table: str, *columns: str):
-        for column in columns:
-            # table name and column definitions cannot be (safely) parametrized by the sqlite engine
-            # but as we trust the input (the caller use hardcoded params),
-            # we can format the statement in an unsafe way
-            sql = "alter table {table} add column {column}".format(table=table, column=column)
-            self.sql(sql)
-
     def save_message(self, chat_id: int, message_id: int, user_id: int, date: int, is_forward: bool,
                      reply_to_message: int, is_edit: bool, text: str, new_chat_member: int, left_chat_member: int,
                      group_chat_created: bool, migrate_to_chat_id: int, migrate_from_chat_id: int):
