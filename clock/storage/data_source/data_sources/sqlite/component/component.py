@@ -37,6 +37,17 @@ class SqliteStorageComponent:
         sql = " ".join(clauses)
         return self.sql(sql, *qmark_params, **named_params)
 
+    def select_field_one(self, field: str, *args, **kwargs):
+        """
+        Return the field value for the first result.
+
+        IMPORTANT:
+        Same precautions as :func:`select` must be taken.
+        """
+        row = self.select(fields=(field,), *args, **kwargs).fetchone()
+        if row:
+            return row[field]
+
     def add_columns(self, table: str, *columns: str):
         """
         IMPORTANT:
