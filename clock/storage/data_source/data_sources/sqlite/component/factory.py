@@ -23,8 +23,8 @@ class SqliteStorageComponentFactory:
     def user(self):
         return self._initialized(UserSqliteComponent())
 
-    def query(self):
-        return self._initialized(QuerySqliteComponent())
+    def query(self, user: UserSqliteComponent):
+        return self._initialized(QuerySqliteComponent(user))
 
     def chat(self):
         return self._initialized(ChatSqliteComponent())

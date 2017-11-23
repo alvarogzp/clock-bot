@@ -45,7 +45,7 @@ class SqliteStorageDataSource(StorageDataSource):
         components = SqliteStorageComponentFactory(self.connection)
         self.user = components.user()
         self.chat = components.chat()
-        self.query = components.query()
+        self.query = components.query(self.user)
         self.message = components.message()
         self.active_chat = components.active_chat()
 
