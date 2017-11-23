@@ -3,7 +3,7 @@ from clock.storage.data_source.data_sources.sqlite.component.components.user imp
 
 
 class QuerySqliteComponent(SqliteStorageComponent):
-    version = 1
+    version = 2
 
     def __init__(self, user: UserSqliteComponent):
         super().__init__("query", self.version)
@@ -16,6 +16,7 @@ class QuerySqliteComponent(SqliteStorageComponent):
                   "time_point text not null,"
                   "query text,"
                   "offset text,"
+                  "language_code text,"
                   "locale text,"
                   "results_found_len integer,"
                   "results_sent_len integer,"
@@ -30,13 +31,14 @@ class QuerySqliteComponent(SqliteStorageComponent):
                   "choosing_seconds real"
                   ")")
 
-    def save_query(self, user_id: int, timestamp: str, query: str, offset: str, locale: str, results_found_len: int,
-                   results_sent_len: int, processing_seconds: float):
+    def save_query(self, user_id: int, timestamp: str, query: str, offset: str, language_code: str, locale: str,
+                   results_found_len: int, results_sent_len: int, processing_seconds: float):
         self._sql("insert into query "
-                  "(timestamp, user_id, time_point, query, offset, locale, results_found_len, results_sent_len, "
-                  "processing_seconds) "
-                  "values (strftime('%s', 'now'), ?, ?, ?, ?, ?, ?, ?, ?)",
-                  (user_id, timestamp, query, offset, locale, results_found_len, results_sent_len, processing_seconds))
+                  "(timestamp, user_id, time_point, query, offset, language_code, locale, results_found_len, "
+                  "results_sent_len, processing_seconds) "
+                  "values (strftime('%s', 'now'), ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                  (user_id, timestamp, query, offset, language_code, locale, results_found_len, results_sent_len,
+                   processing_seconds))
 
     def save_chosen_result(self, user_id: int, timestamp: str, chosen_zone_name: str, query: str,
                            choosing_seconds: float):

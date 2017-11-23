@@ -2,8 +2,8 @@ class StorageDataSource:
     def init(self):
         raise NotImplementedError()
 
-    def save_query(self, user_id: int, timestamp: str, query: str, offset: str, locale: str, results_found_len: int,
-                   results_sent_len: int, processing_seconds: float):
+    def save_query(self, user_id: int, timestamp: str, query: str, offset: str, language_code: str, locale: str,
+                   results_found_len: int, results_sent_len: int, processing_seconds: float):
         raise NotImplementedError()
 
     def save_chosen_result(self, user_id: int, timestamp: str, chosen_zone_name: str, query: str,
