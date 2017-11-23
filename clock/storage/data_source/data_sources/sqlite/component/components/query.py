@@ -1,11 +1,13 @@
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
+from clock.storage.data_source.data_sources.sqlite.component.components.user import UserSqliteComponent
 
 
 class QuerySqliteComponent(SqliteStorageComponent):
     version = 1
 
-    def __init__(self):
+    def __init__(self, user: UserSqliteComponent):
         super().__init__("query", self.version)
+        self.user = user
 
     def create(self):
         self._sql("create table if not exists query ("
