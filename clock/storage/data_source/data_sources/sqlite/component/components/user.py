@@ -50,3 +50,51 @@ class UserSqliteComponent(SqliteStorageComponent):
                   "select user_id, first_name, last_name, username, language_code, "
                   "timestamp_added, strftime('%s', 'now') "
                   "from user where user_id = ?", (user_id,))
+
+    def get_user_language_code_at(self, user_id: int, timestamp: str):
+        table, rowid = self._find_user_at(user_id, timestamp)
+        return self.select_field_one(
+            field="language_code",
+            table=table,
+            where="rowid = :rowid",
+            rowid=rowid
+        )
+
+    def _find_user_at(self, user_id: int, timestamp: str):
+        timestamp = int(timestamp)
+        # try with current user info
+        user = self.select(
+            fields=("rowid", "timestamp_added"),
+            table="user",
+            where="user_id = :user_id",
+            user_id=user_id
+        ).fetchone()
+        if user is None:
+            # if the user is not in the user table, we do not know about their
+            raise Exception("unknown user: {user_id}".format(user_id=user_id))
+        last_added = user["timestamp_added"]
+        if self.__was_valid_at(timestamp, last_added):
+            rowid = user["rowid"]
+            return "user", rowid
+        # now iterate the user_history entries for that user
+        user_history = self.select(
+            fields=("rowid", "timestamp_added", "timestamp_removed"),
+            table="user_history",
+            where="user_id = :user_id",
+            order_by="cast(timestamp_removed as integer) desc",
+            user_id=user_id
+        )
+        for user in user_history:
+            added = user["timestamp_added"]
+            removed = user["timestamp_removed"]
+            if self.__was_valid_at(timestamp, added, removed):
+                rowid = user["rowid"]
+                return "user_history", rowid
+        return Exception("user {user_id} was unknown at {timestamp}".format(user_id=user_id, timestamp=timestamp))
+
+    @staticmethod
+    def __was_valid_at(timestamp: int, timestamp_added: str, timestamp_removed: str = None):
+        if timestamp_removed is None:
+            return int(timestamp_added) <= timestamp
+        else:
+            return int(timestamp_added) <= timestamp <= int(timestamp_removed)
