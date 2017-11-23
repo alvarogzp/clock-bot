@@ -13,7 +13,7 @@ class SqliteStorageComponent:
     def create(self):
         raise NotImplementedError()
 
-    def _add_columns(self, table: str, *columns: str):
+    def add_columns(self, table: str, *columns: str):
         """
         IMPORTANT:
         Table name and column definitions are added to the sql statement in an unsafe way!

@@ -32,7 +32,7 @@ class MessageSqliteComponent(SqliteStorageComponent):
                   ")")
 
     def upgrade_from_1_to_2(self):
-        self._add_columns(
+        self.add_columns(
             "message",
             "is_forward integer", "reply_to_message integer", "is_edit integer",
             "new_chat_member integer", "left_chat_member integer",
