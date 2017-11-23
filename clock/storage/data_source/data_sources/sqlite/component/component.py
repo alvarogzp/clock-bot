@@ -1,4 +1,5 @@
 from sqlite3 import Connection
+from typing import Iterable
 
 
 class SqliteStorageComponent:
@@ -12,6 +13,29 @@ class SqliteStorageComponent:
 
     def create(self):
         raise NotImplementedError()
+
+    def select(self, fields: Iterable[str] = ("*",), table: str = "",
+               where: str = "", other: str = "",
+               *qmark_params, **named_params):
+        """
+        IMPORTANT:
+        All arguments except qmark_params and named_params are added to the sql statement in an unsafe way!
+        So, untrusted input MUST NOT be passed to them.
+        Their values should ideally be static string literals.
+        If computed at runtime, they MUST come from a TOTALLY trusted source (like another module string constant
+        or an admin-controlled configuration value).
+        """
+        clauses = []
+        fields = ", ".join(fields)
+        clauses.append("select {fields}".format(fields=fields))  # unsafe formatting
+        if table:
+            clauses.append("from {table}".format(table=table))  # unsafe formatting
+        if where:
+            clauses.append("where {where}".format(where=where))  # unsafe formatting
+        if other:
+            clauses.append("{other}".format(other=other))  # unsafe formatting
+        sql = " ".join(clauses)
+        return self.sql(sql, *qmark_params, **named_params)
 
     def add_columns(self, table: str, *columns: str):
         """
