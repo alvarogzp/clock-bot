@@ -31,6 +31,19 @@ class QuerySqliteComponent(SqliteStorageComponent):
                   "choosing_seconds real"
                   ")")
 
+    def upgrade_from_1_to_2(self):
+        self.add_columns("query", "language_code text")
+        queries = self.select(fields=("rowid", "user_id", "timestamp"), table="query")  # get all queries
+        for query in queries:
+            rowid = query["rowid"]
+            user_id = query["user_id"]
+            timestamp = query["timestamp"]
+            language_code = self.user.get_user_language_code_at(user_id, timestamp)
+            self.sql("update query "
+                     "set language_code = :language_code "
+                     "where rowid = :rowid",
+                     language_code=language_code, rowid=rowid)
+
     def save_query(self, user_id: int, timestamp: str, query: str, offset: str, language_code: str, locale: str,
                    results_found_len: int, results_sent_len: int, processing_seconds: float):
         self._sql("insert into query "
