@@ -72,7 +72,7 @@ class UserSqliteComponent(SqliteStorageComponent):
                         "username = :username and language_code = :language_code "
                         "and (is_bot = :is_bot or (is_bot is null and :is_bot is null))",
                         user_id=user_id, first_name=first_name, last_name=last_name, username=username,
-                        language_code=language_code, is_bot=is_bot).fetchone()
+                        language_code=language_code, is_bot=is_bot).first()
 
     def __add_to_user_history(self, user_id: int):
         # if user does not exists in user table, nothing will be inserted into user_history, as expected for new users
