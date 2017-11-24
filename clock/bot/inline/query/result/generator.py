@@ -29,7 +29,7 @@ class AnswerInlineQueryResultGenerator:
             "inline_query_id": query.id,
             "results": results,
             "next_offset": next_offset,
-            "cache_time": 0,
+            "cache_time": 1,  # same queries on the same second will return same results
             "is_personal": "true"
         }
         if len(results) == 0:
