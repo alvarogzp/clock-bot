@@ -1,6 +1,7 @@
-from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.base import StatementBuilder
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
+from clock.storage.data_source.data_sources.sqlite.sql.schema.table import TableSchema
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.base import StatementBuilder
 
 
 class CreateTableBuilder(StatementBuilder):
@@ -24,6 +25,12 @@ class CreateTableBuilder(StatementBuilder):
 
     def column(self, column: Column):
         self._columns.append(column.str())
+        return self
+
+    def from_schema(self, schema: TableSchema):
+        self.table(schema.table)
+        for column in schema.columns.get_all():
+            self.column(column)
         return self
 
     def build_sql(self):
