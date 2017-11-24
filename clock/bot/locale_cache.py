@@ -18,13 +18,16 @@ class LocaleCache:
     def __init__(self, zone_finder_locale_cache: ZoneFinderLocaleCache, scheduler: SchedulerApi, logger: LogApi,
                  initial_locales_to_cache: str):
         self.locale_cache = zone_finder_locale_cache
+        self.logger = logger
+
         # using only one background thread to avoid consuming too many resources for locale caching
         # this is a background cache, quickly processing queries is more important
         self.worker = scheduler.new_worker_pool("locale_cache", min_workers=0, max_workers=1, max_seconds_idle=60)
-        self.logger = logger
-        self._cache_initial_locales(self._parse_initial_locales(
+
+        initial_language_codes = self._parse_initial_locales(
             initial_locales_to_cache or DEFAULT_INITIAL_LOCALES_TO_CACHE
-        ))
+        )
+        self._cache_initial_language_codes(initial_language_codes)
 
     @staticmethod
     def _parse_initial_locales(initial_locales_to_cache: str):
@@ -33,10 +36,11 @@ class LocaleCache:
                 if language_code.startswith("#"):
                     # a comment was found, ignore until the next line
                     break
-                yield LocaleGetter.from_language_code(language_code)
+                yield language_code
 
-    def _cache_initial_locales(self, initial_locales_to_cache: iter):
-        for locale in initial_locales_to_cache:
+    def _cache_initial_language_codes(self, initial_language_codes_to_cache: iter):
+        for language_code in initial_language_codes_to_cache:
+            locale = LocaleGetter.from_language_code(language_code)
             self.cache(locale)
 
     def cache(self, locale: Locale):
