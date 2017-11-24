@@ -1,6 +1,7 @@
 from sqlite3 import Connection
 from typing import Iterable
 
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.factory import StatementBuilderFactory
 from clock.storage.data_source.data_sources.sqlite.sql.statement.statement import SingleSqlStatement
 
 
@@ -9,9 +10,11 @@ class SqliteStorageComponent:
         self.name = name
         self.version = version
         self.connection = None  # type: Connection
+        self.statement = None  # type: StatementBuilderFactory
 
     def set_connection(self, connection: Connection):
         self.connection = connection
+        self.statement = StatementBuilderFactory(connection)
 
     def create(self):
         raise NotImplementedError()
