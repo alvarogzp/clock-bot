@@ -15,7 +15,7 @@ class SqliteStorageComponent:
         raise NotImplementedError()
 
     def select(self, fields: Iterable[str] = ("*",), table: str = "",
-               where: str = "", order_by: str = "", other: str = "",
+               where: str = "", group_by: str = "", order_by: str = "", limit: int = None, other: str = "",
                *qmark_params, **named_params):
         """
         IMPORTANT:
@@ -32,8 +32,12 @@ class SqliteStorageComponent:
             clauses.append("from {table}".format(table=table))  # unsafe formatting
         if where:
             clauses.append("where {where}".format(where=where))  # unsafe formatting
+        if group_by:
+            clauses.append("group by {group_by}".format(group_by=group_by))  # unsafe formatting
         if order_by:
             clauses.append("order by {order_by}".format(order_by=order_by))  # unsafe formatting
+        if limit:
+            clauses.append("limit {limit}".format(limit=limit))  # unsafe formatting
         if other:
             clauses.append("{other}".format(other=other))  # unsafe formatting
         sql = " ".join(clauses)
