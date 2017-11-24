@@ -49,8 +49,10 @@ class SqliteStorageComponent:
 
         IMPORTANT:
         Same precautions as :func:`select` must be taken.
+
+        :deprecated: use self.statement.select()...execute().map_field() instead
         """
-        return (row[field] for row in self.select(fields=(field,), *args, **kwargs))
+        return self.select(fields=(field,), *args, **kwargs).map_field()
 
     def select_field_one(self, field: str, *args, **kwargs):
         """
@@ -58,10 +60,10 @@ class SqliteStorageComponent:
 
         IMPORTANT:
         Same precautions as :func:`select` must be taken.
+
+        :deprecated: use self.statement.select()...execute().first_field() instead
         """
-        row = self.select(fields=(field,), *args, **kwargs).fetchone()
-        if row:
-            return row[field]
+        return self.select(fields=(field,), *args, **kwargs).first_field()
 
     def add_columns(self, table: str, *columns: str):
         """
