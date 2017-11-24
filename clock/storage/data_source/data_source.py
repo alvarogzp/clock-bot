@@ -24,7 +24,7 @@ class StorageDataSource:
     def save_chat(self, chat_id: int, chat_type: str, title: str, username: str):
         raise NotImplementedError()
 
-    def save_user(self, user_id: int, first_name: str, last_name: str, username: str, language_code: str):
+    def save_user(self, user_id: int, first_name: str, last_name: str, username: str, language_code: str, is_bot: bool):
         raise NotImplementedError()
 
     def set_active_chat(self, chat_id: int):

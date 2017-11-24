@@ -67,7 +67,9 @@ class StorageApi:
         )
 
     def _save_user(self, user: ApiObject):
-        self.data_source.save_user(user.id, user.first_name, user.last_name, user.username, user.language_code)
+        self.data_source.save_user(
+            user.id, user.first_name, user.last_name, user.username, user.language_code, user.is_bot
+        )
 
     def _save_chosen_result(self, user: ApiObject, timestamp: str, chosen_zone_name: str, query: str,
                             choosing_seconds: float):

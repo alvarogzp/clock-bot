@@ -2,7 +2,7 @@ from clock.storage.data_source.data_sources.sqlite.component.component import Sq
 
 
 class UserSqliteComponent(SqliteStorageComponent):
-    version = 1
+    version = 2
 
     def __init__(self):
         super().__init__("user", self.version)
@@ -14,6 +14,7 @@ class UserSqliteComponent(SqliteStorageComponent):
                   "last_name text,"
                   "username text,"
                   "language_code text,"
+                  "is_bot integer,"  # boolean
                   "timestamp_added text"
                   ")")
         self._sql("create table if not exists user_history ("
@@ -22,32 +23,42 @@ class UserSqliteComponent(SqliteStorageComponent):
                   "last_name text,"
                   "username text,"
                   "language_code text,"
+                  "is_bot integer,"  # boolean
                   "timestamp_added text,"
                   "timestamp_removed text"
                   ")")
 
-    def save_user(self, user_id: int, first_name: str, last_name: str, username: str, language_code: str):
+    def upgrade_from_1_to_2(self):
+        self.add_columns("user", "is_bot integer")
+        self.add_columns("user_history", "is_bot integer")
+
+    def save_user(self, user_id: int, first_name: str, last_name: str, username: str, language_code: str, is_bot: bool):
         first_name = self._empty_if_none(first_name)
         last_name = self._empty_if_none(last_name)
         username = self._empty_if_none(username)
         language_code = self._empty_if_none(language_code)
-        if not self.__is_user_saved_equal(user_id, first_name, last_name, username, language_code):
+        if not self.__is_user_saved_equal(user_id, first_name, last_name, username, language_code, is_bot):
             self.__add_to_user_history(user_id)
             self._sql("insert or replace into user "
-                      "(user_id, first_name, last_name, username, language_code, timestamp_added) "
-                      "values (?, ?, ?, ?, ?, strftime('%s', 'now'))",
-                      (user_id, first_name, last_name, username, language_code))
+                      "(user_id, first_name, last_name, username, language_code, is_bot, timestamp_added) "
+                      "values (?, ?, ?, ?, ?, ?, strftime('%s', 'now'))",
+                      (user_id, first_name, last_name, username, language_code, is_bot))
 
-    def __is_user_saved_equal(self, user_id: int, first_name: str, last_name: str, username: str, language_code: str):
-        return self._sql("select 1 from user where "
-                         "user_id = ? and first_name = ? and last_name = ? and username = ? and language_code = ?",
-                         (user_id, first_name, last_name, username, language_code)).fetchone()
+    def __is_user_saved_equal(self, user_id: int, first_name: str, last_name: str, username: str, language_code: str,
+                              is_bot: bool):
+        return self.sql("select 1 from user where "
+                        "user_id = :user_id and first_name = :first_name and last_name = :last_name and "
+                        "username = :username and language_code = :language_code "
+                        "and (is_bot = :is_bot or (is_bot is null and :is_bot is null))",
+                        user_id=user_id, first_name=first_name, last_name=last_name, username=username,
+                        language_code=language_code, is_bot=is_bot).fetchone()
 
     def __add_to_user_history(self, user_id: int):
         # if user does not exists in user table, nothing will be inserted into user_history, as expected for new users
         self._sql("insert into user_history "
-                  "(user_id, first_name, last_name, username, language_code, timestamp_added, timestamp_removed) "
-                  "select user_id, first_name, last_name, username, language_code, "
+                  "(user_id, first_name, last_name, username, language_code, is_bot, timestamp_added, "
+                  "timestamp_removed) "
+                  "select user_id, first_name, last_name, username, language_code, is_bot, "
                   "timestamp_added, strftime('%s', 'now') "
                   "from user where user_id = ?", (user_id,))
 
