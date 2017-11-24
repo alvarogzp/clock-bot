@@ -14,8 +14,8 @@ class SqliteStorageComponent:
     def create(self):
         raise NotImplementedError()
 
-    def select(self, fields: Iterable[str] = ("*",), table: str = "",
-               where: str = "", group_by: str = "", order_by: str = "", limit: int = None, other: str = "",
+    def select(self, fields: Iterable[str] = ("*",), table: str = None,
+               where: str = None, group_by: str = None, order_by: str = None, limit: int = None, other: str = None,
                *qmark_params, **named_params):
         """
         IMPORTANT:
@@ -28,17 +28,17 @@ class SqliteStorageComponent:
         clauses = []
         fields = ", ".join(fields)
         clauses.append("select {fields}".format(fields=fields))  # unsafe formatting
-        if table:
+        if table is not None:
             clauses.append("from {table}".format(table=table))  # unsafe formatting
-        if where:
+        if where is not None:
             clauses.append("where {where}".format(where=where))  # unsafe formatting
-        if group_by:
+        if group_by is not None:
             clauses.append("group by {group_by}".format(group_by=group_by))  # unsafe formatting
-        if order_by:
+        if order_by is not None:
             clauses.append("order by {order_by}".format(order_by=order_by))  # unsafe formatting
-        if limit:
+        if limit is not None:
             clauses.append("limit {limit}".format(limit=limit))  # unsafe formatting
-        if other:
+        if other is not None:
             clauses.append("{other}".format(other=other))  # unsafe formatting
         sql = " ".join(clauses)
         return self.sql(sql, *qmark_params, **named_params)
