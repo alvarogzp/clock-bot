@@ -1,6 +1,7 @@
 from sqlite3 import Connection
 from typing import Iterable
 
+from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.factory import StatementBuilderFactory
 from clock.storage.data_source.data_sources.sqlite.sql.statement.statement import SingleSqlStatement
@@ -73,12 +74,13 @@ class SqliteStorageComponent:
         Their values should ideally be static string literals.
         If computed at runtime, they MUST come from a TOTALLY trusted source (like another module string constant
         or an admin-controlled configuration value).
+
+        :deprecated: use self.statement.alter_table() instead
         """
+        alter_table = self.statement.alter_table().table(Table(table))
         for column in columns:
-            # table name and column definitions cannot be (safely) parametrized by the sqlite engine
-            # but as we trust the input, we can format the statement in an unsafe way
-            sql = "alter table {table} add column {column}".format(table=table, column=column)
-            self.sql(sql)
+            alter_table.add_column(Column(*column.split(" ")))
+        alter_table.execute()
 
     def sql(self, sql: str, *qmark_params, **named_params):
         return SingleSqlStatement(self.connection, sql).execute(*qmark_params, **named_params)
