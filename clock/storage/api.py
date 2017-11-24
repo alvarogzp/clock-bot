@@ -48,6 +48,12 @@ class StorageApi:
             "set_inactive_chat"
         )
 
+    def get_recent_queries_language_codes(self, limit: int):
+        return self.scheduler.schedule_with_result(
+            lambda: self._get_recent_queries_language_codes(limit),
+            "get_recent_queries_language_codes"
+        )
+
     def _init(self):
         self.data_source.init()
 
@@ -120,3 +126,6 @@ class StorageApi:
 
     def _set_inactive_chat(self, chat: ApiObject, reason: str):
         self.data_source.set_inactive_chat(chat.id, reason)
+
+    def _get_recent_queries_language_codes(self, limit: int):
+        return self.data_source.get_recent_queries_language_codes(limit)
