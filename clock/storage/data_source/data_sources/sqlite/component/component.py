@@ -1,6 +1,8 @@
 from sqlite3 import Connection
 from typing import Iterable
 
+from clock.storage.data_source.data_sources.sqlite.sql.statement.statement import SingleSqlStatement
+
 
 class SqliteStorageComponent:
     def __init__(self, name: str, version: int):
@@ -79,17 +81,13 @@ class SqliteStorageComponent:
             self.sql(sql)
 
     def sql(self, sql: str, *qmark_params, **named_params):
-        there_are_qmark_params = len(qmark_params) > 0
-        there_are_named_params = len(named_params) > 0
-        if there_are_qmark_params and there_are_named_params:
-            raise Exception("all params must be of the same type (qmark or named) for a single query")
-        params = qmark_params
-        if there_are_named_params:
-            params = named_params
-        return self._sql(sql, params)
+        return SingleSqlStatement(self.connection, sql).execute(*qmark_params, **named_params)
 
     def _sql(self, sql: str, params=()):
-        return self.connection.execute(sql, params)
+        """
+        :deprecated: use self.sql instead
+        """
+        return SingleSqlStatement(self.connection, sql).execute_for_params(params).cursor
 
     @staticmethod
     def _empty_if_none(field: str):
