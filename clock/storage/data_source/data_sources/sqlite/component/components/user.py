@@ -46,29 +46,12 @@ class UserSqliteComponent(SqliteStorageComponent):
         super().__init__("user", self.version)
 
     def create(self):
-        self._sql("create table if not exists user ("
-                  "user_id integer primary key not null,"
-                  "first_name text,"
-                  "last_name text,"
-                  "username text,"
-                  "language_code text,"
-                  "is_bot integer,"  # boolean
-                  "timestamp_added text"
-                  ")")
-        self._sql("create table if not exists user_history ("
-                  "user_id integer not null,"
-                  "first_name text,"
-                  "last_name text,"
-                  "username text,"
-                  "language_code text,"
-                  "is_bot integer,"  # boolean
-                  "timestamp_added text,"
-                  "timestamp_removed text"
-                  ")")
+        self.statement.create_table().from_schema(USER).execute()
+        self.statement.create_table().from_schema(USER_HISTORY).execute()
 
     def upgrade_from_1_to_2(self):
-        self.add_columns("user", "is_bot integer")
-        self.add_columns("user_history", "is_bot integer")
+        self.statement.alter_table().from_schema(USER, 2).execute()
+        self.statement.alter_table().from_schema(USER_HISTORY, 2).execute()
 
     def save_user(self, user_id: int, first_name: str, last_name: str, username: str, language_code: str, is_bot: bool):
         first_name = self._empty_if_none(first_name)
