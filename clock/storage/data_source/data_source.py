@@ -33,5 +33,8 @@ class StorageDataSource:
     def set_inactive_chat(self, chat_id: int, reason: str):
         raise NotImplementedError()
 
+    def get_recent_queries_language_codes(self, limit: int):
+        raise NotImplementedError()
+
     def context_manager(self):
         raise NotImplementedError()

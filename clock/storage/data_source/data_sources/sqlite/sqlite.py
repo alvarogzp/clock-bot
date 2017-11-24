@@ -76,6 +76,9 @@ class SqliteStorageDataSource(StorageDataSource):
     def set_inactive_chat(self, *args):
         return self.active_chat.set_inactive(*args)
 
+    def get_recent_queries_language_codes(self, *args):
+        return self.query.get_recent_queries_language_codes(*args)
+
     def context_manager(self):
         return self
 
