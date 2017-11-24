@@ -1,6 +1,7 @@
 from sqlite3 import Connection
 from typing import Iterable
 
+from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.factory import StatementBuilderFactory
 from clock.storage.data_source.data_sources.sqlite.sql.statement.statement import SingleSqlStatement
 
@@ -29,24 +30,18 @@ class SqliteStorageComponent:
         Their values should ideally be static string literals.
         If computed at runtime, they MUST come from a TOTALLY trusted source (like another module string constant
         or an admin-controlled configuration value).
+
+        :deprecated: use self.statement.select() instead
         """
-        clauses = []
-        fields = ", ".join(fields)
-        clauses.append("select {fields}".format(fields=fields))  # unsafe formatting
-        if table is not None:
-            clauses.append("from {table}".format(table=table))  # unsafe formatting
-        if where is not None:
-            clauses.append("where {where}".format(where=where))  # unsafe formatting
-        if group_by is not None:
-            clauses.append("group by {group_by}".format(group_by=group_by))  # unsafe formatting
-        if order_by is not None:
-            clauses.append("order by {order_by}".format(order_by=order_by))  # unsafe formatting
-        if limit is not None:
-            clauses.append("limit {limit}".format(limit=limit))  # unsafe formatting
-        if other is not None:
-            clauses.append("{other}".format(other=other))  # unsafe formatting
-        sql = " ".join(clauses)
-        return self.sql(sql, *qmark_params, **named_params)
+        return self.statement.select()\
+            .fields(*fields)\
+            .table(Table(table))\
+            .where(where)\
+            .group_by(group_by)\
+            .order_by(order_by)\
+            .limit(limit)\
+            .other(other)\
+            .execute(*qmark_params, **named_params)
 
     def select_field(self, field: str, *args, **kwargs):
         """
