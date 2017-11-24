@@ -59,3 +59,12 @@ class QuerySqliteComponent(SqliteStorageComponent):
                   "(timestamp, user_id, time_point, chosen_zone_name, query, choosing_seconds) "
                   "values (strftime('%s', 'now'), ?, ?, ?, ?, ?)",
                   (user_id, timestamp, chosen_zone_name, query, choosing_seconds))
+
+    def get_recent_queries_language_codes(self, limit: int):
+        return list(self.select_field(
+            field="language_code",
+            table="query",
+            group_by="language_code",
+            order_by="cast(timestamp as integer) desc",
+            limit=limit
+        ))
