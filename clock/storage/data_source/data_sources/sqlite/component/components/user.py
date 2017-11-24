@@ -86,7 +86,7 @@ class UserSqliteComponent(SqliteStorageComponent):
     def get_user_language_code_at(self, user_id: int, timestamp: str):
         table, rowid = self._find_user_at(user_id, timestamp)
         return self.select_field_one(
-            field="language_code",
+            field=COLUMN_NAME_LANGUAGE_CODE,
             table=table,
             where="rowid = :rowid",
             rowid=rowid
@@ -96,32 +96,32 @@ class UserSqliteComponent(SqliteStorageComponent):
         timestamp = int(timestamp)
         # try with current user info
         user = self.select(
-            fields=("rowid", "timestamp_added"),
-            table="user",
-            where="user_id = :user_id",
+            fields=("rowid", COLUMN_NAME_TIMESTAMP_ADDED),
+            table=TABLE_NAME_USER,
+            where="{user_id} = :user_id".format(user_id=COLUMN_NAME_USER_ID),
             user_id=user_id
         ).fetchone()
         if user is None:
             # if the user is not in the user table, we do not know about their
             raise Exception("unknown user: {user_id}".format(user_id=user_id))
-        last_added = user["timestamp_added"]
+        last_added = user[COLUMN_NAME_TIMESTAMP_ADDED]
         if self.__was_valid_at(timestamp, last_added):
             rowid = user["rowid"]
-            return "user", rowid
+            return TABLE_NAME_USER, rowid
         # now iterate the user_history entries for that user
         user_history = self.select(
-            fields=("rowid", "timestamp_added", "timestamp_removed"),
-            table="user_history",
-            where="user_id = :user_id",
-            order_by="cast(timestamp_removed as integer) desc",
+            fields=("rowid", COLUMN_NAME_TIMESTAMP_ADDED, COLUMN_NAME_TIMESTAMP_REMOVED),
+            table=TABLE_NAME_USER_HISTORY,
+            where="{user_id} = :user_id".format(user_id=COLUMN_NAME_USER_ID),
+            order_by="cast({timestamp_removed} as integer) desc".format(timestamp_removed=COLUMN_NAME_TIMESTAMP_REMOVED),
             user_id=user_id
         )
         for user in user_history:
-            added = user["timestamp_added"]
-            removed = user["timestamp_removed"]
+            added = user[COLUMN_NAME_TIMESTAMP_ADDED]
+            removed = user[COLUMN_NAME_TIMESTAMP_REMOVED]
             if self.__was_valid_at(timestamp, added, removed):
                 rowid = user["rowid"]
-                return "user_history", rowid
+                return TABLE_NAME_USER_HISTORY, rowid
         return Exception("user {user_id} was unknown at {timestamp}".format(user_id=user_id, timestamp=timestamp))
 
     @staticmethod
