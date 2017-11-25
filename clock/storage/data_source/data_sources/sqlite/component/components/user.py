@@ -67,12 +67,14 @@ class UserSqliteComponent(SqliteStorageComponent):
 
     def __is_user_saved_equal(self, user_id: int, first_name: str, last_name: str, username: str, language_code: str,
                               is_bot: bool):
-        return self.sql("select 1 from user where "
-                        "user_id = :user_id and first_name = :first_name and last_name = :last_name and "
-                        "username = :username and language_code = :language_code "
-                        "and (is_bot = :is_bot or (is_bot is null and :is_bot is null))",
-                        user_id=user_id, first_name=first_name, last_name=last_name, username=username,
-                        language_code=language_code, is_bot=is_bot).first()
+        return self.statement.select()\
+            .fields("1").table(USER.table)\
+            .where("user_id = :user_id and first_name = :first_name and last_name = :last_name and "
+                   "username = :username and language_code = :language_code "
+                   "and (is_bot = :is_bot or (is_bot is null and :is_bot is null))")\
+            .execute(user_id=user_id, first_name=first_name, last_name=last_name, username=username,
+                     language_code=language_code, is_bot=is_bot)\
+            .first()
 
     def __add_to_user_history(self, user_id: int):
         # if user does not exists in user table, nothing will be inserted into user_history, as expected for new users
