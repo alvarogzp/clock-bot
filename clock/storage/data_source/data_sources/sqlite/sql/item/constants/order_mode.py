@@ -1,7 +1,7 @@
-from clock.storage.data_source.data_sources.sqlite.sql.item.base import SimpleItem
+from clock.storage.data_source.data_sources.sqlite.sql.item.base import NamedItem
 
 
-class OrderMode(SimpleItem):
+class OrderMode(NamedItem):
     pass
 
 
