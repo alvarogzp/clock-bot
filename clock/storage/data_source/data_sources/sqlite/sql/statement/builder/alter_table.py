@@ -1,10 +1,10 @@
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
-from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.schema.table import TableSchema
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.base import StatementBuilder
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.table import TableClause
 
 
-class AlterTableBuilder(StatementBuilder):
+class AlterTableBuilder(TableClause, StatementBuilder):
     """
     IMPORTANT:
     Table name and column definitions are added to the sql statement in an unsafe way!
@@ -16,12 +16,7 @@ class AlterTableBuilder(StatementBuilder):
 
     def __init__(self):
         super().__init__(multiple_statements=True)
-        self._table = None
         self._columns = []
-
-    def table(self, table: Table):
-        self._table = table.str()
-        return self
 
     def add_column(self, column: Column):
         self._columns.append(column.str())
