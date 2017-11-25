@@ -5,8 +5,8 @@ from clock.storage.data_source.data_sources.sqlite.sql.statement.statement impor
 
 
 class StatementBuilder:
-    def __init__(self, multiple_statements: bool = False):
-        self.multiple_statements = multiple_statements
+    def __init__(self):
+        self.multiple_statements = False
         self.connection = None  # type: Connection
 
     def set_connection(self, connection: Connection):

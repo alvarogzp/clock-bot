@@ -15,7 +15,8 @@ class AlterTableBuilder(TableClause, ColumnsClause, StatementBuilder):
     """
 
     def __init__(self):
-        super().__init__(multiple_statements=True)
+        super().__init__()
+        self.multiple_statements = True
 
     def from_schema(self, schema: TableSchema, version: int):
         """Add all columns from the schema added in the specified version"""
