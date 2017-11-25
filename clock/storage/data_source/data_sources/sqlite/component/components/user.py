@@ -4,9 +4,6 @@ from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.schema.table import TableSchema
 
 
-TABLE_NAME_USER = "user"
-TABLE_NAME_USER_HISTORY = "user_history"
-
 COLUMN_NAME_USER_ID = "user_id"
 COLUMN_NAME_FIRST_NAME = "first_name"
 COLUMN_NAME_LAST_NAME = "last_name"
@@ -18,7 +15,7 @@ COLUMN_NAME_TIMESTAMP_REMOVED = "timestamp_removed"
 
 
 USER = TableSchema()
-USER.table = Table(TABLE_NAME_USER)
+USER.table = Table("user")
 USER.column(Column(COLUMN_NAME_USER_ID, "integer", "primary key", "not null"))
 USER.column(Column(COLUMN_NAME_FIRST_NAME, "text"))
 USER.column(Column(COLUMN_NAME_LAST_NAME, "text"))
@@ -28,7 +25,7 @@ USER.column(Column(COLUMN_NAME_IS_BOT, "integer"), version=2)  # boolean
 USER.column(Column(COLUMN_NAME_TIMESTAMP_ADDED, "text"))
 
 USER_HISTORY = TableSchema()
-USER_HISTORY.table = Table(TABLE_NAME_USER_HISTORY)
+USER_HISTORY.table = Table("user_history")
 USER_HISTORY.column(Column(COLUMN_NAME_USER_ID, "integer", "not null"))
 USER_HISTORY.column_from(USER, COLUMN_NAME_FIRST_NAME)
 USER_HISTORY.column_from(USER, COLUMN_NAME_LAST_NAME)
