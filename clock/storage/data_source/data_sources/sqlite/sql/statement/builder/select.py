@@ -63,7 +63,3 @@ class SelectBuilder(WhereClause, StatementBuilder):
         ]
         clauses = filter(self._not_none, clauses)
         return " ".join(clauses)
-
-    @staticmethod
-    def _not_none(clause):
-        return clause is not None

@@ -24,3 +24,7 @@ class StatementBuilder:
     def execute(self, *args, **kwargs):
         """Convenience method that builds and executes the statement in a single call"""
         return self.build().execute(*args, **kwargs)
+
+    @staticmethod
+    def _not_none(clause):
+        return clause is not None
