@@ -16,8 +16,7 @@ class CreateTableBuilder(TableClause, ColumnsClause, StatementBuilder):
 
     def from_schema(self, schema: TableSchema):
         self.table(schema.table)
-        for column in schema.columns.get_all():
-            self.column(column)
+        self.columns(*schema.columns.get_all())
         return self
 
     def build_sql(self):

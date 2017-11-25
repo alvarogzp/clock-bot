@@ -20,8 +20,7 @@ class AlterTableBuilder(TableClause, ColumnsClause, StatementBuilder):
     def from_schema(self, schema: TableSchema, version: int):
         """Add all columns from the schema added in the specified version"""
         self.table(schema.table)
-        for column in schema.columns.get_with_version(version):
-            self.add_column(column)
+        self.add_columns(*schema.columns.get_with_version(version))
         return self
 
     def build_sql(self):
