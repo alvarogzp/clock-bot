@@ -7,6 +7,10 @@ class ColumnsClause(BaseClause):
         super().__init__()
         self._columns = []
 
+    @property
+    def _columns_names(self):
+        return (column.name for column in self._columns)
+
     def columns(self, *columns: Column):
         self._columns = [column.str() for column in columns]
         return self
