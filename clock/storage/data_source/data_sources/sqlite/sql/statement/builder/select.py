@@ -3,6 +3,7 @@ from typing import Union
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.base import StatementBuilder
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
+from clock.storage.data_source.data_sources.sqlite.sql.util.column import ColumnUtil
 
 
 class SelectBuilder(StatementBuilder):
@@ -26,10 +27,7 @@ class SelectBuilder(StatementBuilder):
         self._other = None
 
     def fields(self, *fields: Union[str, Column]):
-        self._fields = ", ".join((
-            field.name if isinstance(field, Column) else field
-            for field in fields
-        ))
+        self._fields = ", ".join((ColumnUtil.name_if_column(field) for field in fields))
         return self
 
     def table(self, table: Table):
