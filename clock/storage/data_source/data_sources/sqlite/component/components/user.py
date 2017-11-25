@@ -87,12 +87,12 @@ class UserSqliteComponent(SqliteStorageComponent):
 
     def get_user_language_code_at(self, user_id: int, timestamp: str):
         table, rowid = self._find_user_at(user_id, timestamp)
-        return self.select_field_one(
-            field=COLUMN_NAME_LANGUAGE_CODE,
-            table=table,
-            where="rowid = :rowid",
-            rowid=rowid
-        )
+        return self.statement.select()\
+            .fields(COLUMN_NAME_LANGUAGE_CODE)\
+            .table(table)\
+            .where("rowid = :rowid")\
+            .execute(rowid=rowid)\
+            .first_field()
 
     def _find_user_at(self, user_id: int, timestamp: str):
         timestamp = int(timestamp)
