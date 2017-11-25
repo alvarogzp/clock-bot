@@ -97,12 +97,12 @@ class UserSqliteComponent(SqliteStorageComponent):
     def _find_user_at(self, user_id: int, timestamp: str):
         timestamp = int(timestamp)
         # try with current user info
-        user = self.select(
-            fields=("rowid", COLUMN_NAME_TIMESTAMP_ADDED),
-            table=TABLE_NAME_USER,
-            where="{user_id} = :user_id".format(user_id=COLUMN_NAME_USER_ID),
-            user_id=user_id
-        ).fetchone()
+        user = self.statement.select()\
+            .fields("rowid", COLUMN_NAME_TIMESTAMP_ADDED)\
+            .table(USER.table)\
+            .where("{user_id} = :user_id".format(user_id=COLUMN_NAME_USER_ID))\
+            .execute(user_id=user_id)\
+            .first()
         if user is None:
             # if the user is not in the user table, we do not know about their
             raise Exception("unknown user: {user_id}".format(user_id=user_id))
@@ -111,13 +111,13 @@ class UserSqliteComponent(SqliteStorageComponent):
             rowid = user["rowid"]
             return USER.table, rowid
         # now iterate the user_history entries for that user
-        user_history = self.select(
-            fields=("rowid", COLUMN_NAME_TIMESTAMP_ADDED, COLUMN_NAME_TIMESTAMP_REMOVED),
-            table=TABLE_NAME_USER_HISTORY,
-            where="{user_id} = :user_id".format(user_id=COLUMN_NAME_USER_ID),
-            order_by="cast({timestamp_removed} as integer) desc".format(timestamp_removed=COLUMN_NAME_TIMESTAMP_REMOVED),
-            user_id=user_id
-        )
+        user_history = self.statement.select()\
+            .fields("rowid", COLUMN_NAME_TIMESTAMP_ADDED, COLUMN_NAME_TIMESTAMP_REMOVED)\
+            .table(USER_HISTORY.table)\
+            .where("{user_id} = :user_id".format(user_id=COLUMN_NAME_USER_ID))\
+            .order_by("cast({timestamp_removed} as integer) desc"
+                      .format(timestamp_removed=COLUMN_NAME_TIMESTAMP_REMOVED))\
+            .execute(user_id=user_id)
         for user in user_history:
             added = user[COLUMN_NAME_TIMESTAMP_ADDED]
             removed = user[COLUMN_NAME_TIMESTAMP_REMOVED]
