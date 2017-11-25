@@ -1,13 +1,14 @@
 from typing import Union
 
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
-from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.base import StatementBuilder
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.base import StatementBuilder
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.order_by import OrderByClause
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.where import WhereClause
 from clock.storage.data_source.data_sources.sqlite.sql.util.column import ColumnUtil
 
 
-class Select(WhereClause, StatementBuilder):
+class Select(WhereClause, OrderByClause, StatementBuilder):
     """
     IMPORTANT:
     All arguments are added to the sql statement in an unsafe way!
@@ -22,7 +23,6 @@ class Select(WhereClause, StatementBuilder):
         self._fields = "*"
         self._from = None
         self._group_by = None
-        self._order_by = None
         self._limit = None
         self._other = None
 
@@ -36,10 +36,6 @@ class Select(WhereClause, StatementBuilder):
 
     def group_by(self, expr: str):
         self._group_by = "group by {expr}".format(expr=expr)  # unsafe formatting
-        return self
-
-    def order_by(self, order_by: str):
-        self._order_by = "order by {order_by}".format(order_by=order_by)  # unsafe formatting
         return self
 
     def limit(self, number: int):
