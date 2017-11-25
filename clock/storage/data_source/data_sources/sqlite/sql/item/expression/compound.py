@@ -1,8 +1,6 @@
-from typing import Union, Any
-
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import Type
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.base import Expression
-from clock.storage.data_source.data_sources.sqlite.sql.item.expression.parser import ExpressionParser
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.parser import ExpressionParser, EXPRESSION_TYPE
 
 
 OPERATOR_EQUAL = "="
@@ -13,15 +11,15 @@ class CompoundExpression(Expression):
         raise NotImplementedError()
 
     @staticmethod
-    def wrap(expr):
+    def parse(expr):
         return ExpressionParser.parse(expr)
 
 
 class Condition(CompoundExpression):
-    def __init__(self, left: Union[Expression, Any], operator: str, right: Union[Expression, Any]):
-        self.left = self.wrap(left)
+    def __init__(self, left: EXPRESSION_TYPE, operator: str, right: EXPRESSION_TYPE):
+        self.left = self.parse(left)
         self.operator = operator
-        self.right = self.wrap(right)
+        self.right = self.parse(right)
 
     def str(self):
         return "{left} {operator} {right}"\
@@ -29,8 +27,8 @@ class Condition(CompoundExpression):
 
 
 class Cast(CompoundExpression):
-    def __init__(self, expr: Union[Expression, Any], type: Type):
-        self.expr = self.wrap(expr)
+    def __init__(self, expr: EXPRESSION_TYPE, type: Type):
+        self.expr = self.parse(expr)
         self.type = type
 
     def str(self):
