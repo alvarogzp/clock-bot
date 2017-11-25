@@ -1,3 +1,4 @@
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression import Expression
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.base import BaseClause
 
 
@@ -6,6 +7,6 @@ class WhereClause(BaseClause):
         super().__init__()
         self._where = None
 
-    def where(self, expr: str):
-        self._where = "where {expr}".format(expr=expr)  # unsafe formatting
+    def where(self, expr: Expression):
+        self._where = "where {expr}".format(expr=expr.str())  # unsafe formatting
         return self
