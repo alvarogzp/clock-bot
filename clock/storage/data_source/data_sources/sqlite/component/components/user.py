@@ -122,7 +122,7 @@ class UserSqliteComponent(SqliteStorageComponent):
             if self.__was_valid_at(timestamp, added, removed):
                 rowid = user["rowid"]
                 return TABLE_NAME_USER_HISTORY, rowid
-        return Exception("user {user_id} was unknown at {timestamp}".format(user_id=user_id, timestamp=timestamp))
+        raise Exception("user {user_id} was unknown at {timestamp}".format(user_id=user_id, timestamp=timestamp))
 
     @staticmethod
     def __was_valid_at(timestamp: int, timestamp_added: str, timestamp_removed: str = None):
