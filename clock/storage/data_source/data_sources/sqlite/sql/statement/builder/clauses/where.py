@@ -1,4 +1,4 @@
-from clock.storage.data_source.data_sources.sqlite.sql.item.expression import Expression
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.simple import Expression
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.base import BaseClause
 
 
