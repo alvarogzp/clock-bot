@@ -2,21 +2,21 @@ from clock.storage.data_source.data_sources.sqlite.component.component import Sq
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column, COLUMN_ROWID
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.operator import OPERATOR_EQUAL
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.order_mode import ORDER_DESC
-from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import TYPE_INTEGER
+from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import TYPE_INTEGER, TYPE_TEXT
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound import Condition, Cast
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.schema.table import TableSchema
 
 
-COLUMN_USER_ID = Column("user_id", "integer", "primary key", "not null")
-COLUMN_FIRST_NAME = Column("first_name", "text")
-COLUMN_LAST_NAME = Column("last_name", "text")
-COLUMN_USERNAME = Column("username", "text")
-COLUMN_LANGUAGE_CODE = Column("language_code", "text")
-COLUMN_IS_BOT = Column("is_bot", "integer")  # boolean
-COLUMN_TIMESTAMP_ADDED = Column("timestamp_added", "text")
-COLUMN_USER_ID_USER_HISTORY = Column("user_id", "integer", "not null")
-COLUMN_TIMESTAMP_REMOVED = Column("timestamp_removed", "text")
+COLUMN_USER_ID = Column("user_id", TYPE_INTEGER, "primary key", "not null")
+COLUMN_FIRST_NAME = Column("first_name", TYPE_TEXT)
+COLUMN_LAST_NAME = Column("last_name", TYPE_TEXT)
+COLUMN_USERNAME = Column("username", TYPE_TEXT)
+COLUMN_LANGUAGE_CODE = Column("language_code", TYPE_TEXT)
+COLUMN_IS_BOT = Column("is_bot", TYPE_INTEGER)  # boolean
+COLUMN_TIMESTAMP_ADDED = Column("timestamp_added", TYPE_TEXT)
+COLUMN_USER_ID_USER_HISTORY = Column("user_id", TYPE_INTEGER, "not null")
+COLUMN_TIMESTAMP_REMOVED = Column("timestamp_removed", TYPE_TEXT)
 
 
 USER = TableSchema()
