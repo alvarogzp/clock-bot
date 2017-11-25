@@ -3,10 +3,11 @@ from typing import Union
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.base import StatementBuilder
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.where import WhereClause
 from clock.storage.data_source.data_sources.sqlite.sql.util.column import ColumnUtil
 
 
-class SelectBuilder(StatementBuilder):
+class SelectBuilder(WhereClause, StatementBuilder):
     """
     IMPORTANT:
     All arguments are added to the sql statement in an unsafe way!
@@ -20,7 +21,6 @@ class SelectBuilder(StatementBuilder):
         super().__init__()
         self._fields = "*"
         self._from = None
-        self._where = None
         self._group_by = None
         self._order_by = None
         self._limit = None
@@ -32,10 +32,6 @@ class SelectBuilder(StatementBuilder):
 
     def table(self, table: Table):
         self._from = "from {table}".format(table=table.str())  # unsafe formatting
-        return self
-
-    def where(self, expr: str):
-        self._where = "where {expr}".format(expr=expr)  # unsafe formatting
         return self
 
     def group_by(self, expr: str):
