@@ -1,9 +1,7 @@
+from clock.storage.data_source.data_sources.sqlite.sql.item.constants.operator import Operator
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import Type
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.base import Expression
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.parser import ExpressionParser, EXPRESSION_TYPE
-
-
-OPERATOR_EQUAL = "="
 
 
 class CompoundExpression(Expression):
@@ -16,14 +14,14 @@ class CompoundExpression(Expression):
 
 
 class Condition(CompoundExpression):
-    def __init__(self, left: EXPRESSION_TYPE, operator: str, right: EXPRESSION_TYPE):
+    def __init__(self, left: EXPRESSION_TYPE, operator: Operator, right: EXPRESSION_TYPE):
         self.left = self.parse(left)
         self.operator = operator
         self.right = self.parse(right)
 
     def str(self):
         return "{left} {operator} {right}"\
-            .format(left=self.left.str(), operator=self.operator, right=self.right.str())
+            .format(left=self.left.str(), operator=self.operator.str(), right=self.right.str())
 
 
 class Cast(CompoundExpression):
