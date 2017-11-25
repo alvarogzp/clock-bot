@@ -1,12 +1,8 @@
-from clock.storage.data_source.data_sources.sqlite.sql.item.base import SqlItem
+from clock.storage.data_source.data_sources.sqlite.sql.item.base import SimpleItem
 
 
-class OrderMode(SqlItem):
-    def __init__(self, mode: str):
-        self.mode = mode
-
-    def str(self):
-        return self.mode
+class OrderMode(SimpleItem):
+    pass
 
 
 ORDER_ASC = OrderMode("asc")

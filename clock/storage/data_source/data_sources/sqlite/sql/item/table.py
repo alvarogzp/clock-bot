@@ -1,9 +1,5 @@
-from clock.storage.data_source.data_sources.sqlite.sql.item.base import SqlItem
+from clock.storage.data_source.data_sources.sqlite.sql.item.base import SimpleItem
 
 
-class Table(SqlItem):
-    def __init__(self, name: str):
-        self.name = name
-
-    def str(self):
-        return self.name
+class Table(SimpleItem):
+    pass
