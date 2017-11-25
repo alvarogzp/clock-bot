@@ -4,7 +4,7 @@ from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.where import WhereClause
 
 
-class UpdateBuilder(TableClause, WhereClause, StatementBuilder):
+class Update(TableClause, WhereClause, StatementBuilder):
     def __init__(self):
         super().__init__()
         self._set = None

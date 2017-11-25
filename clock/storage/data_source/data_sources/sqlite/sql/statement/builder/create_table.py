@@ -4,7 +4,7 @@ from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.table import TableClause
 
 
-class CreateTableBuilder(TableClause, ColumnsClause, StatementBuilder):
+class CreateTable(TableClause, ColumnsClause, StatementBuilder):
     """
     IMPORTANT:
     Table name and column definitions are added to the sql statement in an unsafe way!

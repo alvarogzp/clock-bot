@@ -7,7 +7,7 @@ from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses
 from clock.storage.data_source.data_sources.sqlite.sql.util.column import ColumnUtil
 
 
-class SelectBuilder(WhereClause, StatementBuilder):
+class Select(WhereClause, StatementBuilder):
     """
     IMPORTANT:
     All arguments are added to the sql statement in an unsafe way!

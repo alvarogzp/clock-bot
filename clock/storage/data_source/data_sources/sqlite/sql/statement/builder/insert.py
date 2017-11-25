@@ -1,10 +1,10 @@
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.base import StatementBuilder
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.columns import ColumnsClause
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.table import TableClause
-from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import SelectBuilder
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import Select
 
 
-class InsertBuilder(TableClause, ColumnsClause, StatementBuilder):
+class Insert(TableClause, ColumnsClause, StatementBuilder):
     def __init__(self):
         super().__init__()
         self._values = None
@@ -13,7 +13,7 @@ class InsertBuilder(TableClause, ColumnsClause, StatementBuilder):
     def values(self, *values: str):
         self._values = ", ".join(values)
 
-    def select(self, select: SelectBuilder):
+    def select(self, select: Select):
         self._select = select.build_sql()
 
     def build_sql(self):

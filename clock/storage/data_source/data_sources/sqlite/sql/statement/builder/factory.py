@@ -1,30 +1,30 @@
 from sqlite3 import Connection
 
-from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.alter_table import AlterTableBuilder
-from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.create_table import CreateTableBuilder
-from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.insert import InsertBuilder
-from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import SelectBuilder
-from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.update import UpdateBuilder
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.alter_table import AlterTable
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.create_table import CreateTable
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.insert import Insert
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import Select
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.update import Update
 
 
-class StatementBuilderFactory:
+class StatementFactory:
     def __init__(self, connection: Connection):
         self.connection = connection
 
-    def select(self) -> SelectBuilder:
-        return self._initialized(SelectBuilder())
+    def select(self) -> Select:
+        return self._initialized(Select())
 
-    def create_table(self) -> CreateTableBuilder:
-        return self._initialized(CreateTableBuilder())
+    def create_table(self) -> CreateTable:
+        return self._initialized(CreateTable())
 
-    def alter_table(self) -> AlterTableBuilder:
-        return self._initialized(AlterTableBuilder())
+    def alter_table(self) -> AlterTable:
+        return self._initialized(AlterTable())
 
-    def update(self) -> UpdateBuilder:
-        return self._initialized(UpdateBuilder())
+    def update(self) -> Update:
+        return self._initialized(Update())
 
-    def insert(self) -> InsertBuilder:
-        return self._initialized(InsertBuilder())
+    def insert(self) -> Insert:
+        return self._initialized(Insert())
 
     def _initialized(self, builder):
         builder.set_connection(self.connection)
