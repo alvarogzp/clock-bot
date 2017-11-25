@@ -1,3 +1,6 @@
+from typing import Union
+
+from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.base import StatementBuilder
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 
@@ -22,8 +25,11 @@ class SelectBuilder(StatementBuilder):
         self._limit = None
         self._other = None
 
-    def fields(self, *fields: str):
-        self._fields = ", ".join(fields)  # unsafe formatting
+    def fields(self, *fields: Union[str, Column]):
+        self._fields = ", ".join((
+            field.name if isinstance(field, Column) else field
+            for field in fields
+        ))
         return self
 
     def table(self, table: Table):
