@@ -1,8 +1,8 @@
 from typing import Union, Any
 
+from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import Type
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.base import Expression
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.parser import ExpressionParser
-from clock.storage.data_source.data_sources.sqlite.sql.item.type import Type
 
 
 OPERATOR_EQUAL = "="
