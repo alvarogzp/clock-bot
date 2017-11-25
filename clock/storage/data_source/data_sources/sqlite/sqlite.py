@@ -8,6 +8,7 @@ from clock.storage.data_source.data_sources.sqlite.component.components.message 
 from clock.storage.data_source.data_sources.sqlite.component.components.query import QuerySqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.user import UserSqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.factory import SqliteStorageComponentFactory
+from clock.storage.data_source.data_sources.sqlite.sql.result.row import ResultRow
 
 
 DATABASE_FILENAME = "state/clock.db"
@@ -37,7 +38,7 @@ class SqliteStorageDataSource(StorageDataSource):
         # disable implicit transactions as we are manually handling them
         self.connection.isolation_level = None
         # improved rows
-        self.connection.row_factory = sqlite3.Row
+        self.connection.row_factory = ResultRow
         if self.inside_pending_context_manager:
             self.__enter__()
 
