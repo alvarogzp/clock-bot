@@ -13,3 +13,6 @@ class Column(SqlItem):
             constraints = " ".join(self.constraints)
             column += " {constraints}".format(constraints=constraints)
         return column
+
+
+COLUMN_ROWID = Column("rowid", "integer", "primary key", "not null")
