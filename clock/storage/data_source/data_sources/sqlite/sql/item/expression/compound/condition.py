@@ -18,12 +18,6 @@ class BaseCondition(CompoundExpression):
         return "({conditions})".format(conditions=conditions)
 
 
-class Condition(CompoundExpression):
+class Condition(BaseCondition):
     def __init__(self, left: EXPRESSION_TYPE, operator: Operator, right: EXPRESSION_TYPE):
-        self.left = self.parse(left)
-        self.operator = operator
-        self.right = self.parse(right)
-
-    def str(self):
-        return "({left} {operator} {right})"\
-            .format(left=self.left.str(), operator=self.operator.str(), right=self.right.str())
+        super().__init__(operator, left, right)
