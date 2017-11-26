@@ -3,7 +3,8 @@ from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.operator import OPERATOR_EQUAL
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.order_mode import ORDER_DESC
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import TYPE_INTEGER, TYPE_TEXT
-from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound import Condition, Cast
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.cast import Cast
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.condition import Condition
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.schema.table import TableSchema
 
