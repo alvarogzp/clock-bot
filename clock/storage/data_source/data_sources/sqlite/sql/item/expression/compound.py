@@ -20,7 +20,7 @@ class Condition(CompoundExpression):
         self.right = self.parse(right)
 
     def str(self):
-        return "{left} {operator} {right}"\
+        return "({left} {operator} {right})"\
             .format(left=self.left.str(), operator=self.operator.str(), right=self.right.str())
 
 
