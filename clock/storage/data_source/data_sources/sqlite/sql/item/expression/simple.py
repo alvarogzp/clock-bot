@@ -7,6 +7,9 @@ class Literal(StringItem, Expression):
     pass
 
 
+NULL = Literal("null")
+
+
 class ColumnName(Expression):
     def __init__(self, column: Column):
         self.column = column
