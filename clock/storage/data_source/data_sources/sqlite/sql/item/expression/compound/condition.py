@@ -21,3 +21,7 @@ class BaseCondition(CompoundExpression):
 class Condition(BaseCondition):
     def __init__(self, left: EXPRESSION_TYPE, operator: Operator, right: EXPRESSION_TYPE):
         super().__init__(operator, left, right)
+
+
+class MultipleCondition(BaseCondition):
+    pass
