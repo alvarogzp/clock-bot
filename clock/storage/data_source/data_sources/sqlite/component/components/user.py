@@ -1,10 +1,13 @@
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column, COLUMN_ROWID
-from clock.storage.data_source.data_sources.sqlite.sql.item.constants.operator import OPERATOR_EQUAL
+from clock.storage.data_source.data_sources.sqlite.sql.item.constants.operator import OPERATOR_EQUAL, OPERATOR_AND, \
+    OPERATOR_OR, OPERATOR_IS
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.order_mode import ORDER_DESC
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import TYPE_INTEGER, TYPE_TEXT
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.cast import Cast
-from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.condition import Condition
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.condition import Condition, \
+    MultipleCondition
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.simple import NULL
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.schema.table import TableSchema
 
@@ -72,9 +75,22 @@ class UserSqliteComponent(SqliteStorageComponent):
                               is_bot: bool):
         return self.statement.select()\
             .fields("1").table(USER.table)\
-            .where("user_id = :user_id and first_name = :first_name and last_name = :last_name and "
-                   "username = :username and language_code = :language_code "
-                   "and (is_bot = :is_bot or (is_bot is null and :is_bot is null))")\
+            .where(MultipleCondition(
+                OPERATOR_AND,
+                Condition(COLUMN_USER_ID, OPERATOR_EQUAL, ":user_id"),
+                Condition(COLUMN_FIRST_NAME, OPERATOR_EQUAL, ":first_name"),
+                Condition(COLUMN_LAST_NAME, OPERATOR_EQUAL, ":last_name"),
+                Condition(COLUMN_USERNAME, OPERATOR_EQUAL, ":username"),
+                Condition(COLUMN_LANGUAGE_CODE, OPERATOR_EQUAL, ":language_code"),
+                Condition(
+                    Condition(COLUMN_IS_BOT, OPERATOR_EQUAL, ":is_bot"),
+                    OPERATOR_OR,
+                    Condition(
+                        Condition(COLUMN_IS_BOT, OPERATOR_IS, NULL),
+                        OPERATOR_AND,
+                        Condition(":is_bot", OPERATOR_IS, NULL)
+                    )
+                )))\
             .execute(user_id=user_id, first_name=first_name, last_name=last_name, username=username,
                      language_code=language_code, is_bot=is_bot)\
             .first()
