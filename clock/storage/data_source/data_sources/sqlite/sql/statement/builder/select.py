@@ -1,11 +1,8 @@
-from typing import Union
-
-from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.parser import EXPRESSION_TYPE, ExpressionParser
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.base import StatementBuilder
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.order_by import OrderByClause
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.where import WhereClause
-from clock.storage.data_source.data_sources.sqlite.sql.util.column import ColumnUtil
 
 
 class Select(WhereClause, OrderByClause, StatementBuilder):
@@ -26,20 +23,22 @@ class Select(WhereClause, OrderByClause, StatementBuilder):
         self._limit = None
         self._other = None
 
-    def fields(self, *fields: Union[str, Column]):
-        self._fields = ", ".join((ColumnUtil.name_if_column(field) for field in fields))
+    def fields(self, *fields: EXPRESSION_TYPE):
+        self._fields = ExpressionParser.parse(fields).str()
         return self
 
     def table(self, table: Table):
         self._from = "from {table}".format(table=table.str())  # unsafe formatting
         return self
 
-    def group_by(self, expr: str):
-        self._group_by = "group by {expr}".format(expr=expr)  # unsafe formatting
+    def group_by(self, *expr: EXPRESSION_TYPE):
+        expr = ExpressionParser.parse(expr)
+        self._group_by = "group by {expr}".format(expr=expr.str())  # unsafe formatting
         return self
 
-    def limit(self, number: int):
-        self._limit = "limit {number}".format(number=number)  # unsafe formatting
+    def limit(self, expr: EXPRESSION_TYPE):
+        expr = ExpressionParser.parse(expr)
+        self._limit = "limit {expr}".format(expr=expr.str())  # unsafe formatting
         return self
 
     def other(self, clauses: str):
