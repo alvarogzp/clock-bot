@@ -1,5 +1,5 @@
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
-from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column, COLUMN_ROWID
+from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column, ROWID
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.operator import EQUAL, AND, OR, IS
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.order_mode import DESC
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import INTEGER, TEXT
@@ -108,7 +108,7 @@ class UserSqliteComponent(SqliteStorageComponent):
         return self.statement.select()\
             .fields(COLUMN_LANGUAGE_CODE)\
             .table(table)\
-            .where(Condition(COLUMN_ROWID, EQUAL, ":rowid"))\
+            .where(Condition(ROWID, EQUAL, ":rowid"))\
             .execute(rowid=rowid)\
             .first_field()
 
@@ -116,7 +116,7 @@ class UserSqliteComponent(SqliteStorageComponent):
         timestamp = int(timestamp)
         # try with current user info
         user = self.statement.select()\
-            .fields(COLUMN_ROWID, COLUMN_TIMESTAMP_ADDED)\
+            .fields(ROWID, COLUMN_TIMESTAMP_ADDED)\
             .table(USER.table)\
             .where(Condition(COLUMN_USER_ID, EQUAL, ":user_id"))\
             .execute(user_id=user_id)\
@@ -126,11 +126,11 @@ class UserSqliteComponent(SqliteStorageComponent):
             raise Exception("unknown user: {user_id}".format(user_id=user_id))
         last_added = user[COLUMN_TIMESTAMP_ADDED]
         if self.__was_valid_at(timestamp, last_added):
-            rowid = user[COLUMN_ROWID]
+            rowid = user[ROWID]
             return USER.table, rowid
         # now iterate the user_history entries for that user
         user_history = self.statement.select()\
-            .fields(COLUMN_ROWID, COLUMN_TIMESTAMP_ADDED, COLUMN_TIMESTAMP_REMOVED)\
+            .fields(ROWID, COLUMN_TIMESTAMP_ADDED, COLUMN_TIMESTAMP_REMOVED)\
             .table(USER_HISTORY.table)\
             .where(Condition(COLUMN_USER_ID_USER_HISTORY, EQUAL, ":user_id"))\
             .order_by(Cast(COLUMN_TIMESTAMP_REMOVED, INTEGER), DESC)\
@@ -139,7 +139,7 @@ class UserSqliteComponent(SqliteStorageComponent):
             added = user[COLUMN_TIMESTAMP_ADDED]
             removed = user[COLUMN_TIMESTAMP_REMOVED]
             if self.__was_valid_at(timestamp, added, removed):
-                rowid = user[COLUMN_ROWID]
+                rowid = user[ROWID]
                 return USER_HISTORY.table, rowid
         raise Exception("user {user_id} was unknown at {timestamp}".format(user_id=user_id, timestamp=timestamp))
 

@@ -16,4 +16,4 @@ class Column(SqlItem):
         return column
 
 
-COLUMN_ROWID = Column("rowid", INTEGER, "primary key", "not null")
+ROWID = Column("rowid", INTEGER, "primary key", "not null")
