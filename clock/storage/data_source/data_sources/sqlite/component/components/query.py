@@ -90,5 +90,6 @@ class QuerySqliteComponent(SqliteStorageComponent):
             table="query",
             group_by="language_code",
             order_by="cast(timestamp as integer) desc",
-            limit=limit
+            limit=":limit_param",
+            limit_param=limit
         ))
