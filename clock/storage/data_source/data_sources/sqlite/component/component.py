@@ -2,6 +2,7 @@ from sqlite3 import Connection
 
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.alter_table import AlterTable
 from clock.storage.data_source.data_sources.sqlite.sql.statement.executor import StatementExecutorFactory
 from clock.storage.data_source.data_sources.sqlite.sql.statement.statement import SingleSqlStatement, SqlStatement
 
@@ -34,19 +35,20 @@ class SqliteStorageComponent:
 
         :deprecated: use self.statement.alter_table() instead
         """
-        alter_table = self.statement.alter_table().table(Table(table))
-        for column in columns:
-            alter_table.add_column(Column(*column.split(" ")))
-        alter_table.execute()
+        alter_table = AlterTable().table(Table(table))
+        alter_table.add_columns(*(Column(*column.split(" ")) for column in columns))
+        self.statement(alter_table).execute()
 
     def sql(self, sql: str, *qmark_params, **named_params):
-        return SingleSqlStatement(self.connection, sql).execute(*qmark_params, **named_params)
+        statement = SingleSqlStatement(sql)
+        return self.statement(statement).execute(*qmark_params, **named_params)
 
     def _sql(self, sql: str, params=()):
         """
         :deprecated: use self.sql instead
         """
-        return SingleSqlStatement(self.connection, sql).execute_for_params(params).cursor
+        statement = SingleSqlStatement(sql)
+        return self.statement(statement).execute_for_params(params).cursor
 
     @staticmethod
     def _empty_if_none(field: str):
