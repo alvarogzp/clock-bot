@@ -1,3 +1,4 @@
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.parser import EXPRESSION_TYPE, ExpressionParser
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.base import StatementBuilder
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.columns import ColumnsClause
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.table import TableClause
@@ -10,8 +11,8 @@ class Insert(TableClause, ColumnsClause, StatementBuilder):
         self._values = None
         self._select = None
 
-    def values(self, *values: str):
-        self._values = ", ".join(values)
+    def values(self, *values: EXPRESSION_TYPE):
+        self._values = ExpressionParser.parse(values).str()
         return self
 
     def select(self, select: Select):
