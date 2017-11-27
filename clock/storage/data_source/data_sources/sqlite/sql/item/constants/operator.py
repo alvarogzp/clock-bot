@@ -8,9 +8,9 @@ class Operator(NamedItem):
 # operators ordered by precedence (from highest to lowest)
 # an empty line means a precedence jump
 
-OPERATOR_EQUAL = Operator("=")
-OPERATOR_IS = Operator("is")
+EQUAL = Operator("=")
+IS = Operator("is")
 
-OPERATOR_AND = Operator("and")
+AND = Operator("and")
 
-OPERATOR_OR = Operator("or")
+OR = Operator("or")

@@ -5,5 +5,5 @@ class OrderMode(NamedItem):
     pass
 
 
-ORDER_ASC = OrderMode("asc")
-ORDER_DESC = OrderMode("desc")
+ASC = OrderMode("asc")
+DESC = OrderMode("desc")

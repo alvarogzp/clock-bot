@@ -1,9 +1,8 @@
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column, COLUMN_ROWID
-from clock.storage.data_source.data_sources.sqlite.sql.item.constants.operator import OPERATOR_EQUAL, OPERATOR_AND, \
-    OPERATOR_OR, OPERATOR_IS
-from clock.storage.data_source.data_sources.sqlite.sql.item.constants.order_mode import ORDER_DESC
-from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import TYPE_INTEGER, TYPE_TEXT
+from clock.storage.data_source.data_sources.sqlite.sql.item.constants.operator import EQUAL, AND, OR, IS
+from clock.storage.data_source.data_sources.sqlite.sql.item.constants.order_mode import DESC
+from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import INTEGER, TEXT
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.cast import Cast
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.condition import Condition, \
     MultipleCondition
@@ -12,15 +11,15 @@ from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.schema.table import TableSchema
 
 
-COLUMN_USER_ID = Column("user_id", TYPE_INTEGER, "primary key", "not null")
-COLUMN_FIRST_NAME = Column("first_name", TYPE_TEXT)
-COLUMN_LAST_NAME = Column("last_name", TYPE_TEXT)
-COLUMN_USERNAME = Column("username", TYPE_TEXT)
-COLUMN_LANGUAGE_CODE = Column("language_code", TYPE_TEXT)
-COLUMN_IS_BOT = Column("is_bot", TYPE_INTEGER)  # boolean
-COLUMN_TIMESTAMP_ADDED = Column("timestamp_added", TYPE_TEXT)
-COLUMN_USER_ID_USER_HISTORY = Column("user_id", TYPE_INTEGER, "not null")
-COLUMN_TIMESTAMP_REMOVED = Column("timestamp_removed", TYPE_TEXT)
+COLUMN_USER_ID = Column("user_id", INTEGER, "primary key", "not null")
+COLUMN_FIRST_NAME = Column("first_name", TEXT)
+COLUMN_LAST_NAME = Column("last_name", TEXT)
+COLUMN_USERNAME = Column("username", TEXT)
+COLUMN_LANGUAGE_CODE = Column("language_code", TEXT)
+COLUMN_IS_BOT = Column("is_bot", INTEGER)  # boolean
+COLUMN_TIMESTAMP_ADDED = Column("timestamp_added", TEXT)
+COLUMN_USER_ID_USER_HISTORY = Column("user_id", INTEGER, "not null")
+COLUMN_TIMESTAMP_REMOVED = Column("timestamp_removed", TEXT)
 
 
 USER = TableSchema()
@@ -76,19 +75,19 @@ class UserSqliteComponent(SqliteStorageComponent):
         return self.statement.select()\
             .fields("1").table(USER.table)\
             .where(MultipleCondition(
-                OPERATOR_AND,
-                Condition(COLUMN_USER_ID, OPERATOR_EQUAL, ":user_id"),
-                Condition(COLUMN_FIRST_NAME, OPERATOR_EQUAL, ":first_name"),
-                Condition(COLUMN_LAST_NAME, OPERATOR_EQUAL, ":last_name"),
-                Condition(COLUMN_USERNAME, OPERATOR_EQUAL, ":username"),
-                Condition(COLUMN_LANGUAGE_CODE, OPERATOR_EQUAL, ":language_code"),
+                AND,
+                Condition(COLUMN_USER_ID, EQUAL, ":user_id"),
+                Condition(COLUMN_FIRST_NAME, EQUAL, ":first_name"),
+                Condition(COLUMN_LAST_NAME, EQUAL, ":last_name"),
+                Condition(COLUMN_USERNAME, EQUAL, ":username"),
+                Condition(COLUMN_LANGUAGE_CODE, EQUAL, ":language_code"),
                 Condition(
-                    Condition(COLUMN_IS_BOT, OPERATOR_EQUAL, ":is_bot"),
-                    OPERATOR_OR,
+                    Condition(COLUMN_IS_BOT, EQUAL, ":is_bot"),
+                    OR,
                     Condition(
-                        Condition(COLUMN_IS_BOT, OPERATOR_IS, NULL),
-                        OPERATOR_AND,
-                        Condition(":is_bot", OPERATOR_IS, NULL)
+                        Condition(COLUMN_IS_BOT, IS, NULL),
+                        AND,
+                        Condition(":is_bot", IS, NULL)
                     )
                 )))\
             .execute(user_id=user_id, first_name=first_name, last_name=last_name, username=username,
@@ -109,7 +108,7 @@ class UserSqliteComponent(SqliteStorageComponent):
         return self.statement.select()\
             .fields(COLUMN_LANGUAGE_CODE)\
             .table(table)\
-            .where(Condition(COLUMN_ROWID, OPERATOR_EQUAL, ":rowid"))\
+            .where(Condition(COLUMN_ROWID, EQUAL, ":rowid"))\
             .execute(rowid=rowid)\
             .first_field()
 
@@ -119,7 +118,7 @@ class UserSqliteComponent(SqliteStorageComponent):
         user = self.statement.select()\
             .fields(COLUMN_ROWID, COLUMN_TIMESTAMP_ADDED)\
             .table(USER.table)\
-            .where(Condition(COLUMN_USER_ID, OPERATOR_EQUAL, ":user_id"))\
+            .where(Condition(COLUMN_USER_ID, EQUAL, ":user_id"))\
             .execute(user_id=user_id)\
             .first()
         if user is None:
@@ -133,8 +132,8 @@ class UserSqliteComponent(SqliteStorageComponent):
         user_history = self.statement.select()\
             .fields(COLUMN_ROWID, COLUMN_TIMESTAMP_ADDED, COLUMN_TIMESTAMP_REMOVED)\
             .table(USER_HISTORY.table)\
-            .where(Condition(COLUMN_USER_ID_USER_HISTORY, OPERATOR_EQUAL, ":user_id"))\
-            .order_by(Cast(COLUMN_TIMESTAMP_REMOVED, TYPE_INTEGER), ORDER_DESC)\
+            .where(Condition(COLUMN_USER_ID_USER_HISTORY, EQUAL, ":user_id"))\
+            .order_by(Cast(COLUMN_TIMESTAMP_REMOVED, INTEGER), DESC)\
             .execute(user_id=user_id)
         for user in user_history:
             added = user[COLUMN_TIMESTAMP_ADDED]

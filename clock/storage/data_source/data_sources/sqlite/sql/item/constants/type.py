@@ -5,6 +5,6 @@ class Type(NamedItem):
     pass
 
 
-TYPE_INTEGER = Type("integer")
-TYPE_TEXT = Type("text")
-TYPE_REAL = Type("real")
+INTEGER = Type("integer")
+TEXT = Type("text")
+REAL = Type("real")

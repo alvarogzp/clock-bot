@@ -1,5 +1,5 @@
 from clock.storage.data_source.data_sources.sqlite.sql.item.base import SqlItem
-from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import Type, TYPE_INTEGER
+from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import Type, INTEGER
 
 
 class Column(SqlItem):
@@ -16,4 +16,4 @@ class Column(SqlItem):
         return column
 
 
-COLUMN_ROWID = Column("rowid", TYPE_INTEGER, "primary key", "not null")
+COLUMN_ROWID = Column("rowid", INTEGER, "primary key", "not null")
