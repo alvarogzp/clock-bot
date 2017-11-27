@@ -10,9 +10,6 @@ class Literal(StringItem, Expression):
 NULL = Literal("null")
 
 
-class ColumnName(Expression):
+class ColumnName(StringItem, Expression):
     def __init__(self, column: Column):
-        self.column = column
-
-    def str(self):
-        return self.column.name
+        super().__init__(column.name)
