@@ -1,7 +1,8 @@
 from sqlite3 import Connection
 
 from clock.storage.data_source.data_sources.sqlite.sql.result.result import SqlResult
-from clock.storage.data_source.data_sources.sqlite.sql.statement.statement import SqlStatement
+from clock.storage.data_source.data_sources.sqlite.sql.statement.statement import SqlStatement, SingleSqlStatement, \
+    CompoundSqlStatement
 
 
 class StatementExecutor:
@@ -44,3 +45,15 @@ class CompoundStatementExecutor(StatementExecutor):
         # do not return anything
         for sql in self.statement.get_sql():
             self._execute_sql(sql, params)
+
+
+class StatementExecutorFactory:
+    def __init__(self, connection: Connection):
+        self.connection = connection
+
+    def executor(self, statement: SqlStatement):
+        if isinstance(statement, SingleSqlStatement):
+            return SingleStatementExecutor(self.connection, statement)
+        elif isinstance(statement, CompoundSqlStatement):
+            return CompoundStatementExecutor(self.connection, statement)
+        raise Exception("unexpected statement type")
