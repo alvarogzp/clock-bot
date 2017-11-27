@@ -1,5 +1,47 @@
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.user import UserSqliteComponent
+from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
+from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import TEXT, INTEGER, REAL
+from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
+from clock.storage.data_source.data_sources.sqlite.sql.schema.table import TableSchema
+
+
+TIMESTAMP = Column("timestamp", TEXT)
+USER_ID = Column("user_id", INTEGER, "not null")
+TIME_POINT_QUERY = Column("time_point", TEXT, "not null")
+QUERY_TEXT = Column("query", TEXT)
+OFFSET = Column("offset", TEXT)
+LANGUAGE_CODE = Column("language_code", TEXT)
+LOCALE = Column("locale", TEXT)
+RESULTS_FOUND_LEN = Column("results_found_len", INTEGER)
+RESULTS_SENT_LEN = Column("results_sent_len", INTEGER)
+PROCESSING_SECONDS = Column("processing_seconds", REAL)
+TIME_POINT_CHOSEN_RESULT = Column("time_point", TEXT)
+CHOSEN_ZONE_NAME = Column("chosen_zone_name", TEXT)
+CHOOSING_SECONDS = Column("choosing_seconds", REAL)
+
+
+QUERY = TableSchema()
+QUERY.table = Table("query")
+QUERY.column(TIMESTAMP)
+QUERY.column(USER_ID)
+QUERY.column(TIME_POINT_QUERY)
+QUERY.column(QUERY_TEXT)
+QUERY.column(OFFSET)
+QUERY.column(LANGUAGE_CODE, version=2)
+QUERY.column(LOCALE)
+QUERY.column(RESULTS_FOUND_LEN)
+QUERY.column(RESULTS_SENT_LEN)
+QUERY.column(PROCESSING_SECONDS)
+
+CHOSEN_RESULT = TableSchema()
+CHOSEN_RESULT.table = Table("chosen_result")
+CHOSEN_RESULT.column(TIMESTAMP)
+CHOSEN_RESULT.column(USER_ID)
+CHOSEN_RESULT.column(TIME_POINT_CHOSEN_RESULT)
+CHOSEN_RESULT.column(CHOSEN_ZONE_NAME)
+CHOSEN_RESULT.column(QUERY_TEXT)
+CHOSEN_RESULT.column(CHOOSING_SECONDS)
 
 
 class QuerySqliteComponent(SqliteStorageComponent):
@@ -10,29 +52,11 @@ class QuerySqliteComponent(SqliteStorageComponent):
         self.user = user
 
     def create(self):
-        self._sql("create table if not exists query ("
-                  "timestamp text,"
-                  "user_id integer not null,"
-                  "time_point text not null,"
-                  "query text,"
-                  "offset text,"
-                  "language_code text,"
-                  "locale text,"
-                  "results_found_len integer,"
-                  "results_sent_len integer,"
-                  "processing_seconds real"
-                  ")")
-        self._sql("create table if not exists chosen_result ("
-                  "timestamp text,"
-                  "user_id integer not null,"
-                  "time_point text,"
-                  "chosen_zone_name text,"
-                  "query text,"
-                  "choosing_seconds real"
-                  ")")
+        self.statement.create_table().from_schema(QUERY).execute()
+        self.statement.create_table().from_schema(CHOSEN_RESULT).execute()
 
     def upgrade_from_1_to_2(self):
-        self.add_columns("query", "language_code text")
+        self.statement.alter_table().from_schema(QUERY, 2).execute()
         queries = self.select(fields=("rowid", "user_id", "timestamp"), table="query")  # get all queries
         for query in queries:
             rowid = query["rowid"]
