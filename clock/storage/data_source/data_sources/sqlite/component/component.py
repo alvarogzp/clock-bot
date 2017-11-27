@@ -2,8 +2,8 @@ from sqlite3 import Connection
 
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
-from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.factory import StatementFactory
-from clock.storage.data_source.data_sources.sqlite.sql.statement.statement import SingleSqlStatement
+from clock.storage.data_source.data_sources.sqlite.sql.statement.executor import StatementExecutorFactory
+from clock.storage.data_source.data_sources.sqlite.sql.statement.statement import SingleSqlStatement, SqlStatement
 
 
 class SqliteStorageComponent:
@@ -11,14 +11,17 @@ class SqliteStorageComponent:
         self.name = name
         self.version = version
         self.connection = None  # type: Connection
-        self.statement = None  # type: StatementFactory
+        self.executor = None  # type: StatementExecutorFactory
 
     def set_connection(self, connection: Connection):
         self.connection = connection
-        self.statement = StatementFactory(connection)
+        self.executor = StatementExecutorFactory(connection)
 
     def create(self):
         raise NotImplementedError()
+
+    def statement(self, statement: SqlStatement):
+        return self.executor.executor(statement)
 
     def add_columns(self, table: str, *columns: str):
         """
