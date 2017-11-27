@@ -1,7 +1,11 @@
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.user import UserSqliteComponent
-from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
+from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column, ROWID
+from clock.storage.data_source.data_sources.sqlite.sql.item.constants.operator import EQUAL
+from clock.storage.data_source.data_sources.sqlite.sql.item.constants.order_mode import DESC
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import TEXT, INTEGER, REAL
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.cast import Cast
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.condition import Condition
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.schema.table import TableSchema
 
@@ -57,16 +61,20 @@ class QuerySqliteComponent(SqliteStorageComponent):
 
     def upgrade_from_1_to_2(self):
         self.statement.alter_table().from_schema(QUERY, 2).execute()
-        queries = self.select(fields=("rowid", "user_id", "timestamp"), table="query")  # get all queries
+        # get all queries
+        queries = self.statement.select()\
+            .fields(ROWID, USER_ID, TIMESTAMP)\
+            .table(QUERY.table)\
+            .execute()
         for query in queries:
-            rowid = query["rowid"]
-            user_id = query["user_id"]
-            timestamp = query["timestamp"]
+            rowid = query[ROWID]
+            user_id = query[USER_ID]
+            timestamp = query[TIMESTAMP]
             language_code = self.user.get_user_language_code_at(user_id, timestamp)
-            self.sql("update query "
-                     "set language_code = :language_code "
-                     "where rowid = :rowid",
-                     language_code=language_code, rowid=rowid)
+            self.statement.update().table(QUERY.table)\
+                .set(LANGUAGE_CODE, ":language_code")\
+                .where(Condition(ROWID, EQUAL, ":rowid"))\
+                .execute(language_code=language_code, rowid=rowid)
 
     def save_query(self, user_id: int, timestamp: str, query: str, offset: str, language_code: str, locale: str,
                    results_found_len: int, results_sent_len: int, processing_seconds: float):
@@ -85,11 +93,13 @@ class QuerySqliteComponent(SqliteStorageComponent):
                   (user_id, timestamp, chosen_zone_name, query, choosing_seconds))
 
     def get_recent_queries_language_codes(self, limit: int):
-        return list(self.select_field(
-            field="language_code",
-            table="query",
-            group_by="language_code",
-            order_by="cast(timestamp as integer) desc",
-            limit=":limit_param",
-            limit_param=limit
-        ))
+        return list(
+            self.statement.select()
+                .fields(LANGUAGE_CODE)
+                .table(QUERY.table)
+                .group_by(LANGUAGE_CODE)
+                .order_by(Cast(TIMESTAMP, INTEGER), DESC)
+                .limit(":limit")
+                .execute(limit=limit)
+                .map_field()
+        )
