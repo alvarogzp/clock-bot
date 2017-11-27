@@ -1,21 +1,15 @@
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.operator import Operator
-from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.base import CompoundExpression
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.list import ExpressionList
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.parser import EXPRESSION_TYPE
 
 
-class BaseCondition(CompoundExpression):
+class BaseCondition(ExpressionList):
     def __init__(self, operator: Operator, *expressions: EXPRESSION_TYPE):
-        self.operator = operator
-        self.expressions = [self.parse(expr) for expr in expressions]
+        super().__init__(*expressions, separator=self._separator(operator), before="(", after=")")
 
-    def str(self):
-        operator = " {operator} ".format(operator=self.operator.str())
-        expressions = (
-            "{expr}".format(expr=expr.str())
-            for expr in self.expressions
-        )
-        conditions = operator.join(expressions)
-        return "({conditions})".format(conditions=conditions)
+    @staticmethod
+    def _separator(operator: Operator):
+        return " {operator} ".format(operator=operator.str())
 
 
 class Condition(BaseCondition):
