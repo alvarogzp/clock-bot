@@ -4,7 +4,8 @@ from clock.storage.data_source.data_sources.sqlite.sql.item.expression.base impo
 
 
 class Literal(StringItem, Expression):
-    pass
+    def __init__(self, literal):
+        super().__init__(str(literal))
 
 
 NULL = Literal("null")

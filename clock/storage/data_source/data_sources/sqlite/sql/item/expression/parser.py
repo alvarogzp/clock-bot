@@ -5,7 +5,7 @@ from clock.storage.data_source.data_sources.sqlite.sql.item.expression.base impo
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.simple import ColumnName, Literal
 
 
-EXPRESSION_TYPE = Union[Expression, Column, str]
+EXPRESSION_TYPE = Union[Expression, Column, str, int]
 
 
 class ExpressionParser:
@@ -15,6 +15,6 @@ class ExpressionParser:
             return expr
         elif isinstance(expr, Column):
             return ColumnName(expr)
-        elif isinstance(expr, str):
+        elif isinstance(expr, (str, int)):
             return Literal(expr)
         raise Exception("could not parse the expression")
