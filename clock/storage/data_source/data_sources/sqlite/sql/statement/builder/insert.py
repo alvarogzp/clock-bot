@@ -12,9 +12,11 @@ class Insert(TableClause, ColumnsClause, StatementBuilder):
 
     def values(self, *values: str):
         self._values = ", ".join(values)
+        return self
 
     def select(self, select: Select):
         self._select = select.build_sql()
+        return self
 
     def build_sql(self):
         columns = ", ".join(self._columns_names)
