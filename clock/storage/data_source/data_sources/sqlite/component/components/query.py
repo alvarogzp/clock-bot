@@ -8,6 +8,10 @@ from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.condition import Condition
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.schema.table import TableSchema
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.alter_table import AlterTable
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.create_table import CreateTable
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import Select
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.update import Update
 
 
 TIMESTAMP = Column("timestamp", TEXT)
@@ -48,6 +52,31 @@ CHOSEN_RESULT.column(QUERY_TEXT)
 CHOSEN_RESULT.column(CHOOSING_SECONDS)
 
 
+CREATE_QUERY = CreateTable().from_schema(QUERY).build()
+CREATE_CHOSEN_RESULT = CreateTable().from_schema(CHOSEN_RESULT).build()
+
+ADD_QUERY_COLUMNS_V2 = AlterTable().from_schema(QUERY, 2).build()
+
+SET_QUERY_LANGUAGE_CODE = Update()\
+    .table(QUERY.table)\
+    .set(LANGUAGE_CODE, ":language_code")\
+    .where(Condition(ROWID, EQUAL, ":rowid"))\
+    .build()
+
+GET_ALL_QUERIES = Select()\
+    .fields(ROWID, USER_ID, TIMESTAMP)\
+    .table(QUERY.table)\
+    .build()
+
+GET_RECENT_QUERIES_LANGUAGE_CODES = Select()\
+    .fields(LANGUAGE_CODE)\
+    .table(QUERY.table)\
+    .group_by(LANGUAGE_CODE)\
+    .order_by(Cast(TIMESTAMP, INTEGER), DESC)\
+    .limit(":limit")\
+    .build()
+
+
 class QuerySqliteComponent(SqliteStorageComponent):
     version = 2
 
@@ -56,25 +85,18 @@ class QuerySqliteComponent(SqliteStorageComponent):
         self.user = user
 
     def create(self):
-        self.statement.create_table().from_schema(QUERY).execute()
-        self.statement.create_table().from_schema(CHOSEN_RESULT).execute()
+        self.statement(CREATE_QUERY).execute()
+        self.statement(CREATE_CHOSEN_RESULT).execute()
 
     def upgrade_from_1_to_2(self):
-        self.statement.alter_table().from_schema(QUERY, 2).execute()
-        # get all queries
-        queries = self.statement.select()\
-            .fields(ROWID, USER_ID, TIMESTAMP)\
-            .table(QUERY.table)\
-            .execute()
+        self.statement(ADD_QUERY_COLUMNS_V2).execute()
+        queries = self.statement(GET_ALL_QUERIES).execute()
         for query in queries:
             rowid = query[ROWID]
             user_id = query[USER_ID]
             timestamp = query[TIMESTAMP]
             language_code = self.user.get_user_language_code_at(user_id, timestamp)
-            self.statement.update().table(QUERY.table)\
-                .set(LANGUAGE_CODE, ":language_code")\
-                .where(Condition(ROWID, EQUAL, ":rowid"))\
-                .execute(language_code=language_code, rowid=rowid)
+            self.statement(SET_QUERY_LANGUAGE_CODE).execute(language_code=language_code, rowid=rowid)
 
     def save_query(self, user_id: int, timestamp: str, query: str, offset: str, language_code: str, locale: str,
                    results_found_len: int, results_sent_len: int, processing_seconds: float):
@@ -94,12 +116,7 @@ class QuerySqliteComponent(SqliteStorageComponent):
 
     def get_recent_queries_language_codes(self, limit: int):
         return list(
-            self.statement.select()
-                .fields(LANGUAGE_CODE)
-                .table(QUERY.table)
-                .group_by(LANGUAGE_CODE)
-                .order_by(Cast(TIMESTAMP, INTEGER), DESC)
-                .limit(":limit")
+            self.statement(GET_RECENT_QUERIES_LANGUAGE_CODES)
                 .execute(limit=limit)
                 .map_field()
         )
