@@ -12,6 +12,7 @@ from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.alter_t
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.create_table import CreateTable
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import Select
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.update import Update
+from clock.storage.data_source.data_sources.sqlite.sql.statement.statement import CompoundSqlStatement
 
 
 TIMESTAMP = Column("timestamp", TEXT)
@@ -54,6 +55,7 @@ CHOSEN_RESULT.column(CHOOSING_SECONDS)
 
 CREATE_QUERY = CreateTable().from_schema(QUERY).build()
 CREATE_CHOSEN_RESULT = CreateTable().from_schema(CHOSEN_RESULT).build()
+CREATE_TABLES = CompoundSqlStatement.from_statements(CREATE_QUERY, CREATE_CHOSEN_RESULT)
 
 ADD_QUERY_COLUMNS_V2 = AlterTable().from_schema(QUERY, 2).build()
 
@@ -85,8 +87,7 @@ class QuerySqliteComponent(SqliteStorageComponent):
         self.user = user
 
     def create(self):
-        self.statement(CREATE_QUERY).execute()
-        self.statement(CREATE_CHOSEN_RESULT).execute()
+        self.statement(CREATE_TABLES).execute()
 
     def upgrade_from_1_to_2(self):
         self.statement(ADD_QUERY_COLUMNS_V2).execute()
