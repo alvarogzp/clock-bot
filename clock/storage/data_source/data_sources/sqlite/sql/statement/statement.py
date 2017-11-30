@@ -2,8 +2,7 @@ from typing import List
 
 
 class SqlStatement:
-    def get_sql(self):
-        raise NotImplementedError()
+    pass
 
 
 class SingleSqlStatement(SqlStatement):
@@ -18,5 +17,5 @@ class CompoundSqlStatement(SqlStatement):
     def __init__(self, statements: List[str]):
         self.statements = statements
 
-    def get_sql(self):
+    def get_statements(self):
         return self.statements

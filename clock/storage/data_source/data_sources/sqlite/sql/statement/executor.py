@@ -50,7 +50,7 @@ class StatementExecution:
 
     def _execute_compound_statement(self, statement: CompoundSqlStatement):
         # do not return anything
-        for sql in self.statement.get_sql():
+        for sql in self.statement.get_statements():
             self._execute_sql(sql, params)
 
     def _execute_single_statement(self, statement: SingleSqlStatement):
