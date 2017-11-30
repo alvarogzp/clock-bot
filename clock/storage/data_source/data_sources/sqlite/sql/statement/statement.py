@@ -1,4 +1,4 @@
-from typing import List
+from typing import Iterable, Sequence
 
 
 class SqlStatement:
@@ -14,8 +14,12 @@ class SingleSqlStatement(SqlStatement):
 
 
 class CompoundSqlStatement(SqlStatement):
-    def __init__(self, statements: List[str]):
+    def __init__(self, statements: Sequence[SqlStatement]):
         self.statements = statements
 
     def get_statements(self):
         return self.statements
+
+    @staticmethod
+    def from_sql(sql_list: Iterable[str]):
+        return CompoundSqlStatement([SingleSqlStatement(sql) for sql in sql_list])
