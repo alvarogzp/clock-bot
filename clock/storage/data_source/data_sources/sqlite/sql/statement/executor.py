@@ -29,31 +29,33 @@ class StatementExecutor:
         return params
 
     def _execute(self, params):
-        raise NotImplementedError()
-
-    def _execute_sql(self, sql: str, params):
-        return SqlResult(self.connection.execute(sql, params))
+        return StatementExecution(self.connection, self.statement, params).execute()
 
 
-class SingleStatementExecutor(StatementExecutor):
-    def _execute(self, params):
-        return self._execute_sql(self.statement.get_sql(), params)
+class StatementExecution:
+    def __init__(self, connection: Connection, statement: SqlStatement, params):
+        self.connection = connection
+        self.statement = statement
+        self.params = params
 
+    def execute(self):
+        return self._execute_statement(self.statement)
 
-class CompoundStatementExecutor(StatementExecutor):
-    def _execute(self, params):
+    def _execute_statement(self, statement: SqlStatement):
+        if isinstance(statement, SingleSqlStatement):
+            return self._execute_single_statement(statement)
+        elif isinstance(statement, CompoundSqlStatement):
+            return self._execute_compound_statement(statement)
+        raise Exception("unknown sql statement type")
+
+    def _execute_compound_statement(self, statement: CompoundSqlStatement):
         # do not return anything
         for sql in self.statement.get_sql():
             self._execute_sql(sql, params)
 
+    def _execute_single_statement(self, statement: SingleSqlStatement):
+        sql = statement.get_sql()
+        return self._execute_sql(sql)
 
-class StatementExecutorFactory:
-    def __init__(self, connection: Connection):
-        self.connection = connection
-
-    def executor(self, statement: SqlStatement):
-        if isinstance(statement, SingleSqlStatement):
-            return SingleStatementExecutor(self.connection, statement)
-        elif isinstance(statement, CompoundSqlStatement):
-            return CompoundStatementExecutor(self.connection, statement)
-        raise Exception("unexpected statement type")
+    def _execute_sql(self, sql: str):
+        return SqlResult(self.connection.execute(sql, self.params))
