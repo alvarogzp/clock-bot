@@ -23,3 +23,7 @@ class CompoundSqlStatement(SqlStatement):
     @staticmethod
     def from_sql(sql_list: Iterable[str]):
         return CompoundSqlStatement([SingleSqlStatement(sql) for sql in sql_list])
+
+    @staticmethod
+    def from_statements(*statements: SqlStatement):
+        return CompoundSqlStatement(statements)
