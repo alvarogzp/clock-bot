@@ -1,6 +1,6 @@
-# [🌍 🕒 World Times 🕘 🌎](https://t.me/WorldTimesBot)
+# [🌍 🕒 World Clock 🕘 🌎](https://t.me/ClockBot)
 
-This repository contains the source code of [@WorldTimesBot](https://t.me/WorldTimesBot),
+This repository contains the source code of [@ClockBot](https://t.me/ClockBot),
 a telegram bot that allows to get the current time of any place in the world.
 
 
@@ -10,13 +10,13 @@ The bot works in [inline mode](https://core.telegram.org/bots/inline),
 so you can use it in any chat or group without having to add the bot to it.
 
 To use it, you must write a message on the chat where you would like to use it.
-The message must start with an `@` character followed by the bot name (`WorldTimesBot`).
+The message must start with an `@` character followed by the bot name (`ClockBot`).
 Then add an empty space and you will start immediately seeing the current times
 in your country (based on the locale telegram sends to us).
 
 You can tap on any of the results to send it to the current chat.
 
-If you want to get the current time of any other place, just type (after the `@WorldTimesBot ` part)
+If you want to get the current time of any other place, just type (after the `@ClockBot ` part)
 the country name, the time-zone location or the time-zone name and you will see the times
 that matches it.
 
