@@ -12,6 +12,7 @@ from clock.storage.data_source.data_sources.sqlite.sql.schema.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.alter_table import AlterTable
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.create_table import CreateTable
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import Select
+from clock.storage.data_source.data_sources.sqlite.sql.statement.statement import CompoundSqlStatement
 
 
 USER_ID = Column("user_id", INTEGER, "primary key", "not null")
@@ -49,9 +50,11 @@ USER_HISTORY.column(TIMESTAMP_REMOVED)
 
 CREATE_USER = CreateTable().from_schema(USER).build()
 CREATE_USER_HISTORY = CreateTable().from_schema(USER_HISTORY).build()
+CREATE_TABLES = CompoundSqlStatement.from_statements(CREATE_USER, CREATE_USER_HISTORY)
 
 ADD_COLUMNS_V2_USER = AlterTable().from_schema(USER, 2).build()
 ADD_COLUMNS_V2_USER_HISTORY = AlterTable().from_schema(USER_HISTORY, 2).build()
+ADD_COLUMNS_V2 = CompoundSqlStatement.from_statements(ADD_COLUMNS_V2_USER, ADD_COLUMNS_V2_USER_HISTORY)
 
 GET_IS_USER_SAVED_EQUAL = Select()\
     .fields("1")\
@@ -103,12 +106,10 @@ class UserSqliteComponent(SqliteStorageComponent):
         super().__init__("user", self.version)
 
     def create(self):
-        self.statement(CREATE_USER).execute()
-        self.statement(CREATE_USER_HISTORY).execute()
+        self.statement(CREATE_TABLES).execute()
 
     def upgrade_from_1_to_2(self):
-        self.statement(ADD_COLUMNS_V2_USER).execute()
-        self.statement(ADD_COLUMNS_V2_USER_HISTORY).execute()
+        self.statement(ADD_COLUMNS_V2).execute()
 
     def save_user(self, user_id: int, first_name: str, last_name: str, username: str, language_code: str, is_bot: bool):
         first_name = self._empty_if_none(first_name)
