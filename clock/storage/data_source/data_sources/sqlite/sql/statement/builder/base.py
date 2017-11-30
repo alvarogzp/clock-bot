@@ -14,7 +14,7 @@ class StatementBuilder:
     def build(self):
         sql = self.build_sql()
         if self.multiple_statements:
-            return CompoundSqlStatement(sql)
+            return CompoundSqlStatement.from_sql(sql)
         return SingleSqlStatement(sql)
 
     def copy(self):
