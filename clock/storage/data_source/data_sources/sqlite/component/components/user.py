@@ -8,7 +8,6 @@ from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.
     MultipleCondition
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.simple import NULL
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
-from clock.storage.data_source.data_sources.sqlite.sql.schema.table import TableSchema
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.alter_table import AlterTable
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.create_table import CreateTable
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import Select
@@ -26,8 +25,7 @@ USER_ID_USER_HISTORY = Column("user_id", INTEGER, "not null")
 TIMESTAMP_REMOVED = Column("timestamp_removed", TEXT)
 
 
-USER = TableSchema()
-USER.table = Table("user")
+USER = Table("user")
 USER.column(USER_ID)
 USER.column(FIRST_NAME)
 USER.column(LAST_NAME)
@@ -36,8 +34,7 @@ USER.column(LANGUAGE_CODE)
 USER.column(IS_BOT, version=2)
 USER.column(TIMESTAMP_ADDED)
 
-USER_HISTORY = TableSchema()
-USER_HISTORY.table = Table("user_history")
+USER_HISTORY = Table("user_history")
 USER_HISTORY.column(USER_ID_USER_HISTORY)
 USER_HISTORY.column(FIRST_NAME)
 USER_HISTORY.column(LAST_NAME)
@@ -48,17 +45,17 @@ USER_HISTORY.column(TIMESTAMP_ADDED)
 USER_HISTORY.column(TIMESTAMP_REMOVED)
 
 
-CREATE_USER = CreateTable().from_schema(USER).build()
-CREATE_USER_HISTORY = CreateTable().from_schema(USER_HISTORY).build()
+CREATE_USER = CreateTable().from_definition(USER).build()
+CREATE_USER_HISTORY = CreateTable().from_definition(USER_HISTORY).build()
 CREATE_TABLES = CompoundSqlStatement.from_statements(CREATE_USER, CREATE_USER_HISTORY)
 
-ADD_COLUMNS_V2_USER = AlterTable().from_schema(USER, 2).build()
-ADD_COLUMNS_V2_USER_HISTORY = AlterTable().from_schema(USER_HISTORY, 2).build()
+ADD_COLUMNS_V2_USER = AlterTable().from_definition(USER, 2).build()
+ADD_COLUMNS_V2_USER_HISTORY = AlterTable().from_definition(USER_HISTORY, 2).build()
 ADD_COLUMNS_V2 = CompoundSqlStatement.from_statements(ADD_COLUMNS_V2_USER, ADD_COLUMNS_V2_USER_HISTORY)
 
 GET_IS_USER_SAVED_EQUAL = Select()\
     .fields("1")\
-    .table(USER.table)\
+    .table(USER)\
     .where(
         MultipleCondition(
             AND,
@@ -87,13 +84,13 @@ GET_LANGUAGE_CODE_BUILDER = Select()\
 
 GET_ROWID_AND_TIMESTAMP_ADDED_FROM_USER = Select()\
     .fields(ROWID, TIMESTAMP_ADDED)\
-    .table(USER.table)\
+    .table(USER)\
     .where(Condition(USER_ID, EQUAL, ":user_id"))\
     .build()
 
 GET_ROWID_TIMESTAMP_ADDED_AND_REMOVED_FROM_USER_HISTORY = Select()\
     .fields(ROWID, TIMESTAMP_ADDED, TIMESTAMP_REMOVED)\
-    .table(USER_HISTORY.table)\
+    .table(USER_HISTORY)\
     .where(Condition(USER_ID_USER_HISTORY, EQUAL, ":user_id"))\
     .order_by(Cast(TIMESTAMP_REMOVED, INTEGER), DESC)\
     .build()
@@ -160,7 +157,7 @@ class UserSqliteComponent(SqliteStorageComponent):
         last_added = user[TIMESTAMP_ADDED]
         if self.__was_valid_at(timestamp, last_added):
             rowid = user[ROWID]
-            return USER.table, rowid
+            return USER, rowid
         # now iterate the user_history entries for that user
         user_history = self.statement(GET_ROWID_TIMESTAMP_ADDED_AND_REMOVED_FROM_USER_HISTORY)\
             .execute(user_id=user_id)
@@ -169,7 +166,7 @@ class UserSqliteComponent(SqliteStorageComponent):
             removed = user[TIMESTAMP_REMOVED]
             if self.__was_valid_at(timestamp, added, removed):
                 rowid = user[ROWID]
-                return USER_HISTORY.table, rowid
+                return USER_HISTORY, rowid
         raise Exception("user {user_id} was unknown at {timestamp}".format(user_id=user_id, timestamp=timestamp))
 
     @staticmethod

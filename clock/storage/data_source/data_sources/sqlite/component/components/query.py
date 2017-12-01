@@ -7,7 +7,6 @@ from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type impor
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.cast import Cast
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.condition import Condition
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
-from clock.storage.data_source.data_sources.sqlite.sql.schema.table import TableSchema
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.alter_table import AlterTable
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.create_table import CreateTable
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import Select
@@ -30,8 +29,7 @@ CHOSEN_ZONE_NAME = Column("chosen_zone_name", TEXT)
 CHOOSING_SECONDS = Column("choosing_seconds", REAL)
 
 
-QUERY = TableSchema()
-QUERY.table = Table("query")
+QUERY = Table("query")
 QUERY.column(TIMESTAMP)
 QUERY.column(USER_ID)
 QUERY.column(TIME_POINT_QUERY)
@@ -43,8 +41,7 @@ QUERY.column(RESULTS_FOUND_LEN)
 QUERY.column(RESULTS_SENT_LEN)
 QUERY.column(PROCESSING_SECONDS)
 
-CHOSEN_RESULT = TableSchema()
-CHOSEN_RESULT.table = Table("chosen_result")
+CHOSEN_RESULT = Table("chosen_result")
 CHOSEN_RESULT.column(TIMESTAMP)
 CHOSEN_RESULT.column(USER_ID)
 CHOSEN_RESULT.column(TIME_POINT_CHOSEN_RESULT)
@@ -53,26 +50,26 @@ CHOSEN_RESULT.column(QUERY_TEXT)
 CHOSEN_RESULT.column(CHOOSING_SECONDS)
 
 
-CREATE_QUERY = CreateTable().from_schema(QUERY).build()
-CREATE_CHOSEN_RESULT = CreateTable().from_schema(CHOSEN_RESULT).build()
+CREATE_QUERY = CreateTable().from_definition(QUERY).build()
+CREATE_CHOSEN_RESULT = CreateTable().from_definition(CHOSEN_RESULT).build()
 CREATE_TABLES = CompoundSqlStatement.from_statements(CREATE_QUERY, CREATE_CHOSEN_RESULT)
 
-ADD_QUERY_COLUMNS_V2 = AlterTable().from_schema(QUERY, 2).build()
+ADD_QUERY_COLUMNS_V2 = AlterTable().from_definition(QUERY, 2).build()
 
 SET_QUERY_LANGUAGE_CODE = Update()\
-    .table(QUERY.table)\
+    .table(QUERY)\
     .set(LANGUAGE_CODE, ":language_code")\
     .where(Condition(ROWID, EQUAL, ":rowid"))\
     .build()
 
 GET_ALL_QUERIES = Select()\
     .fields(ROWID, USER_ID, TIMESTAMP)\
-    .table(QUERY.table)\
+    .table(QUERY)\
     .build()
 
 GET_RECENT_QUERIES_LANGUAGE_CODES = Select()\
     .fields(LANGUAGE_CODE)\
-    .table(QUERY.table)\
+    .table(QUERY)\
     .group_by(LANGUAGE_CODE)\
     .order_by(Cast(TIMESTAMP, INTEGER), DESC)\
     .limit(":limit")\
