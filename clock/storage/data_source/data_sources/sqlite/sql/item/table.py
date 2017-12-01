@@ -5,7 +5,10 @@ from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
 
 
 class Table(NamedItem):
-    pass
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.columns = ColumnList()
+        self.column = self.columns.add
 
 
 class ColumnList:
