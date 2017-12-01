@@ -1,4 +1,4 @@
-from clock.storage.data_source.data_sources.sqlite.sql.schema.table import TableSchema
+from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.base import StatementBuilder
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.columns import ColumnsClause
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.table import TableClause
@@ -14,9 +14,9 @@ class CreateTable(TableClause, ColumnsClause, StatementBuilder):
     or an admin-controlled configuration value).
     """
 
-    def from_schema(self, schema: TableSchema):
-        self.table(schema.table)
-        self.columns(*schema.columns.get_all())
+    def from_definition(self, table: Table):
+        self.table(table)
+        self.columns(*table.columns.get_all())
         return self
 
     def build_sql(self):

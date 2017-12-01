@@ -1,4 +1,4 @@
-from clock.storage.data_source.data_sources.sqlite.sql.schema.table import TableSchema
+from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.base import StatementBuilder
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.columns import ColumnsClause
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses.table import TableClause
@@ -18,10 +18,10 @@ class AlterTable(TableClause, ColumnsClause, StatementBuilder):
         super().__init__()
         self.multiple_statements = True
 
-    def from_schema(self, schema: TableSchema, version: int):
+    def from_definition(self, table: Table, version: int):
         """Add all columns from the schema added in the specified version"""
-        self.table(schema.table)
-        self.add_columns(*schema.columns.get_with_version(version))
+        self.table(table)
+        self.add_columns(*table.columns.get_with_version(version))
         return self
 
     def build_sql(self):
