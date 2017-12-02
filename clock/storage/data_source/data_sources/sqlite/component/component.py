@@ -15,11 +15,15 @@ class SqliteStorageComponent:
         self.tables = []
         self.connection = None  # type: Connection
 
+    # SETUP METHODS
+
     def managed_tables(self, *tables: Table):
         self.tables.extend(tables)
 
     def set_connection(self, connection: Connection):
         self.connection = connection
+
+    # MIGRATION METHODS
 
     def create(self):
         self.__check_there_are_managed_tables()
@@ -49,6 +53,8 @@ class SqliteStorageComponent:
             alter_statement = AlterTable().from_definition(table, version).build()
             self.statement(alter_statement).execute()
 
+    # SQL EXECUTION METHODS
+
     def statement(self, statement: SqlStatement):
         return StatementExecutor(self.connection, statement)
 
@@ -77,6 +83,8 @@ class SqliteStorageComponent:
         """
         statement = SingleSqlStatement(sql)
         return self.statement(statement).execute_for_params(params).cursor
+
+    # UTIL METHODS
 
     @staticmethod
     def _empty_if_none(field: str):
