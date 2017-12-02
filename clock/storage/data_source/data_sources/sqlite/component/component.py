@@ -22,11 +22,13 @@ class SqliteStorageComponent:
         self.connection = connection
 
     def create(self):
+        self.__check_there_are_managed_tables()
         for table in self.tables:
             create_statement = CreateTable().from_definition(table).build()
             self.statement(create_statement).execute()
 
     def upgrade(self, old_version: int, new_version: int):
+        self.__check_there_are_managed_tables()
         if not isinstance(old_version, int) or not isinstance(new_version, int):
             raise Exception("old and new version must be integers")
         version_diff = new_version - old_version
@@ -35,6 +37,12 @@ class SqliteStorageComponent:
         elif version_diff != 1:
             raise Exception("unexpected version diff: {diff}".format(diff=version_diff))
         self._upgrade_tables(new_version)
+
+    def __check_there_are_managed_tables(self):
+        if len(self.tables) == 0:
+            raise NotImplementedError(
+                "you must override migration methods when no delegating table management to base component"
+            )
 
     def _upgrade_tables(self, version: int):
         for table in self.tables:
