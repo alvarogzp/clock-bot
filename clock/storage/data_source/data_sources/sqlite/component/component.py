@@ -26,6 +26,17 @@ class SqliteStorageComponent:
             create_statement = CreateTable().from_definition(table).build()
             self.statement(create_statement).execute()
 
+    def upgrade(self, old_version: int, new_version: int):
+        version_diff = new_version - old_version
+        if version_diff > 1:
+            self.upgrade(old_version, new_version-1)
+        self._upgrade_tables(new_version)
+
+    def _upgrade_tables(self, version: int):
+        for table in self.tables:
+            alter_statement = AlterTable().from_definition(table, version).build()
+            self.statement(alter_statement).execute()
+
     def statement(self, statement: SqlStatement):
         return StatementExecutor(self.connection, statement)
 
