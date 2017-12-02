@@ -101,6 +101,7 @@ class UserSqliteComponent(SqliteStorageComponent):
 
     def __init__(self):
         super().__init__("user", self.version)
+        self.managed_tables(USER, USER_HISTORY)
 
     def create(self):
         self.statement(CREATE_TABLES).execute()

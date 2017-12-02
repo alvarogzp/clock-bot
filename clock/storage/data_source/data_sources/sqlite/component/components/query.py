@@ -82,6 +82,7 @@ class QuerySqliteComponent(SqliteStorageComponent):
     def __init__(self, user: UserSqliteComponent):
         super().__init__("query", self.version)
         self.user = user
+        self.managed_tables(QUERY, CHOSEN_RESULT)
 
     def create(self):
         self.statement(CREATE_TABLES).execute()
