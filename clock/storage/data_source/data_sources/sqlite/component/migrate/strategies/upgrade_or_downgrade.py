@@ -11,11 +11,13 @@ class SqliteUpgradeOrDowngradeMigration(SqliteMigrationStrategy):
             self.do_migration(func, to_version)
 
     def get_migrate_path(self):
-        generic_migrate_path = self._generic_migrate_path()
-        if generic_migrate_path is not None:
-            return generic_migrate_path
-
-        return self._chained_migrate_path()
+        try:
+            return self._chained_migrate_path()
+        except NoMigratePathFoundException as e:
+            generic_migrate_path = self._generic_migrate_path()
+            if generic_migrate_path is not None:
+                return generic_migrate_path
+            raise e
 
     def _generic_migrate_path(self):
         # if a generic migrate function exists, call it passing the old and new versions
