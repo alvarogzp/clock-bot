@@ -7,11 +7,8 @@ from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type impor
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.cast import Cast
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.condition import Condition
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
-from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.alter_table import AlterTable
-from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.create_table import CreateTable
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import Select
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.update import Update
-from clock.storage.data_source.data_sources.sqlite.sql.statement.statement import CompoundSqlStatement
 
 
 TIMESTAMP = Column("timestamp", TEXT)
@@ -50,12 +47,6 @@ CHOSEN_RESULT.column(QUERY_TEXT)
 CHOSEN_RESULT.column(CHOOSING_SECONDS)
 
 
-CREATE_QUERY = CreateTable().from_definition(QUERY).build()
-CREATE_CHOSEN_RESULT = CreateTable().from_definition(CHOSEN_RESULT).build()
-CREATE_TABLES = CompoundSqlStatement.from_statements(CREATE_QUERY, CREATE_CHOSEN_RESULT)
-
-ADD_QUERY_COLUMNS_V2 = AlterTable().from_definition(QUERY, 2).build()
-
 SET_QUERY_LANGUAGE_CODE = Update()\
     .table(QUERY)\
     .set(LANGUAGE_CODE, ":language_code")\
@@ -84,11 +75,8 @@ class QuerySqliteComponent(SqliteStorageComponent):
         self.user = user
         self.managed_tables(QUERY, CHOSEN_RESULT)
 
-    def create(self):
-        self.statement(CREATE_TABLES).execute()
-
     def upgrade_from_1_to_2(self):
-        self.statement(ADD_QUERY_COLUMNS_V2).execute()
+        self.upgrade(1, 2)  # upgrade tables
         queries = self.statement(GET_ALL_QUERIES).execute()
         for query in queries:
             rowid = query[ROWID]
