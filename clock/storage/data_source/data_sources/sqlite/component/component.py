@@ -11,7 +11,11 @@ class SqliteStorageComponent:
     def __init__(self, name: str, version: int):
         self.name = name
         self.version = version
+        self.tables = []
         self.connection = None  # type: Connection
+
+    def managed_tables(self, *tables: Table):
+        self.tables.extend(tables)
 
     def set_connection(self, connection: Connection):
         self.connection = connection
