@@ -27,9 +27,13 @@ class SqliteStorageComponent:
             self.statement(create_statement).execute()
 
     def upgrade(self, old_version: int, new_version: int):
+        if not isinstance(old_version, int) or not isinstance(new_version, int):
+            raise Exception("old and new version must be integers")
         version_diff = new_version - old_version
         if version_diff > 1:
             self.upgrade(old_version, new_version-1)
+        elif version_diff != 1:
+            raise Exception("unexpected version diff: {diff}".format(diff=version_diff))
         self._upgrade_tables(new_version)
 
     def _upgrade_tables(self, version: int):
