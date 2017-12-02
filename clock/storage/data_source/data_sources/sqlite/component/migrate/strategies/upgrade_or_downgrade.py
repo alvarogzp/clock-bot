@@ -15,13 +15,7 @@ class SqliteUpgradeOrDowngradeMigration(SqliteMigrationStrategy):
         if generic_migrate_path is not None:
             return generic_migrate_path
 
-        # build the most direct path to migrate from old to new version
-        migrate_path = []
-        current_version = self.old_version
-        while current_version != self.new_version:
-            func, current_version = self._get_best_migrate_from(current_version)
-            migrate_path.append((func, current_version))
-        return migrate_path
+        return self._chained_migrate_path()
 
     def _generic_migrate_path(self):
         # if a generic migrate function exists, call it passing the old and new versions
@@ -30,6 +24,15 @@ class SqliteUpgradeOrDowngradeMigration(SqliteMigrationStrategy):
             return [
                 (lambda: generic_migrate_func(self.old_version, self.new_version), self.new_version)
             ]
+
+    def _chained_migrate_path(self):
+        # build the most direct path to migrate from old to new version
+        migrate_path = []
+        current_version = self.old_version
+        while current_version != self.new_version:
+            func, current_version = self._get_best_migrate_from(current_version)
+            migrate_path.append((func, current_version))
+        return migrate_path
 
     def _get_best_migrate_from(self, old_version: int):
         # initialize the best distance to the distance from the old version to the destination version
