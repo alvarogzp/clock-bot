@@ -3,6 +3,7 @@ from sqlite3 import Connection
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.alter_table import AlterTable
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.create_table import CreateTable
 from clock.storage.data_source.data_sources.sqlite.sql.statement.executor import StatementExecutor
 from clock.storage.data_source.data_sources.sqlite.sql.statement.statement import SingleSqlStatement, SqlStatement
 
@@ -21,7 +22,9 @@ class SqliteStorageComponent:
         self.connection = connection
 
     def create(self):
-        raise NotImplementedError()
+        for table in self.tables:
+            create_statement = CreateTable().from_definition(table).build()
+            self.statement(create_statement).execute()
 
     def statement(self, statement: SqlStatement):
         return StatementExecutor(self.connection, statement)
