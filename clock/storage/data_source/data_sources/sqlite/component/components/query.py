@@ -71,6 +71,12 @@ SAVE_QUERY = Insert()\
     )\
     .build()
 
+SAVE_CHOSEN_RESULT = Insert()\
+    .table(CHOSEN_RESULT)\
+    .columns(TIMESTAMP, USER_ID, TIME_POINT_CHOSEN_RESULT, CHOSEN_ZONE_NAME, QUERY_TEXT, CHOOSING_SECONDS)\
+    .values(CURRENT_UNIX_TIMESTAMP, ":user_id", ":time_point", ":chosen_zone_name", ":query", ":choosing_seconds")\
+    .build()
+
 GET_ALL_QUERIES = Select()\
     .fields(ROWID, USER_ID, TIMESTAMP)\
     .table(QUERY)\
@@ -111,10 +117,10 @@ class QuerySqliteComponent(SqliteStorageComponent):
 
     def save_chosen_result(self, user_id: int, timestamp: str, chosen_zone_name: str, query: str,
                            choosing_seconds: float):
-        self._sql("insert into chosen_result "
-                  "(timestamp, user_id, time_point, chosen_zone_name, query, choosing_seconds) "
-                  "values (strftime('%s', 'now'), ?, ?, ?, ?, ?)",
-                  (user_id, timestamp, chosen_zone_name, query, choosing_seconds))
+        self.statement(SAVE_CHOSEN_RESULT).execute(
+            user_id=user_id, time_point=timestamp, chosen_zone_name=chosen_zone_name, query=query,
+            choosing_seconds=choosing_seconds
+        )
 
     def get_recent_queries_language_codes(self, limit: int):
         return list(
