@@ -13,6 +13,10 @@ from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.insert 
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import Select
 
 
+NAME = "user"
+VERSION = 2
+
+
 USER_ID = Column("user_id", INTEGER, "primary key", "not null")
 FIRST_NAME = Column("first_name", TEXT)
 LAST_NAME = Column("last_name", TEXT)
@@ -109,10 +113,8 @@ GET_ROWID_TIMESTAMP_ADDED_AND_REMOVED_FROM_USER_HISTORY = Select()\
 
 
 class UserSqliteComponent(SqliteStorageComponent):
-    version = 2
-
     def __init__(self):
-        super().__init__("user", self.version)
+        super().__init__(NAME, VERSION)
         self.managed_tables(USER, USER_HISTORY)
 
     def save_user(self, user_id: int, first_name: str, last_name: str, username: str, language_code: str, is_bot: bool):
