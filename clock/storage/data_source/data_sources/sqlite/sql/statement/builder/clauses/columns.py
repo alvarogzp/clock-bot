@@ -12,7 +12,7 @@ class ColumnsClause(BaseClause):
         return (column.name for column in self._columns)
 
     def columns(self, *columns: Column):
-        self._columns = [column.str() for column in columns]
+        self._columns = columns
         return self
 
     add_columns = columns  # for alter_table, it is a more user-friendly name
