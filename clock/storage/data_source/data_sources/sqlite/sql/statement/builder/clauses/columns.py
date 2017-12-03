@@ -8,6 +8,10 @@ class ColumnsClause(BaseClause):
         self._columns = ()
 
     @property
+    def _columns_definitions(self):
+        return (column.str() for column in self._columns)
+
+    @property
     def _columns_names(self):
         return (column.name for column in self._columns)
 
