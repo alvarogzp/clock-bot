@@ -9,3 +9,4 @@ class OrClause(BaseClause):
 
     def or_(self, conflict_resolution: ConflictResolution):
         self._or = "or {conflict_resolution}".format(conflict_resolution=conflict_resolution.str())
+        return self
