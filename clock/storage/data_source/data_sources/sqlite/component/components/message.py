@@ -63,6 +63,12 @@ SAVE_MESSAGE = Insert()\
             ":migrate_from_chat_id")\
     .build()
 
+SAVE_COMMAND = Insert()\
+    .table(COMMAND)\
+    .columns(MESSAGE_ID_COMMAND, COMMAND_TEXT, COMMAND_ARGS)\
+    .values(":message_id", ":command", ":command_args")\
+    .build()
+
 
 class MessageSqliteComponent(SqliteStorageComponent):
     def __init__(self):
@@ -80,10 +86,9 @@ class MessageSqliteComponent(SqliteStorageComponent):
         )
 
     def save_command(self, message_id: int, command: str, command_args: str):
-        self._sql("insert into command "
-                  "(message_id, command, command_args) "
-                  "values (?, ?, ?)",
-                  (message_id, command, command_args))
+        self.statement(SAVE_COMMAND).execute(
+            message_id=message_id, command=command, command_args=command_args
+        )
 
     def get_message_id(self, chat_id: int, message_id: int):
         return self._sql("select id from message where "
