@@ -1,45 +1,40 @@
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
+from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
+from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import INTEGER, TEXT
+from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 
 
 NAME = "message"
 VERSION = 2
 
 
+MESSAGE = Table("message")
+MESSAGE.column(Column("id", INTEGER, "primary key", "not null"))  # automatically filled
+MESSAGE.column(Column("timestamp", TEXT))
+MESSAGE.column(Column("chat_id", INTEGER))
+MESSAGE.column(Column("message_id", INTEGER))
+MESSAGE.column(Column("user_id", INTEGER))
+MESSAGE.column(Column("date", INTEGER))
+MESSAGE.column(Column("is_forward", INTEGER), version=2)  # boolean
+MESSAGE.column(Column("reply_to_message", INTEGER), version=2)  # references: message_id column
+MESSAGE.column(Column("is_edit", INTEGER), version=2)  # boolean
+MESSAGE.column(Column("text", TEXT))
+MESSAGE.column(Column("new_chat_member", INTEGER), version=2)  # user_id
+MESSAGE.column(Column("left_chat_member", INTEGER), version=2)  # user_id
+MESSAGE.column(Column("group_chat_created", INTEGER), version=2)  # boolean
+MESSAGE.column(Column("migrate_to_chat_id", INTEGER), version=2)
+MESSAGE.column(Column("migrate_from_chat_id", INTEGER), version=2)
+
+COMMAND = Table("command")
+COMMAND.column(Column("message_id", INTEGER))  # references: message.id column
+COMMAND.column(Column("command", TEXT))
+COMMAND.column(Column("command_args", TEXT))
+
+
 class MessageSqliteComponent(SqliteStorageComponent):
     def __init__(self):
         super().__init__(NAME, VERSION)
-
-    def create(self):
-        self._sql("create table if not exists message ("
-                  "id integer primary key not null,"  # automatically filled
-                  "timestamp text,"
-                  "chat_id integer,"
-                  "message_id integer,"
-                  "user_id integer,"
-                  "date integer,"
-                  "is_forward integer,"  # boolean
-                  "reply_to_message integer,"  # references: message_id column
-                  "is_edit integer,"  # boolean
-                  "text text,"
-                  "new_chat_member integer,"  # user_id
-                  "left_chat_member integer,"  # user_id
-                  "group_chat_created integer,"  # boolean
-                  "migrate_to_chat_id integer,"
-                  "migrate_from_chat_id integer"
-                  ")")
-        self._sql("create table if not exists command ("
-                  "message_id integer,"
-                  "command text,"
-                  "command_args text"
-                  ")")
-
-    def upgrade_from_1_to_2(self):
-        self.add_columns(
-            "message",
-            "is_forward integer", "reply_to_message integer", "is_edit integer",
-            "new_chat_member integer", "left_chat_member integer",
-            "group_chat_created integer", "migrate_to_chat_id integer", "migrate_from_chat_id integer"
-        )
+        self.managed_tables(MESSAGE, COMMAND)
 
     def save_message(self, chat_id: int, message_id: int, user_id: int, date: int, is_forward: bool,
                      reply_to_message: int, is_edit: bool, text: str, new_chat_member: int, left_chat_member: int,
