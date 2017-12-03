@@ -1,13 +1,15 @@
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column, ROWID
+from clock.storage.data_source.data_sources.sqlite.sql.item.constants.conflict_resolution import REPLACE
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.operator import EQUAL, AND, OR, IS
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.order_mode import DESC
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import INTEGER, TEXT
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.cast import Cast
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.condition import Condition, \
     MultipleCondition
-from clock.storage.data_source.data_sources.sqlite.sql.item.expression.constants import NULL
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.constants import NULL, CURRENT_UNIX_TIMESTAMP
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.insert import Insert
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import Select
 
 
@@ -41,6 +43,12 @@ USER_HISTORY.column(IS_BOT, version=2)
 USER_HISTORY.column(TIMESTAMP_ADDED)
 USER_HISTORY.column(TIMESTAMP_REMOVED)
 
+
+ADD_USER = Insert().or_(REPLACE)\
+    .table(USER)\
+    .columns(USER_ID, FIRST_NAME, LAST_NAME, USERNAME, LANGUAGE_CODE, IS_BOT, TIMESTAMP_ADDED)\
+    .values(":user_id", ":first_name", ":last_name", ":username", ":language_code", ":is_bot", CURRENT_UNIX_TIMESTAMP)\
+    .build()
 
 GET_IS_USER_SAVED_EQUAL = Select()\
     .fields("1")\
@@ -99,10 +107,10 @@ class UserSqliteComponent(SqliteStorageComponent):
         language_code = self._empty_if_none(language_code)
         if not self.__is_user_saved_equal(user_id, first_name, last_name, username, language_code, is_bot):
             self.__add_to_user_history(user_id)
-            self._sql("insert or replace into user "
-                      "(user_id, first_name, last_name, username, language_code, is_bot, timestamp_added) "
-                      "values (?, ?, ?, ?, ?, ?, strftime('%s', 'now'))",
-                      (user_id, first_name, last_name, username, language_code, is_bot))
+            self.statement(ADD_USER).execute(
+                user_id=user_id, first_name=first_name, last_name=last_name, username=username,
+                language_code=language_code, is_bot=is_bot
+            )
 
     def __is_user_saved_equal(self, user_id: int, first_name: str, last_name: str, username: str, language_code: str,
                               is_bot: bool):
