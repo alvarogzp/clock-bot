@@ -58,21 +58,6 @@ class SqliteStorageComponent:
     def statement(self, statement: SqlStatement):
         return StatementExecutor(self.connection, statement)
 
-    def add_columns(self, table: str, *columns: str):
-        """
-        IMPORTANT:
-        Table name and column definitions are added to the sql statement in an unsafe way!
-        So, untrusted input MUST NOT be passed to them.
-        Their values should ideally be static string literals.
-        If computed at runtime, they MUST come from a TOTALLY trusted source (like another module string constant
-        or an admin-controlled configuration value).
-
-        :deprecated: use self.statement.alter_table() instead
-        """
-        alter_table = AlterTable().table(Table(table))
-        alter_table.add_columns(*(Column(*column.split(" ")) for column in columns))
-        self.statement(alter_table).execute()
-
     def sql(self, sql: str, *qmark_params, **named_params):
         statement = SingleSqlStatement(sql)
         return self.statement(statement).execute(*qmark_params, **named_params)
