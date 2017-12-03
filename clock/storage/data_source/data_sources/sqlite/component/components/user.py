@@ -50,6 +50,21 @@ ADD_USER = Insert().or_(REPLACE)\
     .values(":user_id", ":first_name", ":last_name", ":username", ":language_code", ":is_bot", CURRENT_UNIX_TIMESTAMP)\
     .build()
 
+ADD_USER_HISTORY = Insert()\
+    .table(USER_HISTORY)\
+    .columns(
+        USER_ID_USER_HISTORY, FIRST_NAME, LAST_NAME, USERNAME, LANGUAGE_CODE, IS_BOT, TIMESTAMP_ADDED, TIMESTAMP_REMOVED
+    )\
+    .select(
+        Select()
+        .fields(
+            USER_ID, FIRST_NAME, LAST_NAME, USERNAME, LANGUAGE_CODE, IS_BOT, TIMESTAMP_ADDED, CURRENT_UNIX_TIMESTAMP
+        )
+        .table(USER)
+        .where(Condition(USER_ID, EQUAL, ":user_id"))
+    )\
+    .build()
+
 GET_IS_USER_SAVED_EQUAL = Select()\
     .fields("1")\
     .table(USER)\
@@ -121,12 +136,7 @@ class UserSqliteComponent(SqliteStorageComponent):
 
     def __add_to_user_history(self, user_id: int):
         # if user does not exists in user table, nothing will be inserted into user_history, as expected for new users
-        self._sql("insert into user_history "
-                  "(user_id, first_name, last_name, username, language_code, is_bot, timestamp_added, "
-                  "timestamp_removed) "
-                  "select user_id, first_name, last_name, username, language_code, is_bot, "
-                  "timestamp_added, strftime('%s', 'now') "
-                  "from user where user_id = ?", (user_id,))
+        self.statement(ADD_USER_HISTORY).execute(user_id=user_id)
 
     def get_user_language_code_at(self, user_id: int, timestamp: str):
         table, rowid = self._find_user_at(user_id, timestamp)
