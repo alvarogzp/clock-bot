@@ -1,6 +1,5 @@
 from sqlite3 import Connection
 
-from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.alter_table import AlterTable
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.create_table import CreateTable
