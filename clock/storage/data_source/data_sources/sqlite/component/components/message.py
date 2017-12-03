@@ -1,9 +1,12 @@
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
+from clock.storage.data_source.data_sources.sqlite.sql.item.constants.operator import EQUAL, AND
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import INTEGER, TEXT
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.condition import Condition
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.constants import CURRENT_UNIX_TIMESTAMP
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.insert import Insert
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import Select
 
 
 NAME = "message"
@@ -69,6 +72,17 @@ SAVE_COMMAND = Insert()\
     .values(":message_id", ":command", ":command_args")\
     .build()
 
+GET_MESSAGE_ID = Select()\
+    .fields(ID)\
+    .table(MESSAGE)\
+    .where(
+        Condition(
+            Condition(CHAT_ID, EQUAL, ":chat_id"),
+            AND,
+            Condition(MESSAGE_ID, EQUAL, ":message_id")
+        )
+    ).build()
+
 
 class MessageSqliteComponent(SqliteStorageComponent):
     def __init__(self):
@@ -91,6 +105,6 @@ class MessageSqliteComponent(SqliteStorageComponent):
         )
 
     def get_message_id(self, chat_id: int, message_id: int):
-        return self._sql("select id from message where "
-                         "chat_id = ? and message_id = ?",
-                         (chat_id, message_id)).fetchone()["id"]
+        return self.statement(GET_MESSAGE_ID)\
+            .execute(chat_id=chat_id, message_id=message_id)\
+            .first_field()
