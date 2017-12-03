@@ -11,6 +11,10 @@ from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select 
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.update import Update
 
 
+NAME = "query"
+VERSION = 2
+
+
 TIMESTAMP = Column("timestamp", TEXT)
 USER_ID = Column("user_id", INTEGER, "not null")
 TIME_POINT_QUERY = Column("time_point", TEXT, "not null")
@@ -68,10 +72,8 @@ GET_RECENT_QUERIES_LANGUAGE_CODES = Select()\
 
 
 class QuerySqliteComponent(SqliteStorageComponent):
-    version = 2
-
     def __init__(self, user: UserSqliteComponent):
-        super().__init__("query", self.version)
+        super().__init__(NAME, VERSION)
         self.user = user
         self.managed_tables(QUERY, CHOSEN_RESULT)
 
