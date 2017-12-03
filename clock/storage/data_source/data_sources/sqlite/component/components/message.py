@@ -1,11 +1,13 @@
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 
 
-class MessageSqliteComponent(SqliteStorageComponent):
-    version = 2
+NAME = "message"
+VERSION = 2
 
+
+class MessageSqliteComponent(SqliteStorageComponent):
     def __init__(self):
-        super().__init__("message", self.version)
+        super().__init__(NAME, VERSION)
 
     def create(self):
         self._sql("create table if not exists message ("
