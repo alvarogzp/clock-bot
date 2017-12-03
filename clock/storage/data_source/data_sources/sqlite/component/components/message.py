@@ -1,7 +1,9 @@
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import INTEGER, TEXT
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.constants import CURRENT_UNIX_TIMESTAMP
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.insert import Insert
 
 
 NAME = "message"
@@ -52,6 +54,15 @@ COMMAND.column(COMMAND_TEXT)
 COMMAND.column(COMMAND_ARGS)
 
 
+SAVE_MESSAGE = Insert()\
+    .table(MESSAGE)\
+    .columns(TIMESTAMP, CHAT_ID, MESSAGE_ID, USER_ID, DATE, IS_FORWARD, REPLY_TO_MESSAGE, IS_EDIT, MESSAGE_TEXT,
+             NEW_CHAT_MEMBER, LEFT_CHAT_MEMBER, GROUP_CHAT_CREATED, MIGRATE_TO_CHAT_ID, MIGRATE_FROM_CHAT_ID)\
+    .values(CURRENT_UNIX_TIMESTAMP, ":chat_id", ":message_id", ":user_id", ":date", ":is_forward",
+            ":reply_to_message", ":is_edit", ":text", ":new_chat_member", ":left_chat_member",
+            ":group_chat_created", ":migrate_to_chat_id", ":migrate_from_chat_id")
+
+
 class MessageSqliteComponent(SqliteStorageComponent):
     def __init__(self):
         super().__init__(NAME, VERSION)
@@ -60,12 +71,12 @@ class MessageSqliteComponent(SqliteStorageComponent):
     def save_message(self, chat_id: int, message_id: int, user_id: int, date: int, is_forward: bool,
                      reply_to_message: int, is_edit: bool, text: str, new_chat_member: int, left_chat_member: int,
                      group_chat_created: bool, migrate_to_chat_id: int, migrate_from_chat_id: int):
-        self._sql("insert into message "
-                  "(timestamp, chat_id, message_id, user_id, date, is_forward, reply_to_message, is_edit, text, "
-                  "new_chat_member, left_chat_member, group_chat_created, migrate_to_chat_id, migrate_from_chat_id) "
-                  "values (strftime('%s', 'now'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                  (chat_id, message_id, user_id, date, is_forward, reply_to_message, is_edit, text, new_chat_member,
-                   left_chat_member, group_chat_created, migrate_to_chat_id, migrate_from_chat_id))
+        self.statement(SAVE_MESSAGE).execute(
+            chat_id=chat_id, message_id=message_id, user_id=user_id, date=date, is_forward=is_forward,
+            reply_to_message=reply_to_message, is_edit=is_edit, text=text, new_chat_member=new_chat_member,
+            left_chat_member=left_chat_member, group_chat_created=group_chat_created,
+            migrate_to_chat_id=migrate_to_chat_id, migrate_from_chat_id=migrate_from_chat_id
+        )
 
     def save_command(self, message_id: int, command: str, command_args: str):
         self._sql("insert into command "
