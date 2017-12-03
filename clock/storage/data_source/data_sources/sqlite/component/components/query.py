@@ -6,7 +6,9 @@ from clock.storage.data_source.data_sources.sqlite.sql.item.constants.order_mode
 from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import TEXT, INTEGER, REAL
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.cast import Cast
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.condition import Condition
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.constants import CURRENT_UNIX_TIMESTAMP
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
+from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.insert import Insert
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import Select
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.update import Update
 
@@ -57,6 +59,18 @@ SET_QUERY_LANGUAGE_CODE = Update()\
     .where(Condition(ROWID, EQUAL, ":rowid"))\
     .build()
 
+SAVE_QUERY = Insert()\
+    .table(QUERY)\
+    .columns(
+        TIMESTAMP, USER_ID, TIME_POINT_QUERY, QUERY_TEXT, OFFSET, LANGUAGE_CODE, LOCALE, RESULTS_FOUND_LEN,
+        RESULTS_SENT_LEN, PROCESSING_SECONDS
+    )\
+    .values(
+        CURRENT_UNIX_TIMESTAMP, ":user_id", ":time_point", ":query", ":offset", ":language_code", ":locale",
+        ":results_found_len", ":results_sent_len", ":processing_seconds"
+    )\
+    .build()
+
 GET_ALL_QUERIES = Select()\
     .fields(ROWID, USER_ID, TIMESTAMP)\
     .table(QUERY)\
@@ -89,12 +103,11 @@ class QuerySqliteComponent(SqliteStorageComponent):
 
     def save_query(self, user_id: int, timestamp: str, query: str, offset: str, language_code: str, locale: str,
                    results_found_len: int, results_sent_len: int, processing_seconds: float):
-        self._sql("insert into query "
-                  "(timestamp, user_id, time_point, query, offset, language_code, locale, results_found_len, "
-                  "results_sent_len, processing_seconds) "
-                  "values (strftime('%s', 'now'), ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                  (user_id, timestamp, query, offset, language_code, locale, results_found_len, results_sent_len,
-                   processing_seconds))
+        self.statement(SAVE_QUERY).execute(
+            user_id=user_id, time_point=timestamp, query=query, offset=offset, language_code=language_code,
+            locale=locale, results_found_len=results_found_len, results_sent_len=results_sent_len,
+            processing_seconds=processing_seconds
+        )
 
     def save_chosen_result(self, user_id: int, timestamp: str, chosen_zone_name: str, query: str,
                            choosing_seconds: float):
