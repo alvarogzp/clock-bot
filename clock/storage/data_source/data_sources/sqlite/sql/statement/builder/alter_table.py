@@ -27,5 +27,5 @@ class AlterTable(TableClause, ColumnsClause, StatementBuilder):
     def build_sql(self):
         return [
             "alter table {table} add column {column}".format(table=self._table, column=column)
-            for column in self._columns
+            for column in self._columns_definitions
         ]

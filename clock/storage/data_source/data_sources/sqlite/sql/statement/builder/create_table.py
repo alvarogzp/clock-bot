@@ -20,5 +20,5 @@ class CreateTable(TableClause, ColumnsClause, StatementBuilder):
         return self
 
     def build_sql(self):
-        columns = ", ".join(self._columns)
+        columns = ", ".join(self._columns_definitions)
         return "create table {name} ({columns})".format(name=self._table, columns=columns)
