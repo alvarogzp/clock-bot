@@ -5,7 +5,7 @@ from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.clauses
 class ColumnsClause(BaseClause):
     def __init__(self):
         super().__init__()
-        self._columns = []
+        self._columns = ()
 
     @property
     def _columns_names(self):
