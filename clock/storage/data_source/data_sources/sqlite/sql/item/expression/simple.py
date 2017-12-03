@@ -8,9 +8,6 @@ class Literal(StringItem, Expression):
         super().__init__(str(literal))
 
 
-NULL = Literal("null")
-
-
 class ColumnName(StringItem, Expression):
     def __init__(self, column: Column):
         super().__init__(column.name)

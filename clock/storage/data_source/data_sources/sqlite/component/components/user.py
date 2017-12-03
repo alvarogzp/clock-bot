@@ -6,7 +6,7 @@ from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type impor
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.cast import Cast
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.condition import Condition, \
     MultipleCondition
-from clock.storage.data_source.data_sources.sqlite.sql.item.expression.simple import NULL
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.constants import NULL
 from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
 from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import Select
 
