@@ -46,7 +46,9 @@ class StatementExecution:
             return self._execute_single_statement(statement)
         elif isinstance(statement, CompoundSqlStatement):
             return self._execute_compound_statement(statement)
-        raise Exception("unknown sql statement type")
+        elif isinstance(statement, SqlStatement):
+            raise Exception("unknown sql statement type")
+        raise Exception("expecting a SqlStatement, got: {type}".format(type=type(statement)))
 
     def _execute_compound_statement(self, statement: CompoundSqlStatement):
         # do not return anything
