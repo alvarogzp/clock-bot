@@ -58,9 +58,9 @@ SAVE_MESSAGE = Insert()\
     .table(MESSAGE)\
     .columns(TIMESTAMP, CHAT_ID, MESSAGE_ID, USER_ID, DATE, IS_FORWARD, REPLY_TO_MESSAGE, IS_EDIT, MESSAGE_TEXT,
              NEW_CHAT_MEMBER, LEFT_CHAT_MEMBER, GROUP_CHAT_CREATED, MIGRATE_TO_CHAT_ID, MIGRATE_FROM_CHAT_ID)\
-    .values(CURRENT_UNIX_TIMESTAMP, ":chat_id", ":message_id", ":user_id", ":date", ":is_forward",
-            ":reply_to_message", ":is_edit", ":text", ":new_chat_member", ":left_chat_member",
-            ":group_chat_created", ":migrate_to_chat_id", ":migrate_from_chat_id")
+    .values(CURRENT_UNIX_TIMESTAMP, ":chat_id", ":message_id", ":user_id", ":date", ":is_forward", ":reply_to_message",
+            ":is_edit", ":text", ":new_chat_member", ":left_chat_member", ":group_chat_created", ":migrate_to_chat_id",
+            ":migrate_from_chat_id")
 
 
 class MessageSqliteComponent(SqliteStorageComponent):
