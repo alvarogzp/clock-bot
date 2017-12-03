@@ -60,7 +60,8 @@ SAVE_MESSAGE = Insert()\
              NEW_CHAT_MEMBER, LEFT_CHAT_MEMBER, GROUP_CHAT_CREATED, MIGRATE_TO_CHAT_ID, MIGRATE_FROM_CHAT_ID)\
     .values(CURRENT_UNIX_TIMESTAMP, ":chat_id", ":message_id", ":user_id", ":date", ":is_forward", ":reply_to_message",
             ":is_edit", ":text", ":new_chat_member", ":left_chat_member", ":group_chat_created", ":migrate_to_chat_id",
-            ":migrate_from_chat_id")
+            ":migrate_from_chat_id")\
+    .build()
 
 
 class MessageSqliteComponent(SqliteStorageComponent):
