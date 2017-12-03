@@ -8,27 +8,48 @@ NAME = "message"
 VERSION = 2
 
 
+ID = Column("id", INTEGER, "primary key", "not null")  # automatically filled
+TIMESTAMP = Column("timestamp", TEXT)
+CHAT_ID = Column("chat_id", INTEGER)
+MESSAGE_ID = Column("message_id", INTEGER)
+USER_ID = Column("user_id", INTEGER)
+DATE = Column("date", INTEGER)
+IS_FORWARD = Column("is_forward", INTEGER)  # boolean
+REPLY_TO_MESSAGE = Column("reply_to_message", INTEGER)  # references: message_id column
+IS_EDIT = Column("is_edit", INTEGER)  # boolean
+MESSAGE_TEXT = Column("text", TEXT)
+NEW_CHAT_MEMBER = Column("new_chat_member", INTEGER)  # user_id
+LEFT_CHAT_MEMBER = Column("left_chat_member", INTEGER)  # user_id
+GROUP_CHAT_CREATED = Column("group_chat_created", INTEGER)  # boolean
+MIGRATE_TO_CHAT_ID = Column("migrate_to_chat_id", INTEGER)
+MIGRATE_FROM_CHAT_ID = Column("migrate_from_chat_id", INTEGER)
+
+MESSAGE_ID_COMMAND = Column("message_id", INTEGER)  # references: message.id column
+COMMAND_TEXT = Column("command", TEXT)
+COMMAND_ARGS = Column("command_args", TEXT)
+
+
 MESSAGE = Table("message")
-MESSAGE.column(Column("id", INTEGER, "primary key", "not null"))  # automatically filled
-MESSAGE.column(Column("timestamp", TEXT))
-MESSAGE.column(Column("chat_id", INTEGER))
-MESSAGE.column(Column("message_id", INTEGER))
-MESSAGE.column(Column("user_id", INTEGER))
-MESSAGE.column(Column("date", INTEGER))
-MESSAGE.column(Column("is_forward", INTEGER), version=2)  # boolean
-MESSAGE.column(Column("reply_to_message", INTEGER), version=2)  # references: message_id column
-MESSAGE.column(Column("is_edit", INTEGER), version=2)  # boolean
-MESSAGE.column(Column("text", TEXT))
-MESSAGE.column(Column("new_chat_member", INTEGER), version=2)  # user_id
-MESSAGE.column(Column("left_chat_member", INTEGER), version=2)  # user_id
-MESSAGE.column(Column("group_chat_created", INTEGER), version=2)  # boolean
-MESSAGE.column(Column("migrate_to_chat_id", INTEGER), version=2)
-MESSAGE.column(Column("migrate_from_chat_id", INTEGER), version=2)
+MESSAGE.column(ID)
+MESSAGE.column(TIMESTAMP)
+MESSAGE.column(CHAT_ID)
+MESSAGE.column(MESSAGE_ID)
+MESSAGE.column(USER_ID)
+MESSAGE.column(DATE)
+MESSAGE.column(IS_FORWARD, version=2)
+MESSAGE.column(REPLY_TO_MESSAGE, version=2)
+MESSAGE.column(IS_EDIT, version=2)
+MESSAGE.column(MESSAGE_TEXT)
+MESSAGE.column(NEW_CHAT_MEMBER, version=2)
+MESSAGE.column(LEFT_CHAT_MEMBER, version=2)
+MESSAGE.column(GROUP_CHAT_CREATED, version=2)
+MESSAGE.column(MIGRATE_TO_CHAT_ID, version=2)
+MESSAGE.column(MIGRATE_FROM_CHAT_ID, version=2)
 
 COMMAND = Table("command")
-COMMAND.column(Column("message_id", INTEGER))  # references: message.id column
-COMMAND.column(Column("command", TEXT))
-COMMAND.column(Column("command_args", TEXT))
+COMMAND.column(MESSAGE_ID_COMMAND)
+COMMAND.column(COMMAND_TEXT)
+COMMAND.column(COMMAND_ARGS)
 
 
 class MessageSqliteComponent(SqliteStorageComponent):
