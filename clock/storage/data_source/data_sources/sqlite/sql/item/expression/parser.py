@@ -12,8 +12,8 @@ EXPRESSION_TYPE = Union[EXPRESSION_TYPE_SIMPLE, EXPRESSION_TYPE_LIST]
 
 
 class ExpressionParser:
-    @staticmethod
-    def parse(expr: EXPRESSION_TYPE):
+    @classmethod
+    def parse(cls, expr: EXPRESSION_TYPE):
         if isinstance(expr, Expression):
             return expr
         elif isinstance(expr, Column):
@@ -21,7 +21,7 @@ class ExpressionParser:
         elif isinstance(expr, (str, int)):
             return Literal(expr)
         elif isinstance(expr, Iterable):
-            return ExpressionList(*expr)
+            return cls.parse_list(expr)
         raise Exception("could not parse the expression")
 
     @classmethod
