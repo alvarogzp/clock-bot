@@ -43,4 +43,4 @@ class SqliteStorageComponentFactory:
         return component
 
     def _migrate(self, component: SqliteStorageComponent):
-        SqliteComponentMigrator(component, self.version_info).migrate()
+        SqliteComponentMigrator(component, self.version_info, self.logger).migrate()
