@@ -43,7 +43,9 @@ class SqliteComponentMigrator:
         migration_strategy.migrate()
 
     def _get_migration_strategy(self):
-        migration_args = (self.component, self.version_info, self.migration_type, self.old_version, self.new_version)
+        migration_args = (
+            self.component, self.version_info, self.logger, self.migration_type, self.old_version, self.new_version
+        )
         if self.migration_type == MIGRATION_TYPE_CREATE:
             return SqliteCreateMigration(*migration_args)
         elif self.migration_type in (MIGRATION_TYPE_UPGRADE, MIGRATION_TYPE_DOWNGRADE):

@@ -1,14 +1,16 @@
 from inspect import signature
 
+from clock.log.api import LogApi
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.version_info import VersionInfoSqliteComponent
 
 
 class SqliteMigrationStrategy:
-    def __init__(self, component: SqliteStorageComponent, version_info: VersionInfoSqliteComponent, migration_type: str,
-                 old_version: int, new_version: int):
+    def __init__(self, component: SqliteStorageComponent, version_info: VersionInfoSqliteComponent, logger: LogApi,
+                 migration_type: str, old_version: int, new_version: int):
         self.component = component
         self.version_info = version_info
+        self.logger = logger
         self.migration_type = migration_type
         self.old_version = old_version
         self.new_version = new_version
