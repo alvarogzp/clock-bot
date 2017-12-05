@@ -2,7 +2,7 @@ from typing import Union, Iterable
 
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.base import Expression
-from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.list.generic import ExpressionList
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.list.parsed import ParsedExpressionList
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.simple import ColumnName, Literal
 
 
@@ -23,3 +23,8 @@ class ExpressionParser:
         elif isinstance(expr, Iterable):
             return ExpressionList(*expr)
         raise Exception("could not parse the expression")
+
+    @classmethod
+    def parse_list(cls, expr_list: EXPRESSION_TYPE_LIST):
+        parsed_expressions = (cls.parse(expr) for expr in expr_list)
+        return ParsedExpressionList(*parsed_expressions)
