@@ -1,12 +1,14 @@
 from bot.multithreading.worker import Worker
 
+from clock.log.api import LogApi
 from clock.storage.api import StorageApi
 from clock.storage.async.scheduler import StorageScheduler
 from clock.storage.data_source.data_sources.sqlite.sqlite import SqliteStorageDataSource
 
 
 class StorageApiFactory:
-    def __init__(self, debug: bool):
+    def __init__(self, logger: LogApi, debug: bool):
+        self.logger = logger
         self.debug = debug
 
     def with_worker(self, worker: Worker):
