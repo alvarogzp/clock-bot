@@ -17,7 +17,7 @@ class StorageApiFactory:
         return StorageApi(data_source, scheduler)
 
     def _get_default_data_source(self):
-        return SqliteStorageDataSource(self.debug)
+        return SqliteStorageDataSource(self.logger, self.debug)
 
     @staticmethod
     def _get_scheduler_for(worker: Worker):
