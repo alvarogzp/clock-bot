@@ -7,7 +7,8 @@ from clock.storage.data_source.data_sources.sqlite.sql.item.expression.simple im
 
 
 EXPRESSION_TYPE_SIMPLE = Union[Expression, Column, str, int]
-EXPRESSION_TYPE = Union[EXPRESSION_TYPE_SIMPLE, Iterable[EXPRESSION_TYPE_SIMPLE]]
+EXPRESSION_TYPE_LIST = Iterable[EXPRESSION_TYPE_SIMPLE]
+EXPRESSION_TYPE = Union[EXPRESSION_TYPE_SIMPLE, EXPRESSION_TYPE_LIST]
 
 
 class ExpressionParser:
