@@ -2,7 +2,7 @@ from typing import Union, Iterable
 
 from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.base import Expression
-from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.list import ExpressionList
+from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.list.generic import ExpressionList
 from clock.storage.data_source.data_sources.sqlite.sql.item.expression.simple import ColumnName, Literal
 
 
