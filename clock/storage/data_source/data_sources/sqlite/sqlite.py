@@ -45,7 +45,7 @@ class SqliteStorageDataSource(StorageDataSource):
             self.__enter__()
 
     def _init_components(self):
-        components = SqliteStorageComponentFactory(self.connection)
+        components = SqliteStorageComponentFactory(self.connection, self.logger)
         self.user = components.user()
         self.chat = components.chat()
         self.query = components.query(self.user)

@@ -1,5 +1,6 @@
 from sqlite3 import Connection
 
+from clock.log.api import LogApi
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.active_chat import ActiveChatSqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.chat import ChatSqliteComponent
@@ -11,8 +12,9 @@ from clock.storage.data_source.data_sources.sqlite.component.migrate.migrator im
 
 
 class SqliteStorageComponentFactory:
-    def __init__(self, connection: Connection):
+    def __init__(self, connection: Connection, logger: LogApi):
         self.connection = connection
+        self.logger = logger
         self.version_info = self._version_info()  # type: VersionInfoSqliteComponent
 
     def _version_info(self):
