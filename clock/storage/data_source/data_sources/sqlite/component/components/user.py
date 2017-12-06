@@ -160,7 +160,7 @@ class UserSqliteComponent(SqliteStorageComponent):
             raise Exception("unknown user: {user_id}".format(user_id=user_id))
         last_added = user[TIMESTAMP_ADDED]
         if self.__was_valid_at(timestamp, last_added):
-            rowid = user[ROWID]
+            rowid = user[USER_ID]
             return USER, rowid
         # now iterate the user_history entries for that user
         user_history = self.statement(GET_ROWID_TIMESTAMP_ADDED_AND_REMOVED_FROM_USER_HISTORY)\
