@@ -160,6 +160,12 @@ class UserSqliteComponent(SqliteStorageComponent):
             raise Exception("unknown user: {user_id}".format(user_id=user_id))
         last_added = user[TIMESTAMP_ADDED]
         if self.__was_valid_at(timestamp, last_added):
+            # There is a bug in sqlite3.Row in that when ROWID is an alias of a user-defined column
+            # (ie. the "integer primary key" column defined in the table), when you try to access
+            # the ROWID column by name on a row it fails with a "IndexError: No item with that key"
+            # error even if you explicitly requested the ROWID column in the statement.
+            # So, even if we explicitly requested the ROWID and we want the ROWID value to be stored
+            # we must ask for the USER_ID column, which is the ROWID alias on the USER table.
             rowid = user[USER_ID]
             return USER, rowid
         # now iterate the user_history entries for that user
