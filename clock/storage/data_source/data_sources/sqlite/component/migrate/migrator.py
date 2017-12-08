@@ -1,3 +1,4 @@
+from clock.log.api import LogApi
 from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.version_info import VersionInfoSqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.migrate.exception import SqliteComponentMigratorException
@@ -15,9 +16,10 @@ MIGRATION_TYPE_UNKNOWN = "unknown"
 
 
 class SqliteComponentMigrator:
-    def __init__(self, component: SqliteStorageComponent, version_info: VersionInfoSqliteComponent):
+    def __init__(self, component: SqliteStorageComponent, version_info: VersionInfoSqliteComponent, logger: LogApi):
         self.component = component
         self.version_info = version_info
+        self.logger = logger
         # the current version of the component in the storage is stored on the version_info component
         self.old_version = version_info.get_version(self.component.name)
         # the target version is the one that the component declares
@@ -41,7 +43,9 @@ class SqliteComponentMigrator:
         migration_strategy.migrate()
 
     def _get_migration_strategy(self):
-        migration_args = (self.component, self.version_info, self.migration_type, self.old_version, self.new_version)
+        migration_args = (
+            self.component, self.version_info, self.logger, self.migration_type, self.old_version, self.new_version
+        )
         if self.migration_type == MIGRATION_TYPE_CREATE:
             return SqliteCreateMigration(*migration_args)
         elif self.migration_type in (MIGRATION_TYPE_UPGRADE, MIGRATION_TYPE_DOWNGRADE):
