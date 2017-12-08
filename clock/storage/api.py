@@ -48,14 +48,23 @@ class StorageApi:
             "set_inactive_chat"
         )
 
+    def get_recent_queries_language_codes(self, limit: int):
+        return self.scheduler.schedule_with_result(
+            lambda: self._get_recent_queries_language_codes(limit),
+            "get_recent_queries_language_codes"
+        )
+
     def _init(self):
         self.data_source.init()
 
     def _save_query(self, query: ApiObject, time_point: TimePoint, locale: Locale, results_found: list,
                     results_sent: list, processing_seconds: float):
-        self._save_user(query.from_)
-        self.data_source.save_query(query.from_.id, time_point.id(), query.query, query.offset, str(locale),
-                                    len(results_found), len(results_sent), processing_seconds)
+        user = query.from_
+        self._save_user(user)
+        self.data_source.save_query(
+            user.id, time_point.id(), query.query, query.offset, user.language_code, str(locale),
+            len(results_found), len(results_sent), processing_seconds
+        )
 
     def _save_user(self, user: ApiObject):
         self.data_source.save_user(user.id, user.first_name, user.last_name, user.username, user.language_code)
@@ -117,3 +126,6 @@ class StorageApi:
 
     def _set_inactive_chat(self, chat: ApiObject, reason: str):
         self.data_source.set_inactive_chat(chat.id, reason)
+
+    def _get_recent_queries_language_codes(self, limit: int):
+        return self.data_source.get_recent_queries_language_codes(limit)
