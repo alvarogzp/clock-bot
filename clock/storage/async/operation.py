@@ -43,6 +43,6 @@ class StorageOperation:
         is_blocking = "NO" if self.ignore_result else ""
         return ":".join([
             "storage_operation",
-            self.name,
-            is_blocking + "blocking"
+            is_blocking + "blocking",
+            self.name
         ])

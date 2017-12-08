@@ -11,6 +11,7 @@ LOG_TAG_QUERY = FormattedText().normal("QUERY")
 LOG_TAG_CHOSEN_RESULT = FormattedText().bold("CHOSEN")
 LOG_TAG_LOCALE_CACHE = FormattedText().bold("CACHE")
 LOG_TAG_MESSAGE = FormattedText().normal("MESSAGE")
+LOG_TAG_MIGRATION = FormattedText().bold("MIGRATION")
 
 
 class LogApi:
@@ -128,3 +129,21 @@ class LogApi:
             if item:
                 items.append(item)
         return self.formatter.message(*items) if items else None
+
+    def log_sqlite_component_migration(self, component: str, migration_type: str, old_version: int, new_version: int,
+                                       about_to_migrate_to_version: int):
+        formatted_about_to_migrate_to_version = self.formatter.about_to_migrate_to_version(about_to_migrate_to_version)
+        formatted_component = self.formatter.component(component)
+        formatted_migration_type = self.formatter.migration_type(migration_type)
+        formatted_old_version = self.formatter.migration_old_version(old_version)
+        formatted_new_version = self.formatter.migration_new_version(new_version)
+
+        formatted_message = self.formatter.message(
+            formatted_about_to_migrate_to_version,
+            formatted_component,
+            formatted_migration_type,
+            formatted_old_version,
+            formatted_new_version
+        )
+
+        self.logger.log(LOG_TAG_MIGRATION, formatted_message)
