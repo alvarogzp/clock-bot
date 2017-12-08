@@ -33,7 +33,7 @@ class LocaleCache:
             initial_locales_to_cache or DEFAULT_INITIAL_LOCALES_TO_CACHE
         )
         recent_language_codes = self._get_recent_language_codes(
-            recent_locales_limit or DEFAULT_RECENT_LOCALES_LIMIT
+            int(recent_locales_limit or DEFAULT_RECENT_LOCALES_LIMIT)
         )
         initial_language_codes = itertools.chain(initial_locales, recent_language_codes)
         self._cache_initial_language_codes(initial_language_codes)
