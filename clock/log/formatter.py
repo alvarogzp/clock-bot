@@ -128,7 +128,7 @@ class LogFormatter:
 
     @staticmethod
     def migration_type(migration_type: str):
-        return FormattedText().normal("Migration type: {type}").start_format()\
+        return FormattedText().normal("Type: {type}").start_format()\
             .bold(type=migration_type).end_format()
 
     @staticmethod
