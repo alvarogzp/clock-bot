@@ -7,6 +7,7 @@ from clock.finder.search_strategies.search_strategies.query.basic import BasicQu
 from clock.finder.search_strategies.search_strategies.query.match.concatenator import MatchSearchStrategyConcatenator
 from clock.finder.search_strategies.search_strategies.query.match.factory import MatchSearchStrategyFactory
 from clock.finder.zone_finder.provider import ZoneFindersProvider
+from clock.locale.parser import DEFAULT_LOCALE
 
 
 ADVANCED_SEARCH_TIME_PREFIX = "-time"
@@ -69,7 +70,8 @@ class SearchStrategyBuilder:
             ),
             MatchSearchStrategyConcatenator(
                 self.match_strategy_factory.zone_name(self.finders.name_zone_finder),
-                self.match_strategy_factory.localized_names(self._localized_zone_finder())
+                self.match_strategy_factory.localized_names(self._localized_zone_finder()),
+                self.match_strategy_factory.localized_names(self._default_localized_zone_finder())
             )
         )
 
@@ -84,6 +86,9 @@ class SearchStrategyBuilder:
 
     def _localized_zone_finder(self):
         return self.finders.localized_zone_finder(self.locale)
+
+    def _default_localized_zone_finder(self):
+        return self.finders.localized_zone_finder(DEFAULT_LOCALE)
 
     def _localized_date_time_zone_finder(self):
         return self.finders.localized_date_time_zone_finder(self.locale, self.time_point)
