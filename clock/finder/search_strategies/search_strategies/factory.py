@@ -69,7 +69,7 @@ class SearchStrategyBuilder:
             ),
             MatchSearchStrategyConcatenator(
                 self.match_strategy_factory.zone_name(self.finders.name_zone_finder),
-                self.match_strategy_factory.localized_names(self.finders.localized_zone_finder(self.locale))
+                self.match_strategy_factory.localized_names(self._localized_zone_finder())
             )
         )
 
@@ -81,6 +81,9 @@ class SearchStrategyBuilder:
 
     def build_tzname_match_search(self):
         return self.match_strategy_factory.tzname(self._localized_date_time_zone_finder())
+
+    def _localized_zone_finder(self):
+        return self.finders.localized_zone_finder(self.locale)
 
     def _localized_date_time_zone_finder(self):
         return self.finders.localized_date_time_zone_finder(self.locale, self.time_point)
