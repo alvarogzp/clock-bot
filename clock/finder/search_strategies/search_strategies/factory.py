@@ -4,12 +4,10 @@ from clock.domain.time import TimePoint
 from clock.finder.search_strategies.search_strategies.concatenator import SearchStrategyConcatenator
 from clock.finder.search_strategies.search_strategies.locale import LocaleSearchStrategy
 from clock.finder.search_strategies.search_strategies.query.basic import BasicQuerySearchStrategy
-from clock.finder.search_strategies.search_strategies.query.match.advanced.gmt_offset import \
-    GmtOffsetMatchSearchStrategy
-from clock.finder.search_strategies.search_strategies.query.match.advanced.time import TimeMatchSearchStrategy
-from clock.finder.search_strategies.search_strategies.query.match.advanced.tzname import TznameMatchSearchStrategy
-from clock.finder.search_strategies.search_strategies.query.match.basic import BasicMatchSearchStrategy
+from clock.finder.search_strategies.search_strategies.query.match.concatenator import MatchSearchStrategyConcatenator
+from clock.finder.search_strategies.search_strategies.query.match.factory import MatchSearchStrategyFactory
 from clock.finder.zone_finder.provider import ZoneFindersProvider
+from clock.locale.parser import DEFAULT_LOCALE
 
 
 ADVANCED_SEARCH_TIME_PREFIX = "-time"
@@ -37,6 +35,7 @@ class SearchStrategyBuilder:
         self.query_lower = query.lower()
         self.locale = locale
         self.time_point = time_point
+        self.match_strategy_factory = MatchSearchStrategyFactory(self.query_lower)
 
     def build(self):
         if not self.query_lower:
@@ -69,30 +68,27 @@ class SearchStrategyBuilder:
                 self.finders.name_zone_finder,
                 self.finders.country_zone_finder
             ),
-            BasicMatchSearchStrategy(
-                self.query_lower,
-                self.finders.name_zone_finder,
-                self.finders.localized_zone_finder(self.locale)
+            MatchSearchStrategyConcatenator(
+                self.match_strategy_factory.zone_name(self.finders.name_zone_finder),
+                self.match_strategy_factory.localized_names(self._localized_zone_finder()),
+                self.match_strategy_factory.localized_names(self._default_localized_zone_finder())
             )
         )
 
     def build_time_match_search(self):
-        return TimeMatchSearchStrategy(
-            self.query_lower,
-            self._localized_date_time_zone_finder()
-        )
+        return self.match_strategy_factory.time(self._localized_date_time_zone_finder())
 
     def build_gmt_offset_match_search(self):
-        return GmtOffsetMatchSearchStrategy(
-            self.query_lower,
-            self._localized_date_time_zone_finder()
-        )
+        return self.match_strategy_factory.gmt_offset(self._localized_date_time_zone_finder())
 
     def build_tzname_match_search(self):
-        return TznameMatchSearchStrategy(
-            self.query_lower,
-            self._localized_date_time_zone_finder()
-        )
+        return self.match_strategy_factory.tzname(self._localized_date_time_zone_finder())
+
+    def _localized_zone_finder(self):
+        return self.finders.localized_zone_finder(self.locale)
+
+    def _default_localized_zone_finder(self):
+        return self.finders.localized_zone_finder(DEFAULT_LOCALE)
 
     def _localized_date_time_zone_finder(self):
         return self.finders.localized_date_time_zone_finder(self.locale, self.time_point)
