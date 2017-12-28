@@ -50,7 +50,8 @@ class SearchStrategyBuilder:
         if len(query_words) > 1:
             advanced_search_type = query_words[0]
             if advanced_search_type in ADVANCED_SEARCH_PREFIXES:
-                self.query_lower = " ".join(query_words[1:])
+                new_query_lower = " ".join(query_words[1:])
+                self._update_query_lower(new_query_lower)
                 if advanced_search_type == ADVANCED_SEARCH_TIME_PREFIX:
                     return self.build_time_match_search()
                 elif advanced_search_type == ADVANCED_SEARCH_GMT_OFFSET_PREFIX:
@@ -92,3 +93,7 @@ class SearchStrategyBuilder:
 
     def _localized_date_time_zone_finder(self):
         return self.finders.localized_date_time_zone_finder(self.locale, self.time_point)
+
+    def _update_query_lower(self, new_query_lower: str):
+        self.query_lower = new_query_lower
+        self.match_strategy_factory.query_lower = new_query_lower
