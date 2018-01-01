@@ -3,6 +3,7 @@ from collections import OrderedDict
 from babel import Locale
 
 from clock.domain.time import TimePoint
+from clock.finder.query.query import SearchQuery
 from clock.finder.search_strategies.search_strategies.factory import SearchStrategyFactory
 from clock.finder.zone_finder.provider import ZoneFindersProvider, LocalizedZoneFinderCache
 
@@ -13,7 +14,7 @@ class ZoneFinderApi:
         self.search_strategy_factory = SearchStrategyFactory(self.finders)
         self.locale_cache = ZoneFinderLocaleCache(self.finders.get_localized_zone_finder_cache())
 
-    def find(self, query: str, locale: Locale, time_point: TimePoint):
+    def find(self, query: SearchQuery, locale: Locale, time_point: TimePoint):
         search_strategy = self.__get_search_strategy(query, locale, time_point)
         search_strategy.search()
         return self.__removed_duplicates(search_strategy.get_results())
@@ -27,8 +28,8 @@ class ZoneFinderApi:
     def cache(self):
         return self.locale_cache
 
-    def __get_search_strategy(self, query: str, locale: Locale, time_point: TimePoint):
-        return self.search_strategy_factory.get(query, locale, time_point)
+    def __get_search_strategy(self, query: SearchQuery, locale: Locale, time_point: TimePoint):
+        return self.search_strategy_factory.get(query.query_lower, locale, time_point)
 
     @staticmethod
     def __removed_duplicates(results):
