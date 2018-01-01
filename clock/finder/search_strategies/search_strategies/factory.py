@@ -47,7 +47,7 @@ class SearchStrategyBuilder:
         self.query.query_lower = new_query_lower
 
     def build(self):
-        if not self.query_lower:
+        if self.query.is_empty():
             return self.build_locale_search()
         strategy = self.build_advanced_search()
         if strategy is None:
