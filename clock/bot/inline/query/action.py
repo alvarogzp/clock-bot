@@ -43,7 +43,8 @@ class InlineQueryClockAction(Action):
 
         query = event.query
         parsed_query = SearchQueryParser.parsed(query.query)
-        locale = LocaleGetter.from_user(query.from_)
+
+        locale = LocaleGetter.from_query_or_user(parsed_query, query.from_)
 
         zones = self.zone_finder.find(query.query, locale, current_time)
 
