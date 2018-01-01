@@ -4,6 +4,7 @@ from clock.bot.inline.query.result.generator import InlineResultGenerator, Answe
 from clock.bot.locale_cache import LocaleCache
 from clock.domain.time import TimePoint
 from clock.finder.api import ZoneFinderApi
+from clock.finder.query.parser import SearchQueryParser
 from clock.locale.getter import LocaleGetter
 from clock.log.api import LogApi
 from clock.storage.factory import StorageApiFactory
@@ -41,6 +42,7 @@ class InlineQueryClockAction(Action):
         current_time = TimePoint.current()
 
         query = event.query
+        parsed_query = SearchQueryParser.parsed(query.query)
         locale = LocaleGetter.from_user(query.from_)
 
         zones = self.zone_finder.find(query.query, locale, current_time)
