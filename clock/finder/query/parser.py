@@ -34,3 +34,9 @@ class SearchQueryParser:
 
     def parsed_query(self):
         return SearchQuery(self.query_lower, self.param_lang)
+
+    @staticmethod
+    def parsed(query: str):
+        parser = SearchQueryParser(query)
+        parser.parse()
+        return parser.parsed_query()
