@@ -46,7 +46,7 @@ class InlineQueryClockAction(Action):
 
         locale = LocaleGetter.from_query_or_user(parsed_query, query.from_)
 
-        zones = self.zone_finder.find(query.query, locale, current_time)
+        zones = self.zone_finder.find(parsed_query, locale, current_time)
 
         offset = self.__get_offset(query)
         offset_end = offset + MAX_RESULTS_PER_QUERY
