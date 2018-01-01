@@ -6,5 +6,8 @@ class SearchQuery:
         self.query_lower = query_lower
         self.lang = lang
 
+    def is_empty(self):
+        return not self.query_lower
+
     def copy(self):
         return copy.copy(self)
