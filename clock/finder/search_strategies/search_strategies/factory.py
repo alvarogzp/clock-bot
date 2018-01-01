@@ -1,6 +1,7 @@
 from babel import Locale
 
 from clock.domain.time import TimePoint
+from clock.finder.query.query import SearchQuery
 from clock.finder.search_strategies.search_strategies.concatenator import SearchStrategyConcatenator
 from clock.finder.search_strategies.search_strategies.locale import LocaleSearchStrategy
 from clock.finder.search_strategies.search_strategies.query.basic import BasicQuerySearchStrategy
@@ -25,14 +26,14 @@ class SearchStrategyFactory:
     def __init__(self, finders: ZoneFindersProvider):
         self.finders = finders
 
-    def get(self, query: str, locale: Locale, time_point: TimePoint):
+    def get(self, query: SearchQuery, locale: Locale, time_point: TimePoint):
         return SearchStrategyBuilder(self.finders, query, locale, time_point).build()
 
 
 class SearchStrategyBuilder:
-    def __init__(self, finders: ZoneFindersProvider, query: str, locale: Locale, time_point: TimePoint):
+    def __init__(self, finders: ZoneFindersProvider, query: SearchQuery, locale: Locale, time_point: TimePoint):
         self.finders = finders
-        self.query_lower = query.lower()
+        self.query_lower = query.query_lower
         self.locale = locale
         self.time_point = time_point
         self.match_strategy_factory = MatchSearchStrategyFactory(self.query_lower)

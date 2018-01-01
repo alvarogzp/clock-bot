@@ -29,7 +29,7 @@ class ZoneFinderApi:
         return self.locale_cache
 
     def __get_search_strategy(self, query: SearchQuery, locale: Locale, time_point: TimePoint):
-        return self.search_strategy_factory.get(query.query_lower, locale, time_point)
+        return self.search_strategy_factory.get(query, locale, time_point)
 
     @staticmethod
     def __removed_duplicates(results):
