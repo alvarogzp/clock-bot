@@ -33,10 +33,18 @@ class SearchStrategyFactory:
 class SearchStrategyBuilder:
     def __init__(self, finders: ZoneFindersProvider, query: SearchQuery, locale: Locale, time_point: TimePoint):
         self.finders = finders
-        self.query_lower = query.query_lower
+        self.query = query.copy()
         self.locale = locale
         self.time_point = time_point
         self.match_strategy_factory = MatchSearchStrategyFactory(self.query_lower)
+
+    @property
+    def query_lower(self):
+        return self.query.query_lower
+
+    @query_lower.setter
+    def query_lower(self, new_query_lower: str):
+        self.query.query_lower = new_query_lower
 
     def build(self):
         if not self.query_lower:
