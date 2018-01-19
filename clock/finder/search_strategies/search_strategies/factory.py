@@ -66,6 +66,8 @@ class SearchStrategyBuilder:
                     return self.build_gmt_offset_match_search()
                 elif advanced_search_type == ADVANCED_SEARCH_TZNAME_PREFIX:
                     return self.build_tzname_match_search()
+                else:
+                    raise AssertionError("advanced search of unexpected type")
 
     def build_locale_search(self):
         return LocaleSearchStrategy(self.locale, self.finders.country_zone_finder)
