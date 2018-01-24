@@ -1,0 +1,1 @@
+QUERY_PARAM_LANG = "lang:"
