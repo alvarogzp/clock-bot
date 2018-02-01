@@ -1,6 +1,5 @@
-from clock.finder.query.query import SearchQuery
-
 from clock.finder.query.params import QUERY_PARAM_LANG
+from clock.finder.query.query import SearchQuery
 
 
 class SearchQueryParser:
