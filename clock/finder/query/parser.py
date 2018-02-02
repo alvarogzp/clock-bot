@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from clock.finder.query.params import QUERY_PARAM_LANG
 from clock.finder.query.query import SearchQuery
 
@@ -6,7 +8,7 @@ class SearchQueryParser:
     def __init__(self, query: str):
         self.query = query
         self.query_lower = ""
-        self.param_lang = None
+        self.params = OrderedDict()
 
     def parse(self):
         query_lower_words = []
@@ -19,10 +21,14 @@ class SearchQueryParser:
 
     def _update_params(self, word):
         """:type word: SearchQueryWordParser"""
-        self.param_lang = word.get_param(QUERY_PARAM_LANG, self.param_lang)
+        for param in PARAMS:
+            previous_value = self.params.get(param)
+            new_value = word.get_param(param, previous_value)
+            if new_value is not None:
+                self.params[param] = new_value
 
     def parsed_query(self):
-        return SearchQuery(self.query_lower, self.param_lang)
+        return SearchQuery(self.query_lower, self.params)
 
     @staticmethod
     def parsed(query: str):
