@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from clock.finder.query.params import QUERY_PARAM_LANG
+from clock.finder.query.params import PARAMS
 from clock.finder.query.query import SearchQuery
 
 
