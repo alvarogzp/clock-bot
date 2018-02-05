@@ -16,7 +16,11 @@ class SearchQuery:
         return self.params.get(param)
 
     def is_empty(self):
-        return not self.query_lower
+        return not self.has_basic_query() and \
+               (len(self.params) == 0 or (len(self.params) == 1 and self.lang is not None))
+
+    def has_basic_query(self):
+        return len(self.query_lower) > 0
 
     def copy(self):
         return copy.copy(self)
