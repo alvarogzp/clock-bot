@@ -2,7 +2,7 @@ from babel import Locale
 
 from clock.domain.time import TimePoint
 from clock.finder.query.query import SearchQuery
-from clock.finder.search_strategies.search_strategies.concatenator import SearchStrategyConcatenator
+from clock.finder.search_strategies.search_strategies.concatenator import OrSearchStrategyConcatenator
 from clock.finder.search_strategies.search_strategies.locale import LocaleSearchStrategy
 from clock.finder.search_strategies.search_strategies.query.basic import BasicQuerySearchStrategy
 from clock.finder.search_strategies.search_strategies.query.match.concatenator import MatchSearchStrategyConcatenator
@@ -73,7 +73,7 @@ class SearchStrategyBuilder:
         return LocaleSearchStrategy(self.locale, self.finders.country_zone_finder)
 
     def build_basic_search(self):
-        return SearchStrategyConcatenator(
+        return OrSearchStrategyConcatenator(
             BasicQuerySearchStrategy(
                 self.query_lower,
                 self.finders.name_zone_finder,

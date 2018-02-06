@@ -12,4 +12,9 @@ class SearchStrategyConcatenator(SearchStrategy):
             search_strategy.search()
 
     def get_results(self):
+        raise NotImplementedError()
+
+
+class OrSearchStrategyConcatenator(SearchStrategyConcatenator):
+    def get_results(self):
         return itertools.chain.from_iterable((strategy.get_results() for strategy in self.search_strategies))
