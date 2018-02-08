@@ -26,10 +26,14 @@ class AndSearchStrategyConcatenator(SearchStrategyConcatenator):
         if len(self.search_strategies) == 0:
             return ()
         results = self.search_strategies[0].get_results()
-        results = list(OrderedDict.fromkeys(results))
+        results = self.__list_without_duplicates(results)
         for search_strategy in self.search_strategies[1:]:
             search_strategy_results = search_strategy.get_results()
             for result in results[:]:
                 if result not in search_strategy_results:
                     results.remove(result)
         return results
+
+    @staticmethod
+    def __list_without_duplicates(iterable: iter):
+        return list(OrderedDict.fromkeys(iterable))
