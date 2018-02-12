@@ -2,7 +2,8 @@ from babel import Locale
 
 from clock.domain.time import TimePoint
 from clock.finder.query.query import SearchQuery
-from clock.finder.search_strategies.search_strategies.concatenator import OrSearchStrategyConcatenator
+from clock.finder.search_strategies.search_strategies.concatenator import AndSearchStrategyConcatenator, \
+    OrSearchStrategyConcatenator
 from clock.finder.search_strategies.search_strategies.locale import LocaleSearchStrategy
 from clock.finder.search_strategies.search_strategies.query.basic import BasicQuerySearchStrategy
 from clock.finder.search_strategies.search_strategies.query.match.concatenator import MatchSearchStrategyConcatenator
@@ -49,10 +50,13 @@ class SearchStrategyBuilder:
     def build(self):
         if self.query.is_empty():
             return self.build_locale_search()
-        strategy = self.build_advanced_search()
-        if strategy is None:
-            strategy = self.build_basic_search()
-        return strategy
+        strategies = []
+        advanced_strategy = self.build_advanced_search()
+        if advanced_strategy is not None:
+            strategies.append(advanced_strategy)
+        if self.query.has_basic_query():
+            strategies.append(self.build_basic_search())
+        return AndSearchStrategyConcatenator(*strategies)
 
     def build_advanced_search(self):
         query_words = self.query_lower.split()
