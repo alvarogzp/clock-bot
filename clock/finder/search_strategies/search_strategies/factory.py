@@ -1,6 +1,7 @@
 from babel import Locale
 
 from clock.domain.time import TimePoint
+from clock.finder.query.params import QUERY_PARAM_TIME, QUERY_PARAM_GMT, QUERY_PARAM_TZNAME
 from clock.finder.query.query import SearchQuery
 from clock.finder.search_strategies.search_strategies.concatenator import AndSearchStrategyConcatenator, \
     OrSearchStrategyConcatenator
@@ -10,17 +11,6 @@ from clock.finder.search_strategies.search_strategies.query.match.concatenator i
 from clock.finder.search_strategies.search_strategies.query.match.factory import MatchSearchStrategyFactory
 from clock.finder.zone_finder.provider import ZoneFindersProvider
 from clock.locale.parser import DEFAULT_LOCALE
-
-
-ADVANCED_SEARCH_TIME_PREFIX = "-time"
-ADVANCED_SEARCH_GMT_OFFSET_PREFIX = "-gmt"
-ADVANCED_SEARCH_TZNAME_PREFIX = "-tzname"
-
-ADVANCED_SEARCH_PREFIXES = [
-    ADVANCED_SEARCH_TIME_PREFIX,
-    ADVANCED_SEARCH_GMT_OFFSET_PREFIX,
-    ADVANCED_SEARCH_TZNAME_PREFIX
-]
 
 
 class SearchStrategyFactory:
@@ -59,19 +49,15 @@ class SearchStrategyBuilder:
         return AndSearchStrategyConcatenator(*strategies)
 
     def build_advanced_search(self):
-        query_words = self.query_lower.split()
-        if len(query_words) > 1:
-            advanced_search_type = query_words[0]
-            if advanced_search_type in ADVANCED_SEARCH_PREFIXES:
-                self.query_lower = " ".join(query_words[1:])
-                if advanced_search_type == ADVANCED_SEARCH_TIME_PREFIX:
-                    return self.build_time_match_search()
-                elif advanced_search_type == ADVANCED_SEARCH_GMT_OFFSET_PREFIX:
-                    return self.build_gmt_offset_match_search()
-                elif advanced_search_type == ADVANCED_SEARCH_TZNAME_PREFIX:
-                    return self.build_tzname_match_search()
-                else:
-                    raise AssertionError("advanced search of unexpected type")
+        strategies = []
+        for param in self.query.params:
+            if param == QUERY_PARAM_TIME:
+                strategies.append(self.build_time_match_search())
+            elif param == QUERY_PARAM_GMT:
+                strategies.append(self.build_gmt_offset_match_search())
+            elif param == QUERY_PARAM_TZNAME:
+                strategies.append(self.build_tzname_match_search())
+        return strategies
 
     def build_locale_search(self):
         return LocaleSearchStrategy(self.locale, self.finders.country_zone_finder)
