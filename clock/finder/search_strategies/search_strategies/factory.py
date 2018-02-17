@@ -40,10 +40,7 @@ class SearchStrategyBuilder:
     def build(self):
         if self.query.is_empty():
             return self.build_locale_search()
-        strategies = []
-        advanced_strategy = self.build_advanced_search()
-        if advanced_strategy is not None:
-            strategies.append(advanced_strategy)
+        strategies = self.build_advanced_search()
         if self.query.has_basic_query():
             strategies.append(self.build_basic_search())
         return AndSearchStrategyConcatenator(*strategies)
