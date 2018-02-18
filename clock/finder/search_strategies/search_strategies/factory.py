@@ -33,10 +33,6 @@ class SearchStrategyBuilder:
     def query_lower(self):
         return self.query.query_lower
 
-    @query_lower.setter
-    def query_lower(self, new_query_lower: str):
-        self.query.query_lower = new_query_lower
-
     def build(self):
         if self.query.is_empty():
             return self.build_locale_search()
