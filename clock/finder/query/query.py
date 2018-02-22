@@ -1,4 +1,5 @@
 import copy
+from typing import List
 
 from clock.finder.query.params import QUERY_PARAM_LANG
 
@@ -11,6 +12,14 @@ class SearchQueryParam:
     @property
     def value_lower(self):
         return self.value.lower()
+
+
+class SearchQueryParamList:
+    def __init__(self, params: List[SearchQueryParam]):
+        self.params = params
+
+    def __iter__(self):
+        return self.params.__iter__()
 
 
 class SearchQuery:
