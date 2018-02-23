@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from clock.finder.query.params import PARAMS
+from clock.finder.query.params import ALL_PARAMS
 from clock.finder.query.query import SearchQuery
 
 
@@ -21,7 +21,7 @@ class SearchQueryParser:
 
     def _update_params(self, word):
         """:type word: SearchQueryWordParser"""
-        for param in PARAMS:
+        for param in ALL_PARAMS:
             previous_value = self.params.get(param)
             new_value = word.get_param(param, previous_value)
             if new_value is not None:
