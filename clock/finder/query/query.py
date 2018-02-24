@@ -1,7 +1,7 @@
 import copy
 from typing import List
 
-from clock.finder.query.params import QUERY_PARAM_LANG
+from clock.finder.query.params import QUERY_PARAM_LANG, RESULT_PARAMS
 
 
 class SearchQueryParam:
@@ -20,6 +20,26 @@ class SearchQueryParamList:
 
     def __iter__(self):
         return self.params.__iter__()
+
+    def get(self, param: str):
+        return self._get_last(param)
+
+    def _get_last(self, param_name: str):
+        value = None
+        for param in self:
+            if param.name == param_name:
+                value = param.value
+        return value
+
+    def has_result_params(self):
+        """
+        A result param is one that produces results on its own (like advanced search params),
+        in contrast to query modifier params (like lang param).
+        """
+        for param in self:
+            if param.name in RESULT_PARAMS:
+                return True
+        return False
 
 
 class SearchQuery:
