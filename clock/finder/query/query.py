@@ -43,20 +43,16 @@ class SearchQueryParamList:
 
 
 class SearchQuery:
-    def __init__(self, query_lower: str, params: dict):
+    def __init__(self, query_lower: str, params: SearchQueryParamList):
         self.query_lower = query_lower
         self.params = params
 
     @property
     def lang(self):
-        return self.get_param(QUERY_PARAM_LANG)
-
-    def get_param(self, param: str):
-        return self.params.get(param)
+        return self.params.get(QUERY_PARAM_LANG)
 
     def is_empty(self):
-        return not self.has_basic_query() and \
-               (len(self.params) == 0 or (len(self.params) == 1 and self.lang is not None))
+        return not self.has_basic_query() and not self.params.has_result_params()
 
     def has_basic_query(self):
         return len(self.query_lower) > 0
