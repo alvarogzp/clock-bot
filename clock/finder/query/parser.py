@@ -20,7 +20,7 @@ class SearchQueryParser:
     def _update_params(self, word):
         """:type word: SearchQueryWordParser"""
         for param in ALL_PARAMS:
-            value = word.get_param(param, None)
+            value = word.get_param(param)
             if value is not None:
                 self.params.append(SearchQueryParam(param, value))
 
@@ -44,11 +44,10 @@ class SearchQueryWordParser:
     def lower(self):
         return self.word_lower
 
-    def get_param(self, param: str, default_value):
+    def get_param(self, param: str):
         value = self._get_value(param)
-        if value is None:
-            return default_value
-        self.is_param = True
+        if value is not None:
+            self.is_param = True
         return value
 
     def _get_value(self, param: str):
