@@ -2,7 +2,7 @@ from babel import Locale
 
 from clock.domain.time import TimePoint
 from clock.finder.query.params import QUERY_PARAM_TIME, QUERY_PARAM_GMT, QUERY_PARAM_TZNAME
-from clock.finder.query.query import SearchQuery
+from clock.finder.query.query import SearchQuery, SearchQueryParam
 from clock.finder.search_strategies.search_strategies.concatenator import AndSearchStrategyConcatenator, \
     OrSearchStrategyConcatenator
 from clock.finder.search_strategies.search_strategies.locale import LocaleSearchStrategy
@@ -27,7 +27,6 @@ class SearchStrategyBuilder:
         self.query = query.copy()
         self.locale = locale
         self.time_point = time_point
-        self.match_strategy_factory = MatchSearchStrategyFactory(self.query)
 
     @property
     def query_lower(self):
@@ -86,3 +85,13 @@ class SearchStrategyBuilder:
 
     def _localized_date_time_zone_finder(self):
         return self.finders.localized_date_time_zone_finder(self.locale, self.time_point)
+
+    def _match_strategy_factory_for_param(self, param: SearchQueryParam):
+        return self._match_strategy_factory(param.value_lower)
+
+    def _match_strategy_factory_for_query(self):
+        return self._match_strategy_factory(self.query_lower)
+
+    @staticmethod
+    def _match_strategy_factory(query_lower: str):
+        return MatchSearchStrategyFactory(query_lower)
