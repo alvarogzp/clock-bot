@@ -27,6 +27,7 @@ class SearchStrategyBuilder:
         self.query = query.copy()
         self.locale = locale
         self.time_point = time_point
+        self.match_strategy_factory_for_query = self._match_strategy_factory_for_query()
 
     @property
     def query_lower(self):
@@ -62,9 +63,9 @@ class SearchStrategyBuilder:
                 self.finders.country_zone_finder
             ),
             MatchSearchStrategyConcatenator(
-                self.match_strategy_factory.zone_name(self.finders.name_zone_finder),
-                self.match_strategy_factory.localized_names(self._localized_zone_finder()),
-                self.match_strategy_factory.localized_names(self._default_localized_zone_finder())
+                self.match_strategy_factory_for_query.zone_name(self.finders.name_zone_finder),
+                self.match_strategy_factory_for_query.localized_names(self._localized_zone_finder()),
+                self.match_strategy_factory_for_query.localized_names(self._default_localized_zone_finder())
             )
         )
 
