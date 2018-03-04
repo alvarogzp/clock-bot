@@ -69,14 +69,14 @@ class SearchStrategyBuilder:
             )
         )
 
-    def build_time_match_search(self):
-        return self.match_strategy_factory.time(self._localized_date_time_zone_finder())
+    def build_time_match_search(self, param: SearchQueryParam):
+        return self._match_strategy_factory_for_param(param).time(self._localized_date_time_zone_finder())
 
-    def build_gmt_offset_match_search(self):
-        return self.match_strategy_factory.gmt_offset(self._localized_date_time_zone_finder())
+    def build_gmt_offset_match_search(self, param: SearchQueryParam):
+        return self._match_strategy_factory_for_param(param).gmt_offset(self._localized_date_time_zone_finder())
 
-    def build_tzname_match_search(self):
-        return self.match_strategy_factory.tzname(self._localized_date_time_zone_finder())
+    def build_tzname_match_search(self, param: SearchQueryParam):
+        return self._match_strategy_factory_for_param(param).tzname(self._localized_date_time_zone_finder())
 
     def _localized_zone_finder(self):
         return self.finders.localized_zone_finder(self.locale)
