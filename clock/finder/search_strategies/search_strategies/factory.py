@@ -44,12 +44,13 @@ class SearchStrategyBuilder:
     def build_advanced_search(self):
         strategies = []
         for param in self.query.params:
-            if param == QUERY_PARAM_TIME:
-                strategies.append(self.build_time_match_search())
-            elif param == QUERY_PARAM_GMT:
-                strategies.append(self.build_gmt_offset_match_search())
-            elif param == QUERY_PARAM_TZNAME:
-                strategies.append(self.build_tzname_match_search())
+            name = param.name
+            if name == QUERY_PARAM_TIME:
+                strategies.append(self.build_time_match_search(param))
+            elif name == QUERY_PARAM_GMT:
+                strategies.append(self.build_gmt_offset_match_search(param))
+            elif name == QUERY_PARAM_TZNAME:
+                strategies.append(self.build_tzname_match_search(param))
         return strategies
 
     def build_locale_search(self):
