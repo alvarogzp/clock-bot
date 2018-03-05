@@ -52,9 +52,9 @@ class SearchQuery:
         return self.params.get(QUERY_PARAM_LANG)
 
     def is_empty(self):
-        return not self.has_basic_query() and not self.params.has_result_params()
+        return not self.has_query_string() and not self.params.has_result_params()
 
-    def has_basic_query(self):
+    def has_query_string(self):
         return len(self.query_lower) > 0
 
     def copy(self):
