@@ -1,4 +1,3 @@
-import copy
 from typing import List
 
 from clock.finder.query.params import QUERY_PARAM_LANG, RESULT_PARAMS
@@ -56,6 +55,3 @@ class SearchQuery:
 
     def has_query_string(self):
         return len(self.query_lower) > 0
-
-    def copy(self):
-        return copy.copy(self)

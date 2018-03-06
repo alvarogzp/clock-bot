@@ -24,7 +24,7 @@ class SearchStrategyFactory:
 class SearchStrategyBuilder:
     def __init__(self, finders: ZoneFindersProvider, query: SearchQuery, locale: Locale, time_point: TimePoint):
         self.finders = finders
-        self.query = query.copy()
+        self.query = query
         self.locale = locale
         self.time_point = time_point
         self.match_strategy_factory_for_query = self._match_strategy_factory_for_query()
