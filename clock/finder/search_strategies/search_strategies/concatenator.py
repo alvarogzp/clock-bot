@@ -26,6 +26,9 @@ class AndSearchStrategyConcatenator(SearchStrategyConcatenator):
         if len(self.search_strategies) == 0:
             return ()
         results = self.search_strategies[0].get_results()
+        if len(self.search_strategies) == 1:
+            # quick path for simple searches
+            return results
         results = self.__list_without_duplicates(results)
         for search_strategy in self.search_strategies[1:]:
             # we need a static list to check for presence of results in it
