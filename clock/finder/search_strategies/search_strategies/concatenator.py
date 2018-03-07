@@ -28,7 +28,8 @@ class AndSearchStrategyConcatenator(SearchStrategyConcatenator):
         results = self.search_strategies[0].get_results()
         results = self.__list_without_duplicates(results)
         for search_strategy in self.search_strategies[1:]:
-            search_strategy_results = search_strategy.get_results()
+            # we need a static list to check for presence of results in it
+            search_strategy_results = list(search_strategy.get_results())
             for result in results[:]:  # iterate over a copy, as it will be modified
                 if result not in search_strategy_results:
                     # if result is not present in all strategies' results, remove from returned results
