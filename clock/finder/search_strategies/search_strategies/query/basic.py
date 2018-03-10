@@ -18,8 +18,8 @@ class BasicQuerySearchStrategy(QuerySearchStrategy):
     def zone_name_search(self):
         zone = self.name_zone_finder.get_lower(self.query_lower)
         if zone is not None:
-            self.results.append(zone)
+            self._add_result(zone)
 
     def country_code_search(self):
         results = self.country_zone_finder.get_country_zones(self.query_lower)
-        self.results.extend(results)
+        self._add_results(results)
