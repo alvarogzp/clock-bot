@@ -1,14 +1,19 @@
-from clock.finder.search_strategies.search_strategies.query.match import MatchSearchStrategy
+from clock.finder.search_strategies.search_strategies.query.generic import GenericQuerySearchStrategy
+from clock.finder.search_strategies.search_strategies.query.match import MatchSearchStrategyMixIn
 
 
-class GenericMatchSearchStrategy(MatchSearchStrategy):
+class GenericMatchSearchStrategy(GenericQuerySearchStrategy, MatchSearchStrategyMixIn):
     def __init__(self, query_lower: str, match_func: callable):
-        super().__init__(query_lower)
-        self.match_func = match_func
+        super().__init__(query_lower, match_func)
 
-    def search(self):
-        self.generic_search()
+    def _add_result(self, result):
+        MatchSearchStrategyMixIn._add_result(self, result)
 
-    def generic_search(self):
-        results = self.match_func(self.query_lower)
-        self._add_results(results)
+    def _add_results(self, results):
+        MatchSearchStrategyMixIn._add_results(self, results)
+
+    def get_results(self):
+        MatchSearchStrategyMixIn.get_results(self)
+
+    def get_prioritized_results(self):
+        MatchSearchStrategyMixIn.get_prioritized_results(self)
