@@ -5,6 +5,7 @@ from clock.finder.search_strategies.strategy import SearchStrategy
 
 class QuerySearchStrategy(SearchStrategy):
     def __init__(self, query_lower: str):
+        super().__init__()
         self.query_lower = query_lower
         self.results = []
 
