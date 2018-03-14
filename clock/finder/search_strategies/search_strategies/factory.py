@@ -70,6 +70,8 @@ class SearchStrategyBuilder:
             )
         )
 
+    # specific search strategies builder methods
+
     def build_time_match_search(self, param: SearchQueryParam):
         return self._match_strategy_factory_for_param(param).time(self._localized_date_time_zone_finder())
 
@@ -79,6 +81,8 @@ class SearchStrategyBuilder:
     def build_tzname_match_search(self, param: SearchQueryParam):
         return self._match_strategy_factory_for_param(param).tzname(self._localized_date_time_zone_finder())
 
+    # finder retriever methods
+
     def _localized_zone_finder(self):
         return self.finders.localized_zone_finder(self.locale)
 
@@ -87,6 +91,8 @@ class SearchStrategyBuilder:
 
     def _localized_date_time_zone_finder(self):
         return self.finders.localized_date_time_zone_finder(self.locale, self.time_point)
+
+    # MatchSearchStrategyFactory helper methods
 
     def _match_strategy_factory_for_param(self, param: SearchQueryParam):
         return self._match_strategy_factory(param.value_lower)
