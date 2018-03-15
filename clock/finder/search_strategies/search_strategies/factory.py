@@ -7,6 +7,7 @@ from clock.finder.search_strategies.search_strategies.concatenator import AndSea
     OrSearchStrategyConcatenator
 from clock.finder.search_strategies.search_strategies.locale import LocaleSearchStrategy
 from clock.finder.search_strategies.search_strategies.query.basic import BasicQuerySearchStrategy
+from clock.finder.search_strategies.search_strategies.query.factory import QuerySearchStrategyFactory
 from clock.finder.search_strategies.search_strategies.query.match.concatenator import MatchSearchStrategyConcatenator
 from clock.finder.search_strategies.search_strategies.query.match.factory import MatchSearchStrategyFactory
 from clock.finder.zone_finder.provider import ZoneFindersProvider
@@ -103,3 +104,15 @@ class SearchStrategyBuilder:
     @staticmethod
     def _match_strategy_factory(query_lower: str):
         return MatchSearchStrategyFactory(query_lower)
+
+    # QuerySearchStrategyFactory helper methods
+
+    def _query_strategy_factory_for_param(self, param: SearchQueryParam):
+        return self._query_strategy_factory(param.value_lower)
+
+    def _query_strategy_factory_for_query(self):
+        return self._query_strategy_factory(self.query_lower)
+
+    @staticmethod
+    def _query_strategy_factory(query_lower: str):
+        return QuerySearchStrategyFactory(query_lower)
