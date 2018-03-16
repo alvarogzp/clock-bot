@@ -73,6 +73,9 @@ class SearchStrategyBuilder:
 
     # specific search strategies builder methods
 
+    def build_country_search(self, param: SearchQueryParam):
+        return self._query_strategy_factory_for_param(param).country(self.finders.country_zone_finder)
+
     def build_time_match_search(self, param: SearchQueryParam):
         return self._match_strategy_factory_for_param(param).time(self._localized_date_time_zone_finder())
 
