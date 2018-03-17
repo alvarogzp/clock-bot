@@ -1,7 +1,7 @@
 from babel import Locale
 
 from clock.domain.time import TimePoint
-from clock.finder.query.params import QUERY_PARAM_TIME, QUERY_PARAM_GMT, QUERY_PARAM_TZNAME
+from clock.finder.query.params import QUERY_PARAM_TIME, QUERY_PARAM_GMT, QUERY_PARAM_TZNAME, QUERY_PARAM_COUNTRY
 from clock.finder.query.query import SearchQuery, SearchQueryParam
 from clock.finder.search_strategies.search_strategies.concatenator import AndSearchStrategyConcatenator, \
     OrSearchStrategyConcatenator
@@ -46,7 +46,9 @@ class SearchStrategyBuilder:
         strategies = []
         for param in self.query.params:
             name = param.name
-            if name == QUERY_PARAM_TIME:
+            if name == QUERY_PARAM_COUNTRY:
+                strategies.append(self.build_country_search(param))
+            elif name == QUERY_PARAM_TIME:
                 strategies.append(self.build_time_match_search(param))
             elif name == QUERY_PARAM_GMT:
                 strategies.append(self.build_gmt_offset_match_search(param))
