@@ -33,7 +33,7 @@ class TroubleshootMessageBuilder(MessageWithReplyMarkupBuilder):
     def get_text(self):
         return FormattedText()\
             .bold("🛑 Can't find what you're looking for? 🛑").newline().newline()\
-            .normal("Please, note that you have to type the search in your language.").newline()\
+            .normal("Please, note that you have to type the search in your language or in English.").newline()\
             .normal("The language you are currently using is: {language}").newline().newline()\
             .normal("Try typing:").newline()\
             .normal("{search_types}").newline().newline()\
