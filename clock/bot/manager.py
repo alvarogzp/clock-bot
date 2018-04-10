@@ -20,6 +20,7 @@ from bot.bot import Bot
 from clock import project_info
 from clock.bot.commands.admin.locale_cache import LocaleCacheAction
 from clock.bot.commands.help import HelpAction
+from clock.bot.commands.privacy import PrivacyAction
 from clock.bot.commands.start import StartAction
 from clock.bot.commands.troubleshoot import TroubleshootAction
 from clock.bot.inline.chosen_result import ChosenInlineResultClockAction
@@ -77,6 +78,11 @@ class BotManager:
                                     CommandAction("troubleshooting").then(
                                         SaveCommandAction(),
                                         TroubleshootAction()
+                                    ),
+
+                                    CommandAction("privacy").then(
+                                        SaveCommandAction(),
+                                        PrivacyAction()
                                     ),
 
                                     CommandAction("about").then(
