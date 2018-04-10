@@ -15,4 +15,4 @@ authors_credits = (
 
 is_open_source = True
 
-license_name = 'GNU AGPL 3.0'
+license_name = 'GNU AGPL 3.0+'
