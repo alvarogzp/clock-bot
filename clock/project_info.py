@@ -16,3 +16,4 @@ authors_credits = (
 is_open_source = True
 
 license_name = 'GNU AGPL 3.0+'
+license_url = 'https://www.gnu.org/licenses/agpl-3.0.en.html'

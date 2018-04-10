@@ -84,7 +84,9 @@ class BotManager:
                                             authors=project_info.authors_credits,
                                             is_open_source=project_info.is_open_source,
                                             url=project_info.url,
-                                            license_name=project_info.license_name)
+                                            license_name=project_info.license_name,
+                                            license_url=project_info.license_url,
+                                        )
                                     ),
 
                                     CommandAction("version").then(
