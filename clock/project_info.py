@@ -17,3 +17,8 @@ is_open_source = True
 
 license_name = 'GNU AGPL 3.0+'
 license_url = 'https://www.gnu.org/licenses/agpl-3.0.en.html'
+
+donation_addresses = (
+    ("Bitcoin", "39jTysyu9qpBPXM7czxcGnXxL7WYipGfBL"),
+    ("Bitcoin (bech32 format)", "bc1qhhepjsvdqp3fgls80f3dhw7vyald6t7nyhz9ry")
+)
