@@ -81,7 +81,7 @@ class BotManager:
                                         SaveCommandAction(),
                                         AboutAction(
                                             project_info.name,
-                                            author_handle=project_info.author_handle,
+                                            authors=project_info.authors_credits,
                                             is_open_source=True,
                                             url=project_info.url,
                                             license_name=project_info.license_name)

@@ -8,6 +8,9 @@ url = 'https://github.com/alvarogzp/clock-bot'
 
 author_name = 'Alvaro Gutierrez Perez'
 author_email = 'alvarogzp@gmail.com'
-author_handle = "@AlvaroGP"
+
+authors_credits = (
+    ("@AlvaroGP", "main developer"),
+)
 
 license_name = 'GNU AGPL 3.0'
