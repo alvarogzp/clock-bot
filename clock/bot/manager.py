@@ -11,6 +11,7 @@ from bot.action.standard.admin.state import StateAction
 from bot.action.standard.answer import AnswerAction
 from bot.action.standard.asynchronous import AsynchronousAction
 from bot.action.standard.benchmark import BenchmarkAction, WorkersAction
+from bot.action.standard.info.action import UserInfoAction
 from bot.action.standard.internationalization import InternationalizationAction
 from bot.action.standard.logger import LoggerAction
 from bot.action.standard.perchat import PerChatAction
@@ -97,6 +98,10 @@ class BotManager:
                                             project_info.name,
                                             project_info.url + "/releases"
                                         )
+                                    ),
+
+                                    CommandAction("me", is_personal=True).then(
+                                        UserInfoAction(always_sender=True)
                                     ),
 
                                     CommandAction("benchmark").then(
