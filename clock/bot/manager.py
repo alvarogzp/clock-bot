@@ -5,6 +5,7 @@ from bot.action.core.filter import MessageAction, TextMessageAction, NoPendingAc
 from bot.action.standard.about import AboutAction, VersionAction
 from bot.action.standard.admin import RestartAction, EvalAction, AdminActionWithErrorMessage, HaltAction
 from bot.action.standard.admin.config_status import ConfigStatusAction
+from bot.action.standard.admin.fail import FailAction
 from bot.action.standard.admin.instance import InstanceAction
 from bot.action.standard.admin.state import StateAction
 from bot.action.standard.answer import AnswerAction
@@ -152,6 +153,12 @@ class BotManager:
                                         AdminActionWithErrorMessage().then(
                                             SaveCommandAction(),
                                             WorkersAction()
+                                        )
+                                    ),
+                                    CommandAction("fail").then(
+                                        AdminActionWithErrorMessage().then(
+                                            SaveCommandAction(),
+                                            FailAction()
                                         )
                                     )
 
