@@ -82,7 +82,7 @@ class BotManager:
                                         AboutAction(
                                             project_info.name,
                                             authors=project_info.authors_credits,
-                                            is_open_source=True,
+                                            is_open_source=project_info.is_open_source,
                                             url=project_info.url,
                                             license_name=project_info.license_name)
                                     ),

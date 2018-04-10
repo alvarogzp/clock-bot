@@ -13,4 +13,6 @@ authors_credits = (
     ("@AlvaroGP", "main developer"),
 )
 
+is_open_source = True
+
 license_name = 'GNU AGPL 3.0'
