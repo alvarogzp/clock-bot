@@ -28,7 +28,7 @@ from clock.bot.save.message import SaveMessageAction
 
 class BotManager:
     def __init__(self):
-        self.bot = Bot()
+        self.bot = Bot(project_info.name)
 
     def setup_actions(self):
         self.bot.set_action(
