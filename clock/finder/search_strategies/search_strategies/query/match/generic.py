@@ -13,7 +13,7 @@ class GenericMatchSearchStrategy(GenericQuerySearchStrategy, MatchSearchStrategy
         MatchSearchStrategyMixIn._add_results(self, results)
 
     def get_results(self):
-        MatchSearchStrategyMixIn.get_results(self)
+        return MatchSearchStrategyMixIn.get_results(self)
 
     def get_prioritized_results(self):
-        MatchSearchStrategyMixIn.get_prioritized_results(self)
+        return MatchSearchStrategyMixIn.get_prioritized_results(self)
