@@ -63,8 +63,7 @@ class SearchStrategyBuilder:
         return OrSearchStrategyConcatenator(
             BasicQuerySearchStrategy(
                 self.query_lower,
-                self.finders.name_zone_finder,
-                self.finders.country_zone_finder
+                self.finders.name_zone_finder
             ),
             self._query_strategy_factory_for_query().country(self.finders.country_zone_finder),
             MatchSearchStrategyConcatenator(
