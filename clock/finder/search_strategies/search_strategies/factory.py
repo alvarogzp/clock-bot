@@ -37,7 +37,8 @@ class SearchStrategyBuilder:
     def build(self):
         if self.query.is_empty():
             return self.build_locale_search()
-        strategies = self.build_param_searches()
+        strategies = []
+        strategies.extend(self.build_param_searches())
         if self.query.has_query_string():
             strategies.append(self.build_basic_search())
         return AndSearchStrategyConcatenator(*strategies)
