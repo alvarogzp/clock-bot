@@ -33,9 +33,11 @@ class LocaleGetter:
         user_language_code = user.language_code
         return cls.from_language_code(user_language_code)
 
+
+class LanguageCode:
     @classmethod
     def from_query_or_user(cls, query: SearchQuery, user: ApiObject):
         lang = query.lang
         if lang is not None:
-            return cls.from_language_code(lang)
-        return cls.from_user(user)
+            return lang
+        return user.language_code
