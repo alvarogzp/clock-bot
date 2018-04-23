@@ -64,7 +64,7 @@ class InlineQueryClockAction(Action):
 
         self.locale_cache.cache(locale)
 
-        self.storage.save_query(query, current_time, locale, zones, results, processing_time)
+        self.storage.save_query(query, current_time, locale, zones, results, processing_time, language_code)
 
         self.logger.log_query(query, current_time, locale, zones, results, processing_time)
 
