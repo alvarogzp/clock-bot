@@ -29,10 +29,11 @@ class LogApi:
         self.formatter = formatter
 
     def log_query(self, query: ApiObject, time_point: TimePoint, locale: Locale, results_found: list,
-                  results_sent: list, processing_seconds: float):
+                  results_sent: list, processing_seconds: float, language_code: str):
 
         formatted_query = self.formatter.query_as_title(query.query, query.offset)
         formatted_user = self.formatter.user(query.from_)
+        formatted_language_code = self.formatter.language_code(language_code)
         formatted_locale = self.formatter.locale(locale)
         formatted_time_point = self.formatter.time_point(time_point.id())
         formatted_processing_time = self.formatter.processing_time(processing_seconds)
@@ -41,6 +42,7 @@ class LogApi:
         formatted_message = self.formatter.message(
             formatted_query,
             formatted_user,
+            formatted_language_code,
             formatted_locale,
             formatted_time_point,
             formatted_processing_time,

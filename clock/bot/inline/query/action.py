@@ -66,7 +66,7 @@ class InlineQueryClockAction(Action):
 
         self.storage.save_query(query, current_time, locale, zones, results, processing_time, language_code)
 
-        self.logger.log_query(query, current_time, locale, zones, results, processing_time)
+        self.logger.log_query(query, current_time, locale, zones, results, processing_time, language_code)
 
     @staticmethod
     def __get_offset(query):
