@@ -47,6 +47,6 @@ class HelpMessageBuilder(MessageWithReplyMarkupBuilder):
             .add(switch_inline_button("Get the UTC time", "UTC"))\
             .add(switch_inline_button("Get the time in Los Angeles", "Los Angeles"))\
             .add(switch_inline_button("Get all zones using Central European Time (CET)", "CET"))\
-            .add(switch_inline_button("Get all zones in GMT+07", "-gmt +07"))\
-            .add(switch_inline_button("Get all zones where it is now 11 hours", "-time 11"))\
+            .add(switch_inline_button("Get all zones in GMT+07", "gmt:+07"))\
+            .add(switch_inline_button("Get all zones where it is now 11 hours", "time:11"))\
             .add(switch_inline_button("Send the London time to someone else", "London", current_chat=False))

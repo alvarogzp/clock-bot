@@ -1,11 +1,11 @@
 import itertools
 
 from clock.finder.search_strategies.search_strategies.concatenator import SearchStrategyConcatenator
-from clock.finder.search_strategies.search_strategies.query.match import MatchSearchStrategy
+from clock.finder.search_strategies.search_strategies.query.match.generic import GenericMatchSearchStrategy
 
 
 class MatchSearchStrategyConcatenator(SearchStrategyConcatenator):
-    def __init__(self, *match_search_strategies: MatchSearchStrategy):
+    def __init__(self, *match_search_strategies: GenericMatchSearchStrategy):
         super().__init__(*match_search_strategies)
 
     def get_results(self):
