@@ -1,3 +1,5 @@
+import itertools
+
 from clock.finder.zone_finder.find_util import FindUtil
 from clock.finder.zone_finder.zone_finders.name import NameZoneFinder
 
@@ -36,10 +38,12 @@ class AliasZoneFinder:
     @staticmethod
     def __build_aliases_lower(name_zone_finder: NameZoneFinder, aliases: dict):
         aliases_lower = {}
-        for alias, zone_name in aliases.items():
-            zone = name_zone_finder[zone_name]
-            aliases_lower[alias.lower()] = zone
+        for alias, zone_names in aliases.items():
+            if type(zone_names) is str:
+                zone_names = [zone_names]
+            zones = [name_zone_finder[zone_name] for zone_name in zone_names]
+            aliases_lower[alias.lower()] = zones
         return aliases_lower
 
     def match_lower(self, query_lower: str):
-        return FindUtil.match_key(self.aliases_lower.items(), query_lower)
+        return [itertools.chain.from_iterable(i) for i in FindUtil.match_key(self.aliases_lower.items(), query_lower)]
