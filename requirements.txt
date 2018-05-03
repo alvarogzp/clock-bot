@@ -1,3 +1,4 @@
 -e .
 
 telegram-bot-framework==v03.09.00
+pytz==2018.4
