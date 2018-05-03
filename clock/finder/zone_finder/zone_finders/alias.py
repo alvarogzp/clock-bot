@@ -3,6 +3,29 @@ from clock.finder.zone_finder.zone_finders.name import NameZoneFinder
 
 
 ZONE_ALIASES = {
+    # sorted by no-results search popularity on @ClockBot at 2018/05/07
+    "Mumbai": "Asia/Kolkata",
+    "Texas": ["US/Central", "US/Mountain"],
+    "NewYork": "America/New_York",
+    "Miami": "US/Eastern",
+    "Amritsar": "Asia/Kolkata",
+    "Ciudad de Mexico": "America/Mexico_City",
+    "Boston": "US/Eastern",
+    "San Francisco": "US/Pacific",
+    "Moscu": "Europe/Moscow",
+    "Houston": "US/Central",
+    "Barcelona": "Europe/Madrid",
+    "Milan": "Europe/Rome",
+    "Stavropol": "Europe/Moscow",
+    "Washington": "US/Pacific",
+    "Japon": "Asia/Tokyo",
+    "Lyon": "Europe/Paris",
+    "Curitiba": "America/Sao_Paulo",
+    "California": "US/Pacific",
+    "Bandar Abbas": "Asia/Tehran",
+    "Florida": ["US/Eastern", "US/Central"],
+    "Karbala": "Asia/Baghdad",
+    "Shiraz": "Asia/Tehran",
 }
 
 
