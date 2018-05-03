@@ -186,7 +186,7 @@ class BotManager:
                                     TextMessageAction().then(
                                         CommandAction("ping").then(
                                             SaveCommandAction(),
-                                            AnswerAction("Up and running, sir!")
+                                            AnswerAction("Up and running!")
                                         )
                                     )
                                 )
