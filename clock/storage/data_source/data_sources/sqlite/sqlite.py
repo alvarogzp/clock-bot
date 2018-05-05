@@ -8,7 +8,7 @@ from clock.storage.data_source.data_sources.sqlite.component.components.chat imp
 from clock.storage.data_source.data_sources.sqlite.component.components.message import MessageSqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.query import QuerySqliteComponent
 from clock.storage.data_source.data_sources.sqlite.component.components.user import UserSqliteComponent
-from clock.storage.data_source.data_sources.sqlite.component.factory import SqliteStorageComponentFactory
+from clock.storage.data_source.data_sources.sqlite.component.factory import ClockSqliteStorageComponentFactory
 from clock.storage.data_source.data_sources.sqlite.sql.result.row import ResultRow
 
 
@@ -45,7 +45,7 @@ class SqliteStorageDataSource(StorageDataSource):
             self.__enter__()
 
     def _init_components(self):
-        components = SqliteStorageComponentFactory(self.connection, self.logger)
+        components = ClockSqliteStorageComponentFactory(self.connection, self.logger)
         self.user = components.user()
         self.chat = components.chat()
         self.query = components.query(self.user)
