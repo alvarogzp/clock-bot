@@ -3,6 +3,7 @@ from babel import Locale
 
 from clock.domain.time import TimePoint
 from clock.domain.zone import Zone
+from clock.finder.zone_finder.zone_finders.alias import AliasZoneFinder
 from clock.finder.zone_finder.zone_finders.country import CountryZoneFinder
 from clock.finder.zone_finder.zone_finders.localized import LocalizedZoneFinder
 from clock.finder.zone_finder.zone_finders.localized_date_time import LocalizedDateTimeZoneFinder
@@ -15,6 +16,7 @@ class ZoneFindersProvider:
         zone_names = pytz.all_timezones
         self.zones = self.__build_zones(zone_names)
         self.name_zone_finder = NameZoneFinder(self.zones)
+        self.alias_zone_finder = AliasZoneFinder(self.name_zone_finder)
         self.country_zone_finder = CountryZoneFinder(self.name_zone_finder, pytz.country_timezones, find_countries)
         self._localized_zone_finder_cache = LocalizedZoneFinderCache(self.__create_localized_zone_finder)
 
