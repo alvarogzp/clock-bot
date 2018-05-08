@@ -1,16 +1,16 @@
-from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
-from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column, ROWID
-from clock.storage.data_source.data_sources.sqlite.sql.item.constants.conflict_resolution import REPLACE
-from clock.storage.data_source.data_sources.sqlite.sql.item.constants.operator import EQUAL, AND, OR, IS
-from clock.storage.data_source.data_sources.sqlite.sql.item.constants.order_mode import DESC
-from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import INTEGER, TEXT
-from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.cast import Cast
-from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.condition import Condition, \
+from sqlite_framework.component.component import SqliteStorageComponent
+from sqlite_framework.sql.item.column import Column, ROWID
+from sqlite_framework.sql.item.constants.conflict_resolution import REPLACE
+from sqlite_framework.sql.item.constants.operator import EQUAL, AND, OR, IS
+from sqlite_framework.sql.item.constants.order_mode import DESC
+from sqlite_framework.sql.item.constants.type import INTEGER, TEXT
+from sqlite_framework.sql.item.expression.compound.cast import Cast
+from sqlite_framework.sql.item.expression.compound.condition import Condition, \
     MultipleCondition
-from clock.storage.data_source.data_sources.sqlite.sql.item.expression.constants import NULL, CURRENT_UNIX_TIMESTAMP
-from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
-from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.insert import Insert
-from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import Select
+from sqlite_framework.sql.item.expression.constants import NULL, CURRENT_UNIX_TIMESTAMP
+from sqlite_framework.sql.item.table import Table
+from sqlite_framework.sql.statement.builder.insert import Insert
+from sqlite_framework.sql.statement.builder.select import Select
 
 
 NAME = "user"

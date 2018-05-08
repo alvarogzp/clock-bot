@@ -69,6 +69,7 @@ class SearchStrategyBuilder:
             self._query_strategy_factory_for_query().country(self.finders.country_zone_finder),
             MatchSearchStrategyConcatenator(
                 self.match_strategy_factory_for_query.zone_name(self.finders.name_zone_finder),
+                self.match_strategy_factory_for_query.alias(self.finders.alias_zone_finder),
                 self.match_strategy_factory_for_query.localized_names(self._localized_zone_finder()),
                 self.match_strategy_factory_for_query.localized_names(self._default_localized_zone_finder())
             )
