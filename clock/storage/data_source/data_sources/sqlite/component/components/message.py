@@ -1,12 +1,12 @@
-from clock.storage.data_source.data_sources.sqlite.component.component import SqliteStorageComponent
-from clock.storage.data_source.data_sources.sqlite.sql.item.column import Column
-from clock.storage.data_source.data_sources.sqlite.sql.item.constants.operator import EQUAL, AND
-from clock.storage.data_source.data_sources.sqlite.sql.item.constants.type import INTEGER, TEXT
-from clock.storage.data_source.data_sources.sqlite.sql.item.expression.compound.condition import Condition
-from clock.storage.data_source.data_sources.sqlite.sql.item.expression.constants import CURRENT_UNIX_TIMESTAMP
-from clock.storage.data_source.data_sources.sqlite.sql.item.table import Table
-from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.insert import Insert
-from clock.storage.data_source.data_sources.sqlite.sql.statement.builder.select import Select
+from sqlite_framework.component.component import SqliteStorageComponent
+from sqlite_framework.sql.item.column import Column
+from sqlite_framework.sql.item.constants.operator import EQUAL, AND
+from sqlite_framework.sql.item.constants.type import INTEGER, TEXT
+from sqlite_framework.sql.item.expression.compound.condition import Condition
+from sqlite_framework.sql.item.expression.constants import CURRENT_UNIX_TIMESTAMP
+from sqlite_framework.sql.item.table import Table
+from sqlite_framework.sql.statement.builder.insert import Insert
+from sqlite_framework.sql.statement.builder.select import Select
 
 
 NAME = "message"
