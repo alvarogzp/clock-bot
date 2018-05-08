@@ -15,7 +15,7 @@ class PrivacyMessageBuilder(MessageWithReplyMarkupBuilder):
             .normal("We take privacy very seriously and want to make sure you understand where the information "
                     "we receive about you comes from, and how we use it to give you the best experience.")\
             .newline().newline()\
-            .normal("You can read the information that the bot receives and how it is used on the following link:")\
+            .normal("You can know the information that the bot receives and how it is used on the following link:")\
             .newline()\
             .normal("👉 https://github.com/alvarogzp/clock-bot/wiki/Privacy")\
             .newline().newline()\
