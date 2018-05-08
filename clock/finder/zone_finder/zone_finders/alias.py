@@ -28,6 +28,14 @@ ZONE_ALIASES = {
     "Florida": ["US/Eastern", "US/Central"],
     "Karbala": "Asia/Baghdad",
     "Shiraz": "Asia/Tehran",
+
+    "Cochabamba": "America/La_Paz",
+
+    "La Habana": "America/Havana",
+
+    "Catalonia": "Europe/Madrid",
+    "Catalunya": "Europe/Madrid",
+    "Cataluña": "Europe/Madrid",
 }
 
 
