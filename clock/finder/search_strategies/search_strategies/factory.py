@@ -1,98 +1,125 @@
 from babel import Locale
 
 from clock.domain.time import TimePoint
-from clock.finder.search_strategies.search_strategies.concatenator import SearchStrategyConcatenator
+from clock.finder.query.params import QUERY_PARAM_TIME, QUERY_PARAM_GMT, QUERY_PARAM_TZNAME, QUERY_PARAM_COUNTRY
+from clock.finder.query.query import SearchQuery, SearchQueryParam
+from clock.finder.search_strategies.search_strategies.concatenator import AndSearchStrategyConcatenator, \
+    OrSearchStrategyConcatenator
 from clock.finder.search_strategies.search_strategies.locale import LocaleSearchStrategy
 from clock.finder.search_strategies.search_strategies.query.basic import BasicQuerySearchStrategy
-from clock.finder.search_strategies.search_strategies.query.match.advanced.gmt_offset import \
-    GmtOffsetMatchSearchStrategy
-from clock.finder.search_strategies.search_strategies.query.match.advanced.time import TimeMatchSearchStrategy
-from clock.finder.search_strategies.search_strategies.query.match.advanced.tzname import TznameMatchSearchStrategy
-from clock.finder.search_strategies.search_strategies.query.match.basic import BasicMatchSearchStrategy
+from clock.finder.search_strategies.search_strategies.query.factory import QuerySearchStrategyFactory
+from clock.finder.search_strategies.search_strategies.query.match.concatenator import MatchSearchStrategyConcatenator
+from clock.finder.search_strategies.search_strategies.query.match.factory import MatchSearchStrategyFactory
 from clock.finder.zone_finder.provider import ZoneFindersProvider
-
-
-ADVANCED_SEARCH_TIME_PREFIX = "-time"
-ADVANCED_SEARCH_GMT_OFFSET_PREFIX = "-gmt"
-ADVANCED_SEARCH_TZNAME_PREFIX = "-tzname"
-
-ADVANCED_SEARCH_PREFIXES = [
-    ADVANCED_SEARCH_TIME_PREFIX,
-    ADVANCED_SEARCH_GMT_OFFSET_PREFIX,
-    ADVANCED_SEARCH_TZNAME_PREFIX
-]
+from clock.locale.parser import DEFAULT_LOCALE
 
 
 class SearchStrategyFactory:
     def __init__(self, finders: ZoneFindersProvider):
         self.finders = finders
 
-    def get(self, query: str, locale: Locale, time_point: TimePoint):
+    def get(self, query: SearchQuery, locale: Locale, time_point: TimePoint):
         return SearchStrategyBuilder(self.finders, query, locale, time_point).build()
 
 
 class SearchStrategyBuilder:
-    def __init__(self, finders: ZoneFindersProvider, query: str, locale: Locale, time_point: TimePoint):
+    def __init__(self, finders: ZoneFindersProvider, query: SearchQuery, locale: Locale, time_point: TimePoint):
         self.finders = finders
-        self.query_lower = query.lower()
+        self.query = query
         self.locale = locale
         self.time_point = time_point
+        self.match_strategy_factory_for_query = self._match_strategy_factory_for_query()
+
+    @property
+    def query_lower(self):
+        return self.query.query_lower
 
     def build(self):
-        if not self.query_lower:
+        if self.query.is_empty():
             return self.build_locale_search()
-        strategy = self.build_advanced_search()
-        if strategy is None:
-            strategy = self.build_basic_search()
-        return strategy
+        strategies = []
+        strategies.extend(self.build_param_searches())
+        if self.query.has_query_string():
+            strategies.append(self.build_basic_search())
+        return AndSearchStrategyConcatenator(*strategies)
 
-    def build_advanced_search(self):
-        query_words = self.query_lower.split()
-        if len(query_words) > 1:
-            advanced_search_type = query_words[0]
-            if advanced_search_type in ADVANCED_SEARCH_PREFIXES:
-                self.query_lower = " ".join(query_words[1:])
-                if advanced_search_type == ADVANCED_SEARCH_TIME_PREFIX:
-                    return self.build_time_match_search()
-                elif advanced_search_type == ADVANCED_SEARCH_GMT_OFFSET_PREFIX:
-                    return self.build_gmt_offset_match_search()
-                elif advanced_search_type == ADVANCED_SEARCH_TZNAME_PREFIX:
-                    return self.build_tzname_match_search()
+    def build_param_searches(self):
+        strategies = []
+        for param in self.query.params:
+            name = param.name
+            if name == QUERY_PARAM_COUNTRY:
+                strategies.append(self.build_country_search(param))
+            elif name == QUERY_PARAM_TIME:
+                strategies.append(self.build_time_match_search(param))
+            elif name == QUERY_PARAM_GMT:
+                strategies.append(self.build_gmt_offset_match_search(param))
+            elif name == QUERY_PARAM_TZNAME:
+                strategies.append(self.build_tzname_match_search(param))
+        return strategies
 
     def build_locale_search(self):
         return LocaleSearchStrategy(self.locale, self.finders.country_zone_finder)
 
     def build_basic_search(self):
-        return SearchStrategyConcatenator(
+        return OrSearchStrategyConcatenator(
             BasicQuerySearchStrategy(
                 self.query_lower,
-                self.finders.name_zone_finder,
-                self.finders.country_zone_finder
+                self.finders.name_zone_finder
             ),
-            BasicMatchSearchStrategy(
-                self.query_lower,
-                self.finders.name_zone_finder,
-                self.finders.localized_zone_finder(self.locale)
+            self._query_strategy_factory_for_query().country(self.finders.country_zone_finder),
+            MatchSearchStrategyConcatenator(
+                self.match_strategy_factory_for_query.zone_name(self.finders.name_zone_finder),
+                self.match_strategy_factory_for_query.alias(self.finders.alias_zone_finder),
+                self.match_strategy_factory_for_query.localized_names(self._localized_zone_finder()),
+                self.match_strategy_factory_for_query.localized_names(self._default_localized_zone_finder())
             )
         )
 
-    def build_time_match_search(self):
-        return TimeMatchSearchStrategy(
-            self.query_lower,
-            self._localized_date_time_zone_finder()
-        )
+    # specific search strategies builder methods
 
-    def build_gmt_offset_match_search(self):
-        return GmtOffsetMatchSearchStrategy(
-            self.query_lower,
-            self._localized_date_time_zone_finder()
-        )
+    def build_country_search(self, param: SearchQueryParam):
+        return self._query_strategy_factory_for_param(param).country(self.finders.country_zone_finder)
 
-    def build_tzname_match_search(self):
-        return TznameMatchSearchStrategy(
-            self.query_lower,
-            self._localized_date_time_zone_finder()
-        )
+    def build_time_match_search(self, param: SearchQueryParam):
+        return self._match_strategy_factory_for_param(param).time(self._localized_date_time_zone_finder())
+
+    def build_gmt_offset_match_search(self, param: SearchQueryParam):
+        return self._match_strategy_factory_for_param(param).gmt_offset(self._localized_date_time_zone_finder())
+
+    def build_tzname_match_search(self, param: SearchQueryParam):
+        return self._match_strategy_factory_for_param(param).tzname(self._localized_date_time_zone_finder())
+
+    # finder retriever methods
+
+    def _localized_zone_finder(self):
+        return self.finders.localized_zone_finder(self.locale)
+
+    def _default_localized_zone_finder(self):
+        return self.finders.localized_zone_finder(DEFAULT_LOCALE)
 
     def _localized_date_time_zone_finder(self):
         return self.finders.localized_date_time_zone_finder(self.locale, self.time_point)
+
+    # MatchSearchStrategyFactory helper methods
+
+    def _match_strategy_factory_for_param(self, param: SearchQueryParam):
+        return self._match_strategy_factory(param.value_lower)
+
+    def _match_strategy_factory_for_query(self):
+        return self._match_strategy_factory(self.query_lower)
+
+    @staticmethod
+    def _match_strategy_factory(query_lower: str):
+        return MatchSearchStrategyFactory(query_lower)
+
+    # QuerySearchStrategyFactory helper methods
+
+    def _query_strategy_factory_for_param(self, param: SearchQueryParam):
+        return self._query_strategy_factory(param.value_lower)
+
+    def _query_strategy_factory_for_query(self):
+        return self._query_strategy_factory(self.query_lower)
+
+    @staticmethod
+    def _query_strategy_factory(query_lower: str):
+        return QuerySearchStrategyFactory(query_lower)

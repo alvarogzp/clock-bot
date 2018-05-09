@@ -5,11 +5,14 @@ from bot.action.core.filter import MessageAction, TextMessageAction, NoPendingAc
 from bot.action.standard.about import AboutAction, VersionAction
 from bot.action.standard.admin import RestartAction, EvalAction, AdminActionWithErrorMessage, HaltAction
 from bot.action.standard.admin.config_status import ConfigStatusAction
+from bot.action.standard.admin.fail import FailAction
 from bot.action.standard.admin.instance import InstanceAction
 from bot.action.standard.admin.state import StateAction
 from bot.action.standard.answer import AnswerAction
+from bot.action.standard.async import AsyncApiAction
 from bot.action.standard.asynchronous import AsynchronousAction
 from bot.action.standard.benchmark import BenchmarkAction, WorkersAction
+from bot.action.standard.info.action import UserInfoAction
 from bot.action.standard.internationalization import InternationalizationAction
 from bot.action.standard.logger import LoggerAction
 from bot.action.standard.perchat import PerChatAction
@@ -18,6 +21,7 @@ from bot.bot import Bot
 from clock import project_info
 from clock.bot.commands.admin.locale_cache import LocaleCacheAction
 from clock.bot.commands.help import HelpAction
+from clock.bot.commands.privacy import PrivacyAction
 from clock.bot.commands.start import StartAction
 from clock.bot.commands.troubleshoot import TroubleshootAction
 from clock.bot.inline.chosen_result import ChosenInlineResultClockAction
@@ -28,161 +32,181 @@ from clock.bot.save.message import SaveMessageAction
 
 class BotManager:
     def __init__(self):
-        self.bot = Bot()
+        self.bot = Bot(project_info.name)
 
     def setup_actions(self):
         self.bot.set_action(
             ActionGroup(
                 LoggerAction(reuse_max_length=2000, reuse_max_time=1, reuse_max_number=10).then(
+                    AsyncApiAction().then(
 
-                    InlineQueryAction().then(
-                        AsynchronousAction(
-                            "inline_query",
-                            min_workers=int(self.bot.config.min_query_workers or 1),
-                            max_workers=int(self.bot.config.max_query_workers or 8),
-                            max_seconds_idle=300
-                        ).then(
-                            InlineQueryClockAction()
-                        )
-                    ),
+                        InlineQueryAction().then(
+                            AsynchronousAction(
+                                "inline_query",
+                                min_workers=int(self.bot.config.min_query_workers or 1),
+                                max_workers=int(self.bot.config.max_query_workers or 8),
+                                max_seconds_idle=300
+                            ).then(
+                                InlineQueryClockAction()
+                            )
+                        ),
 
-                    ChosenInlineResultAction().then(
-                        ChosenInlineResultClockAction()
-                    ),
+                        ChosenInlineResultAction().then(
+                            ChosenInlineResultClockAction()
+                        ),
 
-                    EditedMessageAction().then(
-                        SaveMessageAction()
-                    ),
+                        EditedMessageAction().then(
+                            SaveMessageAction()
+                        ),
 
-                    MessageAction().then(
-                        PerChatAction().then(
+                        MessageAction().then(
+                            PerChatAction().then(
 
-                            SaveMessageAction(),
+                                SaveMessageAction(),
 
-                            InternationalizationAction().then(
-                                TextMessageAction().then(
+                                InternationalizationAction().then(
+                                    TextMessageAction().then(
 
-                                    CommandAction("start").then(
-                                        SaveCommandAction(),
-                                        StartAction()
-                                    ),
+                                        CommandAction("start").then(
+                                            SaveCommandAction(),
+                                            StartAction()
+                                        ),
 
-                                    CommandAction("help").then(
-                                        SaveCommandAction(),
-                                        HelpAction()
-                                    ),
+                                        CommandAction("help").then(
+                                            SaveCommandAction(),
+                                            HelpAction()
+                                        ),
 
-                                    CommandAction("troubleshooting").then(
-                                        SaveCommandAction(),
-                                        TroubleshootAction()
-                                    ),
+                                        CommandAction("troubleshooting").then(
+                                            SaveCommandAction(),
+                                            TroubleshootAction()
+                                        ),
 
-                                    CommandAction("about").then(
-                                        SaveCommandAction(),
-                                        AboutAction(
-                                            project_info.name,
-                                            author_handle=project_info.author_handle,
-                                            is_open_source=True,
-                                            source_url=project_info.source_url,
-                                            license_name=project_info.license_name)
-                                    ),
+                                        CommandAction("privacy").then(
+                                            SaveCommandAction(),
+                                            PrivacyAction()
+                                        ),
 
-                                    CommandAction("version").then(
-                                        SaveCommandAction(),
-                                        VersionAction(
-                                            project_info.name,
-                                            project_info.source_url + "/releases"
-                                        )
-                                    ),
+                                        CommandAction("about").then(
+                                            SaveCommandAction(),
+                                            AboutAction(
+                                                project_info.name,
+                                                authors=project_info.authors_credits,
+                                                is_open_source=project_info.is_open_source,
+                                                url=project_info.url,
+                                                license_name=project_info.license_name,
+                                                license_url=project_info.license_url,
+                                                donation_addresses=project_info.donation_addresses
+                                            )
+                                        ),
 
-                                    CommandAction("benchmark").then(
-                                        AdminActionWithErrorMessage().then(
-                                            AsynchronousAction("benchmark").then(
+                                        CommandAction("version").then(
+                                            SaveCommandAction(),
+                                            VersionAction(
+                                                project_info.name,
+                                                project_info.url + "/releases"
+                                            )
+                                        ),
+
+                                        CommandAction("me", is_personal=True).then(
+                                            UserInfoAction(always_sender=True)
+                                        ),
+
+                                        CommandAction("benchmark").then(
+                                            AdminActionWithErrorMessage().then(
+                                                AsynchronousAction("benchmark").then(
+                                                    SaveCommandAction(),
+                                                    BenchmarkAction()
+                                                )
+                                            )
+                                        ),
+                                        CommandAction("cache").then(
+                                            AdminActionWithErrorMessage().then(
                                                 SaveCommandAction(),
-                                                BenchmarkAction()
+                                                LocaleCacheAction()
+                                            )
+                                        ),
+                                        CommandAction("restart").then(
+                                            AdminActionWithErrorMessage().then(
+                                                SaveCommandAction(),
+                                                RestartAction()
+                                            )
+                                        ),
+                                        CommandAction("halt").then(
+                                            AdminActionWithErrorMessage().then(
+                                                SaveCommandAction(),
+                                                HaltAction()
+                                            )
+                                        ),
+                                        CommandAction("eval").then(
+                                            AdminActionWithErrorMessage().then(
+                                                SaveCommandAction(),
+                                                EvalAction()
+                                            )
+                                        ),
+                                        CommandAction("state").then(
+                                            AdminActionWithErrorMessage().then(
+                                                SaveCommandAction(),
+                                                StateAction()
+                                            )
+                                        ),
+                                        CommandAction("config").then(
+                                            AdminActionWithErrorMessage().then(
+                                                SaveCommandAction(),
+                                                ConfigStatusAction()
+                                            )
+                                        ),
+                                        CommandAction("instance").then(
+                                            AdminActionWithErrorMessage().then(
+                                                SaveCommandAction(),
+                                                InstanceAction()
+                                            )
+                                        ),
+                                        CommandAction("workers").then(
+                                            AdminActionWithErrorMessage().then(
+                                                SaveCommandAction(),
+                                                WorkersAction()
+                                            )
+                                        ),
+                                        CommandAction("fail").then(
+                                            AdminActionWithErrorMessage().then(
+                                                SaveCommandAction(),
+                                                FailAction()
                                             )
                                         )
-                                    ),
-                                    CommandAction("cache").then(
-                                        AdminActionWithErrorMessage().then(
-                                            SaveCommandAction(),
-                                            LocaleCacheAction()
-                                        )
-                                    ),
-                                    CommandAction("restart").then(
-                                        AdminActionWithErrorMessage().then(
-                                            SaveCommandAction(),
-                                            RestartAction()
-                                        )
-                                    ),
-                                    CommandAction("halt").then(
-                                        AdminActionWithErrorMessage().then(
-                                            SaveCommandAction(),
-                                            HaltAction()
-                                        )
-                                    ),
-                                    CommandAction("eval").then(
-                                        AdminActionWithErrorMessage().then(
-                                            SaveCommandAction(),
-                                            EvalAction()
-                                        )
-                                    ),
-                                    CommandAction("state").then(
-                                        AdminActionWithErrorMessage().then(
-                                            SaveCommandAction(),
-                                            StateAction()
-                                        )
-                                    ),
-                                    CommandAction("config").then(
-                                        AdminActionWithErrorMessage().then(
-                                            SaveCommandAction(),
-                                            ConfigStatusAction()
-                                        )
-                                    ),
-                                    CommandAction("instance").then(
-                                        AdminActionWithErrorMessage().then(
-                                            SaveCommandAction(),
-                                            InstanceAction()
-                                        )
-                                    ),
-                                    CommandAction("workers").then(
-                                        AdminActionWithErrorMessage().then(
-                                            SaveCommandAction(),
-                                            WorkersAction()
-                                        )
-                                    )
 
+                                    )
                                 )
                             )
-                        )
-                    ),
+                        ),
 
-                    NoPendingAction().then(
-                        MessageAction().then(
-                            PerChatAction().then(
-                                TextMessageAction().then(
-                                    CommandAction("ping").then(
-                                        SaveCommandAction(),
-                                        AnswerAction("Up and running, sir!")
+                        NoPendingAction().then(
+                            MessageAction().then(
+                                PerChatAction().then(
+                                    TextMessageAction().then(
+                                        CommandAction("ping").then(
+                                            SaveCommandAction(),
+                                            AnswerAction("Up and running!")
+                                        )
+                                    )
+                                )
+                            )
+                        ),
+
+                        PendingAction().then(
+                            MessageAction().then(
+                                PerChatAction().then(
+                                    TextMessageAction().then(
+                                        CommandAction("ping").then(
+                                            SaveCommandAction(),
+                                            AnswerAction("I'm back! Sorry for the delay...")
+                                        )
                                     )
                                 )
                             )
                         )
-                    ),
 
-                    PendingAction().then(
-                        MessageAction().then(
-                            PerChatAction().then(
-                                TextMessageAction().then(
-                                    CommandAction("ping").then(
-                                        SaveCommandAction(),
-                                        AnswerAction("I'm back! Sorry for the delay...")
-                                    )
-                                )
-                            )
-                        )
                     )
-
                 )
             )
         )

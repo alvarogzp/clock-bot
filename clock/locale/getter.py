@@ -1,5 +1,6 @@
 from bot.api.domain import ApiObject
 
+from clock.finder.query.query import SearchQuery
 from clock.locale.parser import LocaleParser
 from clock.util.cache import Cache
 
@@ -31,3 +32,12 @@ class LocaleGetter:
     def from_user(cls, user: ApiObject):
         user_language_code = user.language_code
         return cls.from_language_code(user_language_code)
+
+
+class LanguageCode:
+    @classmethod
+    def from_query_or_user(cls, query: SearchQuery, user: ApiObject):
+        lang = query.lang
+        if lang is not None:
+            return lang
+        return user.language_code

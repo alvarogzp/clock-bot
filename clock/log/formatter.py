@@ -41,6 +41,11 @@ class LogFormatter:
         return formatted_offset
 
     @staticmethod
+    def language_code(language_code: str):
+        return FormattedText().normal("Language code: {language_code}").start_format()\
+            .bold(language_code=language_code).end_format()
+
+    @staticmethod
     def locale(locale: Locale):
         return FormattedText().normal("Locale: {locale}").start_format().bold(locale=str(locale)).end_format()
 

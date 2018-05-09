@@ -9,7 +9,7 @@ setup(
 
     description=project_info.description,
 
-    url=project_info.source_url,
+    url=project_info.url,
 
     author=project_info.author_name,
     author_email=project_info.author_email,
@@ -24,6 +24,7 @@ setup(
 
     install_requires=[
         'telegram-bot-framework',
+        'sqlite-framework',
         'pytz',
         'babel',
     ],

@@ -4,7 +4,8 @@ from clock.bot.inline.query.result.generator import InlineResultGenerator, Answe
 from clock.bot.locale_cache import LocaleCache
 from clock.domain.time import TimePoint
 from clock.finder.api import ZoneFinderApi
-from clock.locale.getter import LocaleGetter
+from clock.finder.query.parser import SearchQueryParser
+from clock.locale.getter import LocaleGetter, LanguageCode
 from clock.log.api import LogApi
 from clock.storage.factory import StorageApiFactory
 
@@ -41,9 +42,12 @@ class InlineQueryClockAction(Action):
         current_time = TimePoint.current()
 
         query = event.query
-        locale = LocaleGetter.from_user(query.from_)
+        parsed_query = SearchQueryParser.parsed(query.query)
 
-        zones = self.zone_finder.find(query.query, locale, current_time)
+        language_code = LanguageCode.from_query_or_user(parsed_query, query.from_)
+        locale = LocaleGetter.from_language_code(language_code)
+
+        zones = self.zone_finder.find(parsed_query, locale, current_time)
 
         offset = self.__get_offset(query)
         offset_end = offset + MAX_RESULTS_PER_QUERY
@@ -60,9 +64,9 @@ class InlineQueryClockAction(Action):
 
         self.locale_cache.cache(locale)
 
-        self.storage.save_query(query, current_time, locale, zones, results, processing_time)
+        self.storage.save_query(query, current_time, locale, zones, results, processing_time, language_code)
 
-        self.logger.log_query(query, current_time, locale, zones, results, processing_time)
+        self.logger.log_query(query, current_time, locale, zones, results, processing_time, language_code)
 
     @staticmethod
     def __get_offset(query):

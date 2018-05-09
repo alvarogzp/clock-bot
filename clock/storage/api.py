@@ -17,9 +17,11 @@ class StorageApi:
         self.scheduler.schedule_no_result(self._init, "init")
 
     def save_query(self, query: ApiObject, time_point: TimePoint, locale: Locale, results_found: list,
-                   results_sent: list, processing_seconds: float):
+                   results_sent: list, processing_seconds: float, language_code: str):
         self.scheduler.schedule_no_result(
-            lambda: self._save_query(query, time_point, locale, results_found, results_sent, processing_seconds),
+            lambda: self._save_query(
+                query, time_point, locale, results_found, results_sent, processing_seconds, language_code
+            ),
             "save_query"
         )
 
@@ -58,11 +60,11 @@ class StorageApi:
         self.data_source.init()
 
     def _save_query(self, query: ApiObject, time_point: TimePoint, locale: Locale, results_found: list,
-                    results_sent: list, processing_seconds: float):
+                    results_sent: list, processing_seconds: float, language_code: str):
         user = query.from_
         self._save_user(user)
         self.data_source.save_query(
-            user.id, time_point.id(), query.query, query.offset, user.language_code, str(locale),
+            user.id, time_point.id(), query.query, query.offset, language_code, str(locale),
             len(results_found), len(results_sent), processing_seconds
         )
 

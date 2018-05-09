@@ -72,3 +72,12 @@ It has several search strategies that are used based on the type of query receiv
 - Alvaro Gutierrez Perez
   - alvarogzp@gmail.com
   - https://linkedin.com/in/alvarogzp
+
+
+## Donations
+
+If you find this project useful and want to support its development economically, you can do so at any of the following addresses:
+
+ - Bitcoin: **[3KfpVvfAHYbzjnaqNHRrZ6zAzFG8cfgkEA](bitcoin:3KfpVvfAHYbzjnaqNHRrZ6zAzFG8cfgkEA)**
+
+Please, contact the authors identifying yourself after donating, so that we can thank you.

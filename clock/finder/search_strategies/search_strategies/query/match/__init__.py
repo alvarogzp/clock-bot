@@ -1,15 +1,13 @@
 import itertools
 
-from clock.finder.search_strategies.search_strategies.query import QuerySearchStrategy
 
-
-class MatchSearchStrategy(QuerySearchStrategy):
-    def __init__(self, query_lower: str):
-        super().__init__(query_lower)
+class MatchSearchStrategyMixIn:
+    def __init__(self):
+        super().__init__()  # continue the calling chain
         self.prioritized_results = [[] for _ in range(3)]
 
-    def search(self):
-        raise NotImplementedError()
+    def _add_result(self, result):
+        raise RuntimeError("_add_result is not supported on match searches")
 
     def _add_results(self, results):
         for prioritized_result_list, result_list in zip(self.prioritized_results, results):
