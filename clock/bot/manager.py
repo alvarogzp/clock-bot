@@ -109,7 +109,7 @@ class BotManager:
                                         ),
 
                                         CommandAction("me", is_personal=True).then(
-                                            UserInfoAction(always_sender=True)
+                                            UserInfoAction(always_sender=True, member_info=False)
                                         ),
 
                                         CommandAction("benchmark").then(
